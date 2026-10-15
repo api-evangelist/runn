@@ -1,0 +1,722 @@
+openapi: 3.2.0
+info:
+  title: Runn Time Offs API
+  version: 1.0.0
+  description: 'See the full documentation and guide to using the Runn API.
+
+
+    The domain for your API endpoint can be found in Accounts > Settings > API in your Runn application'
+servers:
+- url: https://api.runn.io
+  description: EU Server
+- url: https://api.us.runn.io
+  description: US Server
+security:
+- bearerAuth: []
+tags:
+- name: Time Offs
+paths:
+  /time-offs/holidays/:
+    get:
+      operationId: listHolidays
+      summary: List holiday time offs
+      parameters:
+      - schema:
+          type: string
+        in: query
+        name: cursor
+        required: false
+        description: Cursor for paginated requests
+      - schema:
+          default: 50
+          minimum: 1
+          maximum: 200
+          type: integer
+        in: query
+        name: limit
+        required: false
+        description: The number of results per page
+      - schema:
+          type: string
+          enum:
+          - id
+          - createdAt
+          - updatedAt
+          default: id
+        in: query
+        name: sortBy
+        required: true
+      - schema:
+          $ref: '#/components/schemas/SortOrder'
+        in: query
+        name: order
+        required: false
+      - schema:
+          type: number
+        in: query
+        name: personId
+        required: false
+      - schema:
+          $ref: '#/components/schemas/ModifiedAfter'
+        in: query
+        name: modifiedAfter
+        required: false
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  values:
+                    type: array
+                    items:
+                      allOf:
+                      - $ref: '#/components/schemas/TimeOff'
+                      - type: object
+                        properties:
+                          holidayId:
+                            description: The identifier referencing the holiday associated with the time-off.
+                            type: integer
+                        required:
+                        - holidayId
+                  nextCursor:
+                    type: string
+                    nullable: true
+                required:
+                - values
+                - nextCursor
+        '400':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+      tags:
+      - Time Offs
+  /time-offs/leave/:
+    get:
+      operationId: listLeave
+      summary: List leave time offs
+      parameters:
+      - schema:
+          type: string
+        in: query
+        name: cursor
+        required: false
+        description: Cursor for paginated requests
+      - schema:
+          default: 50
+          minimum: 1
+          maximum: 200
+          type: integer
+        in: query
+        name: limit
+        required: false
+        description: The number of results per page
+      - schema:
+          type: string
+          enum:
+          - id
+          - createdAt
+          - updatedAt
+          default: id
+        in: query
+        name: sortBy
+        required: true
+      - schema:
+          $ref: '#/components/schemas/SortOrder'
+        in: query
+        name: order
+        required: false
+      - schema:
+          type: number
+        in: query
+        name: personId
+        required: false
+      - schema:
+          type: string
+          format: date
+        in: query
+        name: startDate
+        required: false
+        description: 'Format: YYYY-MM-DD'
+      - schema:
+          type: string
+          format: date
+        in: query
+        name: endDate
+        required: false
+        description: 'Format: YYYY-MM-DD'
+      - schema:
+          $ref: '#/components/schemas/ModifiedAfter'
+        in: query
+        name: modifiedAfter
+        required: false
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  values:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TimeOff'
+                  nextCursor:
+                    type: string
+                    nullable: true
+                required:
+                - values
+                - nextCursor
+        '400':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+      tags:
+      - Time Offs
+    post:
+      operationId: createLeave
+      summary: Create a leave time off
+      description: '#### Create or Update
+
+
+        This endpoint may return an existing time off if the new time off is a subset of an existing one.
+
+
+        #### Automatic Merging
+
+
+        If one or more existing time offs overlap with the specified start/end date, they will be automatically merged.
+
+
+        #### Partial Time Offs
+
+
+        If the `minutesPerDay` field is provided, automatic merging will only occur if any overlapping time off has the same `minutesPerDay` value. If the `minutesPerDay` value differs, the request will fail.'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TimeOffLeaveInput'
+      parameters:
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '201':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TimeOff'
+        '400':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+      tags:
+      - Time Offs
+  /time-offs/leave/{timeOffId}/:
+    get:
+      operationId: getLeave
+      summary: Show a leave time off
+      parameters:
+      - schema:
+          type: integer
+        in: path
+        name: timeOffId
+        required: true
+        description: The unique identifier for the time-off.
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TimeOff'
+        '400':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+      tags:
+      - Time Offs
+    delete:
+      operationId: deleteLeave
+      summary: Delete a leave time off
+      parameters:
+      - schema:
+          type: integer
+        in: path
+        name: timeOffId
+        required: true
+        description: The unique identifier for the time-off.
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '202':
+          description: Default Response
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+      tags:
+      - Time Offs
+  /time-offs/leave/bulk/:
+    post:
+      operationId: createLeaveBulk
+      summary: Create leave time offs in bulk
+      description: '#### Create or Update
+
+
+        This endpoint may return existing time offs if the new time off is a subset of an existing one.
+
+
+        #### Automatic Merging
+
+
+        If one or more existing time offs overlap with the specified start/end date, they will be automatically merged.
+
+
+        #### Partial Time Offs
+
+
+        If the `minutesPerDay` field is provided, automatic merging will only occur if any overlapping time off has the same `minutesPerDay` value. If the `minutesPerDay` value differs, the request will fail.'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                time_offs:
+                  minItems: 1
+                  maxItems: 100
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/TimeOffLeaveInput'
+              required:
+              - time_offs
+      parameters:
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TimeOff'
+        '400':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+      tags:
+      - Time Offs
+    delete:
+      operationId: deleteLeaveBulk
+      summary: Delete leave time offs in bulk
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                timeOffIds:
+                  minItems: 1
+                  maxItems: 100
+                  type: array
+                  items:
+                    type: number
+              required:
+              - timeOffIds
+      parameters:
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '202':
+          description: Default Response
+        '400':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+      tags:
+      - Time Offs
+  /time-offs/rostered-off/:
+    get:
+      operationId: listRosteredOff
+      summary: List rostered time offs
+      parameters:
+      - schema:
+          type: string
+        in: query
+        name: cursor
+        required: false
+        description: Cursor for paginated requests
+      - schema:
+          default: 50
+          minimum: 1
+          maximum: 200
+          type: integer
+        in: query
+        name: limit
+        required: false
+        description: The number of results per page
+      - schema:
+          type: string
+          enum:
+          - id
+          - createdAt
+          - updatedAt
+          default: id
+        in: query
+        name: sortBy
+        required: true
+      - schema:
+          $ref: '#/components/schemas/SortOrder'
+        in: query
+        name: order
+        required: false
+      - schema:
+          type: number
+        in: query
+        name: personId
+        required: false
+      - schema:
+          $ref: '#/components/schemas/ModifiedAfter'
+        in: query
+        name: modifiedAfter
+        required: false
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  values:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TimeOff'
+                  nextCursor:
+                    type: string
+                    nullable: true
+                required:
+                - values
+                - nextCursor
+        '400':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+      tags:
+      - Time Offs
+  /time-offs/rostered-off/{timeOffId}:
+    delete:
+      operationId: deleteRosteredOff
+      summary: Delete a rostered time off
+      parameters:
+      - schema:
+          type: integer
+        in: path
+        name: timeOffId
+        required: true
+        description: The unique identifier for the time-off.
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '202':
+          description: Default Response
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+      tags:
+      - Time Offs
+components:
+  schemas:
+    TimeOffLeaveInput:
+      type: object
+      properties:
+        personId:
+          description: The unique identifier for the person.
+          type: integer
+        startDate:
+          type: string
+          format: date
+          description: 'The start date of the time-off. Format: YYYY-MM-DD'
+        endDate:
+          type: string
+          format: date
+          description: 'The end date of the time-off. Format: YYYY-MM-DD'
+        note:
+          description: A note or comment related to the time-off, if any.
+          type: string
+        minutesPerDay:
+          description: The minutes per day taken as time off. Omit this property if time-off is for full day(s) as per person's contract.
+          minimum: 15
+          type: integer
+          nullable: true
+      required:
+      - personId
+      - startDate
+      - endDate
+    ModifiedAfter:
+      description: 'If provided, will only return objects modified after this timestamp. Format: YYYY-MM-DD or YYYY-MM-DDTHH:MM:SSZ.'
+      anyOf:
+      - format: date
+        type: string
+      - format: date-time
+        type: string
+    BadRequest:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - Bad Request
+        message:
+          type: string
+        statusCode:
+          type: number
+          enum:
+          - 400
+      required:
+      - error
+      - message
+      - statusCode
+    NotFound:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - Not Found
+        message:
+          type: string
+        statusCode:
+          type: number
+          enum:
+          - 404
+      required:
+      - error
+      - message
+      - statusCode
+    TimeOff:
+      type: object
+      properties:
+        id:
+          description: The unique identifier for the assignment.
+          type: integer
+        personId:
+          description: The identifier referencing the person associated with the time-off.
+          type: integer
+        startDate:
+          type: string
+          format: date
+          description: 'The start date of the time-off. Format: YYYY-MM-DD'
+        endDate:
+          type: string
+          format: date
+          description: 'The end date of the time-off. Format: YYYY-MM-DD'
+        note:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was created.
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was last updated.
+        minutesPerDay:
+          type: integer
+          nullable: true
+      required:
+      - id
+      - personId
+      - startDate
+      - endDate
+      - note
+      - createdAt
+      - updatedAt
+      - minutesPerDay
+    SortOrder:
+      type: string
+      enum:
+      - asc
+      - desc
+      description: 'Sort order: asc or desc'
+      default: asc
+    Unauthorized:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - Unauthorized
+        message:
+          type: string
+          enum:
+          - Unauthorized
+        statusCode:
+          type: number
+          enum:
+          - 401
+      required:
+      - error
+      - message
+      - statusCode
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+x-readme:
+  proxy-enabled: false

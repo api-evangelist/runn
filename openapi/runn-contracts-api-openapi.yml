@@ -1,0 +1,337 @@
+openapi: 3.2.0
+info:
+  title: Runn Contracts API
+  version: 1.0.0
+  description: 'See the full documentation and guide to using the Runn API.
+
+
+    The domain for your API endpoint can be found in Accounts > Settings > API in your Runn application'
+servers:
+- url: https://api.runn.io
+  description: EU Server
+- url: https://api.us.runn.io
+  description: US Server
+security:
+- bearerAuth: []
+tags:
+- name: Contracts
+paths:
+  /contracts/:
+    get:
+      operationId: listContracts
+      summary: List contracts
+      description: See GET /people/{personId}/contracts to view all contracts for a specific person. See POST /people/{personId}/contracts to create a new contract for a person
+      parameters:
+      - schema:
+          type: string
+        in: query
+        name: cursor
+        required: false
+        description: Cursor for paginated requests
+      - schema:
+          default: 50
+          minimum: 1
+          maximum: 200
+          type: integer
+        in: query
+        name: limit
+        required: false
+        description: The number of results per page
+      - schema:
+          $ref: '#/components/schemas/ModifiedAfter'
+        in: query
+        name: modifiedAfter
+        required: false
+      - schema:
+          type: string
+          enum:
+          - id
+          - createdAt
+          - updatedAt
+          default: id
+        in: query
+        name: sortBy
+        required: true
+      - schema:
+          $ref: '#/components/schemas/SortOrder'
+        in: query
+        name: order
+        required: false
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  values:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Contract'
+                  nextCursor:
+                    type: string
+                    nullable: true
+                required:
+                - values
+                - nextCursor
+        '400':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+      tags:
+      - Contracts
+  /contracts/{contractId}:
+    patch:
+      operationId: updateContract
+      summary: Update a contract
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                roleId:
+                  type: number
+                startDate:
+                  format: date
+                  type: string
+                endDate:
+                  format: date
+                  type: string
+                  nullable: true
+                employmentType:
+                  type: string
+                  enum:
+                  - employee
+                  - contractor
+                costPerHour:
+                  type: number
+                minutesPerDay:
+                  minimum: 1
+                  type: number
+                rosteredDays:
+                  type: object
+                  properties:
+                    monday:
+                      type: number
+                    tuesday:
+                      type: number
+                    wednesday:
+                      type: number
+                    thursday:
+                      type: number
+                    friday:
+                      type: number
+                  required:
+                  - monday
+                  - tuesday
+                  - wednesday
+                  - thursday
+                  - friday
+                jobTitle:
+                  type: string
+      parameters:
+      - schema:
+          type: integer
+        in: path
+        name: contractId
+        required: true
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contract'
+        '400':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+      tags:
+      - Contracts
+components:
+  schemas:
+    ModifiedAfter:
+      description: 'If provided, will only return objects modified after this timestamp. Format: YYYY-MM-DD or YYYY-MM-DDTHH:MM:SSZ.'
+      anyOf:
+      - format: date
+        type: string
+      - format: date-time
+        type: string
+    BadRequest:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - Bad Request
+        message:
+          type: string
+        statusCode:
+          type: number
+          enum:
+          - 400
+      required:
+      - error
+      - message
+      - statusCode
+    NotFound:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - Not Found
+        message:
+          type: string
+        statusCode:
+          type: number
+          enum:
+          - 404
+      required:
+      - error
+      - message
+      - statusCode
+    Unauthorized:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - Unauthorized
+        message:
+          type: string
+          enum:
+          - Unauthorized
+        statusCode:
+          type: number
+          enum:
+          - 401
+      required:
+      - error
+      - message
+      - statusCode
+    RosteredDays:
+      description: Shows minutes per day working.
+      type: object
+      properties:
+        monday:
+          type: number
+        tuesday:
+          type: number
+        wednesday:
+          type: number
+        thursday:
+          type: number
+        friday:
+          type: number
+      required:
+      - monday
+      - tuesday
+      - wednesday
+      - thursday
+      - friday
+    SortOrder:
+      type: string
+      enum:
+      - asc
+      - desc
+      description: 'Sort order: asc or desc'
+      default: asc
+    Contract:
+      type: object
+      properties:
+        id:
+          type: integer
+        costPerHour:
+          type: number
+          nullable: true
+        employmentType:
+          type: string
+        minutesPerDay:
+          type: number
+          nullable: true
+        rosteredDays:
+          $ref: '#/components/schemas/RosteredDays'
+        startDate:
+          type: string
+          format: date
+          description: 'Format: YYYY-MM-DD'
+        endDate:
+          type: string
+          format: date
+          description: 'Format: YYYY-MM-DD'
+          nullable: true
+        roleId:
+          type: integer
+        personId:
+          type: integer
+        jobTitle:
+          description: This feature is currently hidden, and can not be seen in the app
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was created.
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was last updated.
+      required:
+      - id
+      - costPerHour
+      - employmentType
+      - minutesPerDay
+      - rosteredDays
+      - startDate
+      - endDate
+      - roleId
+      - personId
+      - jobTitle
+      - createdAt
+      - updatedAt
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+x-readme:
+  proxy-enabled: false

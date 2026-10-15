@@ -1,0 +1,383 @@
+openapi: 3.2.0
+info:
+  title: Runn Roles API
+  version: 1.0.0
+  description: 'See the full documentation and guide to using the Runn API.
+
+
+    The domain for your API endpoint can be found in Accounts > Settings > API in your Runn application'
+servers:
+- url: https://api.runn.io
+  description: EU Server
+- url: https://api.us.runn.io
+  description: US Server
+security:
+- bearerAuth: []
+tags:
+- name: Roles
+paths:
+  /roles/:
+    get:
+      operationId: listRoles
+      summary: List roles
+      parameters:
+      - schema:
+          type: string
+        in: query
+        name: name
+        required: false
+        description: If provided, will only return roles with a name that is a substring of this value (case-insensitive).
+      - schema:
+          type: string
+        in: query
+        name: cursor
+        required: false
+        description: Cursor for paginated requests
+      - schema:
+          default: 50
+          minimum: 1
+          maximum: 200
+          type: integer
+        in: query
+        name: limit
+        required: false
+        description: The number of results per page
+      - schema:
+          type: string
+          enum:
+          - createdAt
+          - updatedAt
+          - id
+          default: id
+        in: query
+        name: sortBy
+        required: false
+        description: 'Field to sort by: createdAt or updatedAt or id'
+      - schema:
+          type: string
+          enum:
+          - asc
+          - desc
+          default: asc
+        in: query
+        name: order
+        required: false
+        description: 'Sort order: asc or desc'
+      - schema:
+          $ref: '#/components/schemas/ModifiedAfter'
+        in: query
+        name: modifiedAfter
+        required: false
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  values:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Role'
+                  nextCursor:
+                    type: string
+                    nullable: true
+                required:
+                - values
+                - nextCursor
+        '400':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+      tags:
+      - Roles
+    post:
+      operationId: createRole
+      summary: Create a role
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  minLength: 1
+                  type: string
+                defaultHourCost:
+                  minimum: 0
+                  default: 0
+                  type: number
+                standardRate:
+                  minimum: 0
+                  default: 0
+                  type: number
+                references:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Reference'
+              required:
+              - name
+      parameters:
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '201':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+        '400':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+      tags:
+      - Roles
+  /roles/{roleId}:
+    get:
+      operationId: getRole
+      summary: Show a role
+      parameters:
+      - schema:
+          type: integer
+        in: path
+        name: roleId
+        required: true
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+      tags:
+      - Roles
+    patch:
+      operationId: updateRole
+      summary: Update a role
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  minLength: 1
+                  type: string
+                isArchived:
+                  type: boolean
+                references:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Reference'
+                standardRate:
+                  minimum: 0
+                  type: number
+                defaultHourCost:
+                  minimum: 0
+                  type: number
+      parameters:
+      - schema:
+          type: integer
+        in: path
+        name: roleId
+        required: true
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+      tags:
+      - Roles
+components:
+  schemas:
+    ModifiedAfter:
+      description: 'If provided, will only return objects modified after this timestamp. Format: YYYY-MM-DD or YYYY-MM-DDTHH:MM:SSZ.'
+      anyOf:
+      - format: date
+        type: string
+      - format: date-time
+        type: string
+    BadRequest:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - Bad Request
+        message:
+          type: string
+        statusCode:
+          type: number
+          enum:
+          - 400
+      required:
+      - error
+      - message
+      - statusCode
+    NotFound:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - Not Found
+        message:
+          type: string
+        statusCode:
+          type: number
+          enum:
+          - 404
+      required:
+      - error
+      - message
+      - statusCode
+    Role:
+      type: object
+      properties:
+        id:
+          minimum: 0
+          type: integer
+        name:
+          type: string
+          nullable: true
+        isArchived:
+          type: boolean
+        defaultHourCost:
+          type: number
+        standardRate:
+          type: number
+        references:
+          type: array
+          items:
+            $ref: '#/components/schemas/Reference'
+        personIds:
+          type: array
+          items:
+            type: integer
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was created.
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was last updated.
+      required:
+      - id
+      - name
+      - isArchived
+      - defaultHourCost
+      - standardRate
+      - references
+      - personIds
+      - createdAt
+      - updatedAt
+    Reference:
+      type: object
+      properties:
+        referenceName:
+          minLength: 1
+          type: string
+        externalId:
+          minLength: 1
+          type: string
+      required:
+      - referenceName
+      - externalId
+    Unauthorized:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - Unauthorized
+        message:
+          type: string
+          enum:
+          - Unauthorized
+        statusCode:
+          type: number
+          enum:
+          - 401
+      required:
+      - error
+      - message
+      - statusCode
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+x-readme:
+  proxy-enabled: false

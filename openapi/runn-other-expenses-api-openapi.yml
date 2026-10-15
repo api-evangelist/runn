@@ -1,0 +1,179 @@
+openapi: 3.2.0
+info:
+  title: Runn Other Expenses API
+  version: 1.0.0
+  description: 'See the full documentation and guide to using the Runn API.
+
+
+    The domain for your API endpoint can be found in Accounts > Settings > API in your Runn application'
+servers:
+- url: https://api.runn.io
+  description: EU Server
+- url: https://api.us.runn.io
+  description: US Server
+security:
+- bearerAuth: []
+tags:
+- name: Other Expenses
+paths:
+  /other-expenses/:
+    get:
+      operationId: listOtherExpenses
+      summary: List other expenses
+      description: List all other expenses across all projects
+      parameters:
+      - schema:
+          type: string
+        in: query
+        name: cursor
+        required: false
+        description: Cursor for paginated requests
+      - schema:
+          default: 100
+          minimum: 1
+          maximum: 500
+          type: integer
+        in: query
+        name: limit
+        required: false
+        description: The number of results per page
+      - schema:
+          $ref: '#/components/schemas/ModifiedAfter'
+        in: query
+        name: modifiedAfter
+        required: false
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  values:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ProjectOtherExpense'
+                  nextCursor:
+                    type: string
+                    nullable: true
+                required:
+                - values
+                - nextCursor
+        '400':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+      tags:
+      - Other Expenses
+components:
+  schemas:
+    ModifiedAfter:
+      description: 'If provided, will only return objects modified after this timestamp. Format: YYYY-MM-DD or YYYY-MM-DDTHH:MM:SSZ.'
+      anyOf:
+      - format: date
+        type: string
+      - format: date-time
+        type: string
+    BadRequest:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - Bad Request
+        message:
+          type: string
+        statusCode:
+          type: number
+          enum:
+          - 400
+      required:
+      - error
+      - message
+      - statusCode
+    ProjectOtherExpense:
+      title: Project Other Expense
+      description: A non-labour expense for a project.
+      type: object
+      properties:
+        id:
+          description: Unique identifier for the other expense.
+          readOnly: true
+          type: integer
+        cost:
+          minimum: 0
+          description: How much the item costs for your business (in your account's currency).
+          type: number
+        charge:
+          minimum: 0
+          description: How much you are charging your clients for the item (in your account's currency).
+          type: number
+        name:
+          minLength: 1
+          description: The item or service that was purchased.
+          type: string
+        date:
+          type: string
+          format: date
+          description: The date the expense was incurred.
+        updatedAt:
+          type: string
+          format: date-time
+          description: The date the expense was last updated.
+        createdAt:
+          type: string
+          format: date-time
+          description: The date the expense was created.
+        projectId:
+          description: The project the expense is associated with.
+          type: integer
+      required:
+      - id
+      - cost
+      - charge
+      - name
+      - date
+      - updatedAt
+      - createdAt
+      - projectId
+    Unauthorized:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - Unauthorized
+        message:
+          type: string
+          enum:
+          - Unauthorized
+        statusCode:
+          type: number
+          enum:
+          - 401
+      required:
+      - error
+      - message
+      - statusCode
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+x-readme:
+  proxy-enabled: false

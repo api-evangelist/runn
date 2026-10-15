@@ -1,0 +1,3264 @@
+openapi: 3.2.0
+info:
+  title: Runn People API
+  version: 1.0.0
+  description: 'See the full documentation and guide to using the Runn API.
+
+
+    The domain for your API endpoint can be found in Accounts > Settings > API in your Runn application'
+servers:
+- url: https://api.runn.io
+  description: EU Server
+- url: https://api.us.runn.io
+  description: US Server
+security:
+- bearerAuth: []
+tags:
+- name: People
+paths:
+  /people/{personId}:
+    get:
+      operationId: getPerson
+      summary: Show a person or placeholder
+      parameters:
+      - schema:
+          type: integer
+        in: path
+        name: personId
+        required: true
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Person'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+      tags:
+      - People
+    patch:
+      operationId: updatePerson
+      summary: Update a person or placeholder
+      description: 'To add a new role or job title to a person, see POST /people/{personId}/contracts. Archiving a person (isArchived: true) fails while they have ongoing or future contracts. Add an end date to each ongoing contract via PATCH /people/{personId}/contracts/{contractId}, and delete any contract that starts in the future via DELETE /people/{personId}/contracts/{contractId}, before archiving.'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstName:
+                  minLength: 1
+                  maxLength: 100
+                  type: string
+                lastName:
+                  minLength: 1
+                  maxLength: 100
+                  type: string
+                email:
+                  type: string
+                tags:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                    required:
+                    - id
+                teamId:
+                  type: integer
+                  nullable: true
+                references:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Reference'
+                isArchived:
+                  type: boolean
+                managers:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      userId:
+                        type: integer
+                    required:
+                    - userId
+      parameters:
+      - schema:
+          type: integer
+        in: path
+        name: personId
+        required: true
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Person'
+        '400':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+      tags:
+      - People
+    delete:
+      operationId: deletePerson
+      summary: Delete a person or placeholder
+      description: 'Delete a person or placeholder by their ID; fails when person has existing assignments or actuals to preserve
+
+        historical reports. Override this behaviour by using the force query flag.'
+      parameters:
+      - schema:
+          default: false
+          type: boolean
+        in: query
+        name: force
+        required: true
+      - schema:
+          type: integer
+        in: path
+        name: personId
+        required: true
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '204':
+          description: Default Response
+        '400':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+      tags:
+      - People
+  /people/:
+    get:
+      operationId: listPeople
+      summary: List people
+      parameters:
+      - schema:
+          type: string
+        in: query
+        name: cursor
+        required: false
+        description: Cursor for paginated requests
+      - schema:
+          default: 50
+          minimum: 1
+          maximum: 200
+          type: integer
+        in: query
+        name: limit
+        required: false
+        description: The number of results per page
+      - schema:
+          type: string
+          enum:
+          - createdAt
+          - updatedAt
+          - id
+          default: id
+        in: query
+        name: sortBy
+        required: false
+        description: 'Field to sort by: createdAt or updatedAt or id'
+      - schema:
+          type: string
+          enum:
+          - asc
+          - desc
+          default: asc
+        in: query
+        name: order
+        required: false
+        description: 'Sort order: asc or desc'
+      - schema:
+          default: false
+          type: boolean
+        in: query
+        name: includePlaceholders
+        required: false
+      - schema:
+          type: string
+        in: query
+        name: email
+        required: false
+        description: If provided, will only return people with an email that are a substring of this value (case-insensitive).
+      - schema:
+          type: string
+        in: query
+        name: firstName
+        required: false
+        description: If provided, will only return people with a first name that is a substring of this value (case-insensitive).
+      - schema:
+          type: string
+        in: query
+        name: lastName
+        required: false
+        description: If provided, will only return people with a last name that is a substring of this value (case-insensitive).
+      - schema:
+          $ref: '#/components/schemas/ModifiedAfter'
+        in: query
+        name: modifiedAfter
+        required: false
+      - schema:
+          type: string
+        in: query
+        name: externalId
+        required: false
+        description: External ID value
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  values:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CollectionPerson'
+                  nextCursor:
+                    type: string
+                    nullable: true
+                required:
+                - values
+                - nextCursor
+        '400':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+      tags:
+      - People
+    post:
+      operationId: createPerson
+      summary: Create a person
+      description: Also creates a new contract for the person
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstName:
+                  minLength: 1
+                  maxLength: 100
+                  type: string
+                lastName:
+                  minLength: 1
+                  maxLength: 100
+                  type: string
+                email:
+                  type: string
+                teamId:
+                  type: integer
+                  nullable: true
+                holidaysGroupId:
+                  type: integer
+                tags:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                    required:
+                    - id
+                references:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Reference'
+                managers:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      userId:
+                        type: integer
+                    required:
+                    - userId
+                roleId:
+                  type: integer
+                startDate:
+                  type: string
+                  format: date
+                  description: 'Defaults to today. Format: YYYY-MM-DD'
+                endDate:
+                  type: string
+                  format: date
+                  description: 'Format: YYYY-MM-DD'
+                employmentType:
+                  type: string
+                  enum:
+                  - employee
+                  - contractor
+                  description: The type of employment for the contract.
+                  default: employee
+                costPerHour:
+                  description: Defaults to the role's cost per hour
+                  type: number
+                minutesPerDay:
+                  minimum: 1
+                  description: Defaults to the account's default minutes per day
+                  type: number
+                rosteredDays:
+                  description: Every value must be the same as minutesPerDay or 0.
+                  type: object
+                  properties:
+                    monday:
+                      type: number
+                    tuesday:
+                      type: number
+                    wednesday:
+                      type: number
+                    thursday:
+                      type: number
+                    friday:
+                      type: number
+                  required:
+                  - monday
+                  - tuesday
+                  - wednesday
+                  - thursday
+                  - friday
+                jobTitle:
+                  description: This feature is currently hidden, and can not be seen in the app
+                  type: string
+              required:
+              - firstName
+              - lastName
+              - roleId
+      parameters:
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '201':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Person'
+        '400':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+      tags:
+      - People
+  /people/skills:
+    get:
+      operationId: listPeopleSkills
+      summary: List people skills
+      parameters:
+      - schema:
+          type: string
+        in: query
+        name: cursor
+        required: false
+        description: Cursor for paginated requests
+      - schema:
+          default: 50
+          minimum: 1
+          maximum: 200
+          type: integer
+        in: query
+        name: limit
+        required: false
+        description: The number of results per page
+      - schema:
+          default: false
+          type: boolean
+        in: query
+        name: includePlaceholders
+        required: false
+      - schema:
+          $ref: '#/components/schemas/ModifiedAfter'
+        in: query
+        name: modifiedAfter
+        required: false
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  values:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PersonCompetency'
+                  nextCursor:
+                    type: string
+                    nullable: true
+                required:
+                - values
+                - nextCursor
+        '400':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+      tags:
+      - People
+  /people/notes:
+    get:
+      operationId: listPeopleNotes
+      summary: List people notes
+      description: List all person notes across all people
+      parameters:
+      - schema:
+          type: string
+        in: query
+        name: cursor
+        required: false
+        description: Cursor for paginated requests
+      - schema:
+          default: 100
+          minimum: 1
+          maximum: 500
+          type: integer
+        in: query
+        name: limit
+        required: false
+        description: The number of results per page
+      - schema:
+          $ref: '#/components/schemas/ModifiedAfter'
+        in: query
+        name: modifiedAfter
+        required: false
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  values:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PersonNote'
+                  nextCursor:
+                    type: string
+                    nullable: true
+                required:
+                - values
+                - nextCursor
+        '400':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+      tags:
+      - People
+  /people/contracts/current:
+    get:
+      operationId: listPeopleCurrentContracts
+      summary: List people current contracts
+      description: List current contracts across all people
+      parameters:
+      - schema:
+          type: string
+        in: query
+        name: cursor
+        required: false
+        description: Cursor for paginated requests
+      - schema:
+          default: 100
+          minimum: 1
+          maximum: 500
+          type: integer
+        in: query
+        name: limit
+        required: false
+        description: The number of results per page
+      - schema:
+          $ref: '#/components/schemas/ModifiedAfter'
+        in: query
+        name: modifiedAfter
+        required: false
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  values:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Contract'
+                  nextCursor:
+                    type: string
+                    nullable: true
+                required:
+                - values
+                - nextCursor
+        '400':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+      tags:
+      - People
+  /people/custom-fields:
+    get:
+      operationId: listPeopleCustomFields
+      summary: List people custom fields
+      description: List all custom fields across all people
+      parameters:
+      - schema:
+          type: string
+        in: query
+        name: cursor
+        required: false
+        description: Cursor for paginated requests
+      - schema:
+          default: 100
+          minimum: 1
+          maximum: 500
+          type: integer
+        in: query
+        name: limit
+        required: false
+        description: The number of results per page
+      - schema:
+          $ref: '#/components/schemas/ModifiedAfter'
+        in: query
+        name: modifiedAfter
+        required: false
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  values:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PersonCustomField'
+                  nextCursor:
+                    type: string
+                    nullable: true
+                required:
+                - values
+                - nextCursor
+        '400':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+      tags:
+      - People
+  /people/{personId}/actuals/:
+    get:
+      operationId: listPersonActuals
+      summary: List actuals for a person
+      parameters:
+      - schema:
+          type: string
+        in: query
+        name: cursor
+        required: false
+        description: Cursor for paginated requests
+      - schema:
+          default: 50
+          minimum: 1
+          maximum: 200
+          type: integer
+        in: query
+        name: limit
+        required: false
+        description: The number of results per page
+      - schema:
+          type: integer
+        in: query
+        name: projectId
+        required: false
+      - schema:
+          type: integer
+        in: query
+        name: roleId
+        required: false
+      - schema:
+          $ref: '#/components/schemas/ModifiedAfter'
+        in: query
+        name: modifiedAfter
+        required: false
+      - schema:
+          type: integer
+        in: path
+        name: personId
+        required: true
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  values:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Actual'
+                  nextCursor:
+                    type: string
+                    nullable: true
+                required:
+                - values
+                - nextCursor
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+      tags:
+      - People
+  /people/{personId}/assignments/:
+    get:
+      operationId: listPersonAssignments
+      summary: List assignments for a person or placeholder
+      parameters:
+      - schema:
+          type: string
+        in: query
+        name: cursor
+        required: false
+        description: Cursor for paginated requests
+      - schema:
+          default: 50
+          minimum: 1
+          maximum: 200
+          type: integer
+        in: query
+        name: limit
+        required: false
+        description: The number of results per page
+      - schema:
+          type: integer
+        in: query
+        name: projectId
+        required: false
+      - schema:
+          type: integer
+        in: query
+        name: roleId
+        required: false
+      - schema:
+          type: string
+          format: date
+        in: query
+        name: startDate
+        required: false
+        description: 'Include assignments that start or overlap with this date. Format: YYYY-MM-DD'
+      - schema:
+          type: string
+          format: date
+        in: query
+        name: endDate
+        required: false
+        description: 'Include assignments that end on or overlap with this date. Format: YYYY-MM-DD'
+      - schema:
+          $ref: '#/components/schemas/ModifiedAfter'
+        in: query
+        name: modifiedAfter
+        required: false
+      - schema:
+          type: integer
+        in: path
+        name: personId
+        required: true
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  values:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Assignment'
+                  nextCursor:
+                    type: string
+                    nullable: true
+                required:
+                - values
+                - nextCursor
+        '400':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+      tags:
+      - People
+  /people/{personId}/contracts/:
+    get:
+      operationId: listPersonContracts
+      summary: List contracts for a person
+      parameters:
+      - schema:
+          type: string
+        in: query
+        name: cursor
+        required: false
+        description: Cursor for paginated requests
+      - schema:
+          default: 20
+          minimum: 1
+          maximum: 50
+          type: integer
+        in: query
+        name: limit
+        required: false
+        description: The number of results per page
+      - schema:
+          type: integer
+        in: path
+        name: personId
+        required: true
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  values:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Contract'
+                  nextCursor:
+                    type: string
+                    nullable: true
+                required:
+                - values
+                - nextCursor
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+      tags:
+      - People
+    post:
+      operationId: createPersonContract
+      summary: Add a new contract to a person
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContractInput'
+      parameters:
+      - schema:
+          type: integer
+        in: path
+        name: personId
+        required: true
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '201':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contract'
+        '400':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+      tags:
+      - People
+  /people/{personId}/contracts/current:
+    get:
+      operationId: getPersonCurrentContract
+      summary: Show current contract for a person
+      parameters:
+      - schema:
+          type: integer
+        in: path
+        name: personId
+        required: true
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contract'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - Not Found
+                  message:
+                    type: string
+                  statusCode:
+                    type: number
+                    enum:
+                    - 404
+                required:
+                - error
+                - message
+                - statusCode
+      tags:
+      - People
+  /people/{personId}/contracts/{contractId}:
+    delete:
+      operationId: deletePersonContract
+      summary: Delete a contract for a person
+      parameters:
+      - schema:
+          type: integer
+        in: path
+        name: personId
+        required: true
+      - schema:
+          type: integer
+        in: path
+        name: contractId
+        required: true
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '204':
+          description: Default Response
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+      tags:
+      - People
+    patch:
+      operationId: updatePersonContract
+      summary: Update a contract for a person
+      description: Update one of a person's contracts. Adding an end date to an ongoing contract here lets the person be archived (see PATCH /people/{personId}).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                roleId:
+                  type: integer
+                startDate:
+                  type: string
+                  format: date
+                  description: 'Defaults to today. Format: YYYY-MM-DD'
+                endDate:
+                  type: string
+                  format: date
+                  description: 'Format: YYYY-MM-DD'
+                  nullable: true
+                employmentType:
+                  type: string
+                  enum:
+                  - employee
+                  - contractor
+                  description: The type of employment for the contract.
+                  default: employee
+                costPerHour:
+                  description: Defaults to the role's cost per hour
+                  type: number
+                minutesPerDay:
+                  minimum: 1
+                  description: Defaults to the account's default minutes per day
+                  type: number
+                rosteredDays:
+                  description: Every value must be the same as minutesPerDay or 0.
+                  type: object
+                  properties:
+                    monday:
+                      type: number
+                    tuesday:
+                      type: number
+                    wednesday:
+                      type: number
+                    thursday:
+                      type: number
+                    friday:
+                      type: number
+                  required:
+                  - monday
+                  - tuesday
+                  - wednesday
+                  - thursday
+                  - friday
+                jobTitle:
+                  description: This feature is currently hidden, and can not be seen in the app
+                  type: string
+      parameters:
+      - schema:
+          type: integer
+        in: path
+        name: personId
+        required: true
+      - schema:
+          type: integer
+        in: path
+        name: contractId
+        required: true
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contract'
+        '400':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+      tags:
+      - People
+  /people/{personId}/custom-fields/checkbox/:
+    patch:
+      operationId: updatePersonCheckboxCustomFields
+      summary: Add a checkbox custom value to a person or placeholder
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: number
+                value:
+                  type: boolean
+              required:
+              - id
+              - value
+      parameters:
+      - schema:
+          type: integer
+        in: path
+        name: personId
+        required: true
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: number
+                  value:
+                    type: boolean
+                required:
+                - id
+                - value
+        '400':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+      tags:
+      - People
+  /people/{personId}/custom-fields/date/:
+    patch:
+      operationId: updatePersonDateCustomFields
+      summary: Add a date custom value to a person or placeholder
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: number
+                value:
+                  type: string
+                  format: date
+                  description: 'Format: YYYY-MM-DD'
+                  nullable: true
+              required:
+              - id
+              - value
+      parameters:
+      - schema:
+          type: integer
+        in: path
+        name: personId
+        required: true
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: number
+                  value:
+                    type: string
+                    format: date
+                    description: 'Format: YYYY-MM-DD'
+                    nullable: true
+                required:
+                - id
+                - value
+        '400':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+      tags:
+      - People
+  /people/{personId}/custom-fields/select/:
+    patch:
+      operationId: updatePersonSelectCustomFields
+      summary: Add custom select options to a person or placeholder
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: number
+                values:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: number
+                    required:
+                    - id
+              required:
+              - id
+              - values
+      parameters:
+      - schema:
+          type: integer
+        in: path
+        name: personId
+        required: true
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: number
+                  values:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: number
+                      required:
+                      - id
+                required:
+                - id
+                - values
+        '400':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+      tags:
+      - People
+  /people/{personId}/custom-fields/text/:
+    patch:
+      operationId: updatePersonTextCustomFields
+      summary: Add a text custom value to a person or placeholder
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: number
+                value:
+                  type: string
+              required:
+              - id
+              - value
+      parameters:
+      - schema:
+          type: integer
+        in: path
+        name: personId
+        required: true
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: number
+                  value:
+                    type: string
+                required:
+                - id
+                - value
+        '400':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+      tags:
+      - People
+  /people/{personId}/projects/:
+    get:
+      operationId: listPersonProjects
+      summary: List projects for a person or placeholder
+      parameters:
+      - schema:
+          type: string
+        in: query
+        name: cursor
+        required: false
+        description: Cursor for paginated requests
+      - schema:
+          default: 50
+          minimum: 1
+          maximum: 200
+          type: integer
+        in: query
+        name: limit
+        required: false
+        description: The number of results per page
+      - schema:
+          type: integer
+        in: path
+        name: personId
+        required: true
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  values:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Project'
+                  nextCursor:
+                    type: string
+                    nullable: true
+                required:
+                - values
+                - nextCursor
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+      tags:
+      - People
+    post:
+      operationId: createPersonProject
+      summary: Add project to a person or placeholder
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                projectId:
+                  type: integer
+                roleId:
+                  type: integer
+                workstreamId:
+                  type: integer
+              required:
+              - projectId
+              - roleId
+      parameters:
+      - schema:
+          type: integer
+        in: path
+        name: personId
+        required: true
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '201':
+          description: Default Response
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+        '409':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Conflict'
+      tags:
+      - People
+  /people/{personId}/skills/:
+    get:
+      operationId: listPersonSkills
+      summary: List skills for a person or placeholder
+      parameters:
+      - schema:
+          type: string
+        in: query
+        name: cursor
+        required: false
+        description: Cursor for paginated requests
+      - schema:
+          default: 50
+          minimum: 1
+          maximum: 200
+          type: integer
+        in: query
+        name: limit
+        required: false
+        description: The number of results per page
+      - schema:
+          $ref: '#/components/schemas/ModifiedAfter'
+        in: query
+        name: modifiedAfter
+        required: false
+      - schema:
+          type: integer
+        in: path
+        name: personId
+        required: true
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  values:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Competency'
+                  nextCursor:
+                    type: string
+                    nullable: true
+                required:
+                - values
+                - nextCursor
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+      tags:
+      - People
+    post:
+      operationId: createPersonSkill
+      summary: Add a skill to a person or placeholder
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                skillId:
+                  type: integer
+                level:
+                  anyOf:
+                  - type: number
+                    enum:
+                    - 1
+                    nullable: true
+                  - type: number
+                    enum:
+                    - 2
+                    nullable: true
+                  - type: number
+                    enum:
+                    - 3
+                    nullable: true
+                  - type: number
+                    enum:
+                    - 4
+                    nullable: true
+              required:
+              - skillId
+      parameters:
+      - schema:
+          type: integer
+        in: path
+        name: personId
+        required: true
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '201':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Competency'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+      tags:
+      - People
+  /people/{personId}/skills/{skillId}:
+    patch:
+      operationId: updatePersonSkill
+      summary: Update a skill for a person or placeholder
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                level:
+                  anyOf:
+                  - type: number
+                    enum:
+                    - 1
+                    nullable: true
+                  - type: number
+                    enum:
+                    - 2
+                    nullable: true
+                  - type: number
+                    enum:
+                    - 3
+                    nullable: true
+                  - type: number
+                    enum:
+                    - 4
+                    nullable: true
+              required:
+              - level
+      parameters:
+      - schema:
+          type: integer
+        in: path
+        name: personId
+        required: true
+      - schema:
+          type: integer
+        in: path
+        name: skillId
+        required: true
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Competency'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+      tags:
+      - People
+    delete:
+      operationId: deletePersonSkill
+      summary: Remove a skill from a person or placeholder
+      parameters:
+      - schema:
+          type: integer
+        in: path
+        name: personId
+        required: true
+      - schema:
+          type: integer
+        in: path
+        name: skillId
+        required: true
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '204':
+          description: Default Response
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+      tags:
+      - People
+  /people/{personId}/teams/current:
+    get:
+      operationId: getPersonCurrentTeam
+      summary: Show current team for a person or placeholder
+      description: This endpoint is deprecated. You may view the current team for a person using the `GET /people/:personId/` endpoint.
+      parameters:
+      - schema:
+          type: string
+        in: query
+        name: cursor
+        required: false
+        description: Cursor for paginated requests
+      - schema:
+          default: 20
+          minimum: 1
+          maximum: 50
+          type: integer
+        in: query
+        name: limit
+        required: false
+        description: The number of results per page
+      - schema:
+          type: integer
+        in: path
+        name: personId
+        required: true
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      deprecated: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  values:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+                          nullable: true
+                        createdAt:
+                          type: string
+                          format: date-time
+                          description: Timestamp of when the object was created.
+                        updatedAt:
+                          type: string
+                          format: date-time
+                          description: Timestamp of when the object was last updated.
+                      required:
+                      - id
+                      - name
+                      - createdAt
+                      - updatedAt
+                  nextCursor:
+                    type: string
+                    nullable: true
+                required:
+                - values
+                - nextCursor
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+      tags:
+      - People
+  /people/{personId}/teams/:
+    post:
+      operationId: createPersonTeam
+      summary: Add a person or placeholder to a team
+      description: This endpoint is deprecated. You may assign the person to a team using the `PATCH /people/:personId/` endpoint.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                teamId:
+                  type: integer
+              required:
+              - teamId
+      parameters:
+      - schema:
+          type: integer
+        in: path
+        name: personId
+        required: true
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      deprecated: true
+      responses:
+        '201':
+          description: Default Response
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+      tags:
+      - People
+  /people/{personId}/teams/{teamId}:
+    delete:
+      operationId: deletePersonTeam
+      summary: Remove a person or placeholder from a team
+      description: This endpoint is deprecated. You may remove the person from a team using the `PATCH /people/:personId/` endpoint.
+      parameters:
+      - schema:
+          type: string
+        in: query
+        name: cursor
+        required: false
+        description: Cursor for paginated requests
+      - schema:
+          default: 20
+          minimum: 1
+          maximum: 50
+          type: integer
+        in: query
+        name: limit
+        required: false
+        description: The number of results per page
+      - schema:
+          type: integer
+        in: path
+        name: personId
+        required: true
+      - schema:
+          type: integer
+        in: path
+        name: teamId
+        required: true
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      deprecated: true
+      responses:
+        '202':
+          description: Default Response
+        '400':
+          description: Default Response
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+      tags:
+      - People
+  /people/{personId}/time-offs/leave:
+    get:
+      operationId: listPersonLeave
+      summary: List leave for a person
+      parameters:
+      - schema:
+          type: string
+        in: query
+        name: cursor
+        required: false
+        description: Cursor for paginated requests
+      - schema:
+          default: 50
+          minimum: 1
+          maximum: 200
+          type: integer
+        in: query
+        name: limit
+        required: false
+        description: The number of results per page
+      - schema:
+          type: integer
+        in: path
+        name: personId
+        required: true
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  values:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TimeOff'
+                  nextCursor:
+                    type: string
+                    nullable: true
+                required:
+                - values
+                - nextCursor
+        '400':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+      tags:
+      - People
+  /people/{personId}/time-offs/holidays:
+    get:
+      operationId: listPersonHolidays
+      summary: List holidays for a person
+      parameters:
+      - schema:
+          type: string
+        in: query
+        name: cursor
+        required: false
+        description: Cursor for paginated requests
+      - schema:
+          default: 50
+          minimum: 1
+          maximum: 200
+          type: integer
+        in: query
+        name: limit
+        required: false
+        description: The number of results per page
+      - schema:
+          type: integer
+        in: path
+        name: personId
+        required: true
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  values:
+                    type: array
+                    items:
+                      allOf:
+                      - $ref: '#/components/schemas/TimeOff'
+                      - type: object
+                        properties:
+                          holidayId:
+                            description: The identifier referencing the holiday associated with the time-off.
+                            type: integer
+                        required:
+                        - holidayId
+                  nextCursor:
+                    type: string
+                    nullable: true
+                required:
+                - values
+                - nextCursor
+        '400':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+      tags:
+      - People
+  /people/{personId}/time-offs/rostered-off:
+    get:
+      operationId: listPersonRosteredOff
+      summary: List rostered time offs for a person
+      parameters:
+      - schema:
+          type: string
+        in: query
+        name: cursor
+        required: false
+        description: Cursor for paginated requests
+      - schema:
+          default: 50
+          minimum: 1
+          maximum: 200
+          type: integer
+        in: query
+        name: limit
+        required: false
+        description: The number of results per page
+      - schema:
+          type: integer
+        in: path
+        name: personId
+        required: true
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  values:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TimeOff'
+                  nextCursor:
+                    type: string
+                    nullable: true
+                required:
+                - values
+                - nextCursor
+        '400':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+      tags:
+      - People
+components:
+  schemas:
+    CustomDateFieldCollection:
+      type: object
+      properties:
+        name:
+          type: string
+        type:
+          type: string
+          enum:
+          - date
+        customDateId:
+          type: integer
+        value:
+          type: string
+          format: date
+          description: 'Format: YYYY-MM-DD'
+          nullable: true
+      required:
+      - name
+      - type
+      - customDateId
+      - value
+    BadRequest:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - Bad Request
+        message:
+          type: string
+        statusCode:
+          type: number
+          enum:
+          - 400
+      required:
+      - error
+      - message
+      - statusCode
+    CustomCheckboxFieldCollection:
+      type: object
+      properties:
+        name:
+          type: string
+        type:
+          type: string
+          enum:
+          - checkbox
+        customCheckboxId:
+          type: integer
+        value:
+          type: boolean
+      required:
+      - name
+      - type
+      - customCheckboxId
+      - value
+    PersonCompetency:
+      type: object
+      allOf:
+      - type: object
+        properties:
+          personId:
+            type: integer
+        required:
+        - personId
+      - type: object
+        properties:
+          level:
+            anyOf:
+            - type: number
+              enum:
+              - 1
+              nullable: true
+            - type: number
+              enum:
+              - 2
+              nullable: true
+            - type: number
+              enum:
+              - 3
+              nullable: true
+            - type: number
+              enum:
+              - 4
+              nullable: true
+          skillId:
+            type: integer
+          createdAt:
+            type: string
+            format: date-time
+            description: Timestamp of when the object was created.
+          updatedAt:
+            type: string
+            format: date-time
+            description: Timestamp of when the object was last updated.
+        required:
+        - skillId
+        - createdAt
+        - updatedAt
+    TimeOff:
+      type: object
+      properties:
+        id:
+          description: The unique identifier for the assignment.
+          type: integer
+        personId:
+          description: The identifier referencing the person associated with the time-off.
+          type: integer
+        startDate:
+          type: string
+          format: date
+          description: 'The start date of the time-off. Format: YYYY-MM-DD'
+        endDate:
+          type: string
+          format: date
+          description: 'The end date of the time-off. Format: YYYY-MM-DD'
+        note:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was created.
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was last updated.
+        minutesPerDay:
+          type: integer
+          nullable: true
+      required:
+      - id
+      - personId
+      - startDate
+      - endDate
+      - note
+      - createdAt
+      - updatedAt
+      - minutesPerDay
+    Reference:
+      type: object
+      properties:
+        referenceName:
+          minLength: 1
+          type: string
+        externalId:
+          minLength: 1
+          type: string
+      required:
+      - referenceName
+      - externalId
+    CustomSelectFieldCollection:
+      type: object
+      properties:
+        name:
+          type: string
+        type:
+          type: string
+          enum:
+          - select
+        customSelectId:
+          type: integer
+        value:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              name:
+                type: string
+            required:
+            - id
+            - name
+      required:
+      - name
+      - type
+      - customSelectId
+      - value
+    Assignment:
+      type: object
+      properties:
+        id:
+          description: The unique identifier for the assignment.
+          type: integer
+        personId:
+          description: id referencing the person associated with the assignment.
+          type: integer
+        startDate:
+          type: string
+          format: date
+          description: 'The start date of the assignment. Format: YYYY-MM-DD'
+        endDate:
+          type: string
+          format: date
+          description: 'The end date of the assignment. Format: YYYY-MM-DD'
+        projectId:
+          description: The ID referencing the project to which the assignment belongs.
+          type: integer
+        minutesPerDay:
+          description: The number of minutes allocated to the assignment per day.
+          type: integer
+        roleId:
+          description: The ID referencing the role associated with the assignment.
+          type: integer
+        isActive:
+          description: A flag indicating whether the assignment is currently active. (Deprecated. Assignments are always hard delete so are now always active).
+          deprecated: true
+          type: boolean
+        note:
+          type: string
+          nullable: true
+        isBillable:
+          description: A flag indicating whether the assignment is billable.
+          type: boolean
+        phaseId:
+          type: integer
+          nullable: true
+        isNonWorkingDay:
+          description: A flag indicating if the assignment falls on a non-working day.
+          type: boolean
+        isTemplate:
+          description: A flag indicating if the assignment is a template.
+          type: boolean
+        isPlaceholder:
+          description: A flag indicating if the assignment's person is a placeholder.
+          type: boolean
+        workstreamId:
+          type: number
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was created.
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was last updated.
+      required:
+      - id
+      - personId
+      - startDate
+      - endDate
+      - projectId
+      - minutesPerDay
+      - roleId
+      - isActive
+      - note
+      - isBillable
+      - phaseId
+      - isNonWorkingDay
+      - isTemplate
+      - isPlaceholder
+      - workstreamId
+      - createdAt
+      - updatedAt
+    ContractInput:
+      type: object
+      properties:
+        roleId:
+          type: integer
+        startDate:
+          type: string
+          format: date
+          description: 'Defaults to today. Format: YYYY-MM-DD'
+        endDate:
+          type: string
+          format: date
+          description: 'Format: YYYY-MM-DD'
+        employmentType:
+          type: string
+          enum:
+          - employee
+          - contractor
+          description: The type of employment for the contract.
+          default: employee
+        costPerHour:
+          description: Defaults to the role's cost per hour
+          type: number
+        minutesPerDay:
+          minimum: 1
+          description: Defaults to the account's default minutes per day
+          type: number
+        rosteredDays:
+          description: Every value must be the same as minutesPerDay or 0.
+          type: object
+          properties:
+            monday:
+              type: number
+            tuesday:
+              type: number
+            wednesday:
+              type: number
+            thursday:
+              type: number
+            friday:
+              type: number
+          required:
+          - monday
+          - tuesday
+          - wednesday
+          - thursday
+          - friday
+        jobTitle:
+          description: This feature is currently hidden, and can not be seen in the app
+          type: string
+      required:
+      - roleId
+    NotFound:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - Not Found
+        message:
+          type: string
+        statusCode:
+          type: number
+          enum:
+          - 404
+      required:
+      - error
+      - message
+      - statusCode
+    Conflict:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - Conflict
+        message:
+          type: string
+        statusCode:
+          type: number
+          enum:
+          - 409
+      required:
+      - error
+      - message
+      - statusCode
+    CustomTextFieldCollection:
+      type: object
+      properties:
+        name:
+          type: string
+        type:
+          type: string
+          enum:
+          - text
+        customTextId:
+          type: integer
+        value:
+          type: string
+          nullable: true
+      required:
+      - name
+      - type
+      - customTextId
+      - value
+    Actual:
+      type: object
+      properties:
+        id:
+          description: The unique identifier for the actual
+          type: integer
+        date:
+          type: string
+          format: date
+          description: 'The date the actual took place. Format: YYYY-MM-DD'
+        billableMinutes:
+          description: The number of billable minutes for the actual
+          type: number
+        nonbillableMinutes:
+          description: The number of nonbillable minutes for the actual
+          type: number
+        billableNote:
+          description: A note or comment related to the billable minutes, if any.
+          type: string
+          nullable: true
+        nonbillableNote:
+          description: A note or comment related to the nonbillable minutes, if any.
+          type: string
+          nullable: true
+        phaseId:
+          description: The ID referencing the phase of the actual, if applicable.
+          type: number
+          nullable: true
+        personId:
+          description: The ID referencing the person associated with the actual.
+          type: number
+        projectId:
+          description: The ID referencing the project associated with the actual.
+          type: number
+        roleId:
+          description: The ID referencing the role associated with the actual.
+          type: number
+        workstreamId:
+          description: The ID referencing the workstream of the actual. `null` when the actual has no workstream, in which case it appears under No Workstream in Runn.
+          type: number
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was created.
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was last updated.
+      required:
+      - id
+      - date
+      - billableMinutes
+      - nonbillableMinutes
+      - billableNote
+      - nonbillableNote
+      - phaseId
+      - personId
+      - projectId
+      - roleId
+      - workstreamId
+      - createdAt
+      - updatedAt
+    PersonNote:
+      type: object
+      properties:
+        id:
+          type: integer
+        createdBy:
+          type: string
+          nullable: true
+        createdByEmail:
+          type: string
+          nullable: true
+        note:
+          type: string
+        personId:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was created.
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was last updated.
+      required:
+      - id
+      - createdBy
+      - createdByEmail
+      - note
+      - personId
+      - createdAt
+      - updatedAt
+    Competency:
+      type: object
+      properties:
+        level:
+          anyOf:
+          - type: number
+            enum:
+            - 1
+            nullable: true
+          - type: number
+            enum:
+            - 2
+            nullable: true
+          - type: number
+            enum:
+            - 3
+            nullable: true
+          - type: number
+            enum:
+            - 4
+            nullable: true
+        skillId:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was created.
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was last updated.
+      required:
+      - skillId
+      - createdAt
+      - updatedAt
+    RosteredDays:
+      description: Shows minutes per day working.
+      type: object
+      properties:
+        monday:
+          type: number
+        tuesday:
+          type: number
+        wednesday:
+          type: number
+        thursday:
+          type: number
+        friday:
+          type: number
+      required:
+      - monday
+      - tuesday
+      - wednesday
+      - thursday
+      - friday
+    PersonCustomField:
+      type: object
+      properties:
+        personId:
+          type: integer
+        customFields:
+          type: array
+          items:
+            discriminator:
+              propertyName: type
+              mapping:
+                text: '#/components/schemas/CustomTextFieldCollection'
+                date: '#/components/schemas/CustomDateFieldCollection'
+                checkbox: '#/components/schemas/CustomCheckboxFieldCollection'
+                select: '#/components/schemas/CustomSelectFieldCollection'
+            anyOf:
+            - $ref: '#/components/schemas/CustomTextFieldCollection'
+            - $ref: '#/components/schemas/CustomDateFieldCollection'
+            - $ref: '#/components/schemas/CustomCheckboxFieldCollection'
+            - $ref: '#/components/schemas/CustomSelectFieldCollection'
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was created.
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was last updated.
+      required:
+      - personId
+      - customFields
+      - createdAt
+      - updatedAt
+    Unauthorized:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - Unauthorized
+        message:
+          type: string
+          enum:
+          - Unauthorized
+        statusCode:
+          type: number
+          enum:
+          - 401
+      required:
+      - error
+      - message
+      - statusCode
+    ModifiedAfter:
+      description: 'If provided, will only return objects modified after this timestamp. Format: YYYY-MM-DD or YYYY-MM-DDTHH:MM:SSZ.'
+      anyOf:
+      - format: date
+        type: string
+      - format: date-time
+        type: string
+    Tag:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+      required:
+      - id
+      - name
+    CollectionPerson:
+      type: object
+      properties:
+        id:
+          type: number
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+          nullable: true
+        isArchived:
+          type: boolean
+        teamId:
+          type: integer
+          nullable: true
+        references:
+          type: array
+          items:
+            $ref: '#/components/schemas/Reference'
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tag'
+        holidaysGroupId:
+          type: number
+          nullable: true
+        managers:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                description: The ID referencing the user managing the person.
+                type: integer
+            required:
+            - id
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was created.
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was last updated.
+      required:
+      - id
+      - firstName
+      - lastName
+      - email
+      - isArchived
+      - teamId
+      - references
+      - tags
+      - holidaysGroupId
+      - managers
+      - createdAt
+      - updatedAt
+    Person:
+      type: object
+      properties:
+        id:
+          type: integer
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+          nullable: true
+        isArchived:
+          type: boolean
+        references:
+          type: array
+          items:
+            $ref: '#/components/schemas/Reference'
+        notes:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              note:
+                type: string
+              createdBy:
+                type: string
+            required:
+            - id
+            - note
+            - createdBy
+        teamId:
+          type: integer
+          nullable: true
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tag'
+        skills:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              level:
+                type: integer
+                nullable: true
+            required:
+            - id
+            - level
+        holidaysGroupId:
+          type: integer
+          nullable: true
+        customFields:
+          type: object
+          properties:
+            select:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  values:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        id:
+                          type: integer
+                      required:
+                      - name
+                      - id
+                required:
+                - id
+                - name
+                - values
+            text:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  value:
+                    type: string
+                required:
+                - id
+                - name
+                - value
+            checkbox:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  value:
+                    type: boolean
+                required:
+                - id
+                - name
+                - value
+            date:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  value:
+                    type: string
+                    format: date
+                    description: 'Format: YYYY-MM-DD'
+                    nullable: true
+                required:
+                - id
+                - name
+                - value
+          required:
+          - select
+          - text
+          - checkbox
+          - date
+        managers:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                description: The ID referencing the user managing the person.
+                type: integer
+            required:
+            - id
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was created.
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was last updated.
+      required:
+      - id
+      - firstName
+      - lastName
+      - email
+      - isArchived
+      - references
+      - notes
+      - teamId
+      - tags
+      - skills
+      - holidaysGroupId
+      - customFields
+      - managers
+      - createdAt
+      - updatedAt
+    Project:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        isTemplate:
+          type: boolean
+        isArchived:
+          type: boolean
+        isConfirmed:
+          type: boolean
+        pricingModel:
+          type: string
+          enum:
+          - fp
+          - tm
+          - nb
+        rateType:
+          type: string
+          enum:
+          - hours
+          - days
+        budgetMethod:
+          type: string
+          enum:
+          - ROLE
+          - PHASE
+          - PHASE_AND_ROLE
+          description: How the project budget is structured. One of ROLE, PHASE, or PHASE_AND_ROLE.
+        teamId:
+          type: integer
+          nullable: true
+        budget:
+          type: number
+          nullable: true
+        expensesBudget:
+          type: number
+          nullable: true
+        references:
+          type: array
+          items:
+            $ref: '#/components/schemas/Reference'
+        clientId:
+          type: integer
+        rateCardId:
+          type: integer
+        customFields:
+          type: object
+          properties:
+            select:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  values:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        id:
+                          type: integer
+                      required:
+                      - name
+                      - id
+                required:
+                - id
+                - name
+                - values
+            text:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  value:
+                    type: string
+                required:
+                - id
+                - name
+                - value
+            checkbox:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  value:
+                    type: boolean
+                required:
+                - id
+                - name
+                - value
+            date:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  value:
+                    type: string
+                    format: date
+                    description: 'Format: YYYY-MM-DD'
+                    nullable: true
+                required:
+                - id
+                - name
+                - value
+          required:
+          - select
+          - text
+          - checkbox
+          - date
+        managerIds:
+          type: array
+          items:
+            type: number
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tag'
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was created.
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was last updated.
+      required:
+      - id
+      - name
+      - isTemplate
+      - isArchived
+      - isConfirmed
+      - pricingModel
+      - rateType
+      - budgetMethod
+      - teamId
+      - budget
+      - expensesBudget
+      - references
+      - clientId
+      - rateCardId
+      - customFields
+      - managerIds
+      - tags
+      - createdAt
+      - updatedAt
+    Contract:
+      type: object
+      properties:
+        id:
+          type: integer
+        costPerHour:
+          type: number
+          nullable: true
+        employmentType:
+          type: string
+        minutesPerDay:
+          type: number
+          nullable: true
+        rosteredDays:
+          $ref: '#/components/schemas/RosteredDays'
+        startDate:
+          type: string
+          format: date
+          description: 'Format: YYYY-MM-DD'
+        endDate:
+          type: string
+          format: date
+          description: 'Format: YYYY-MM-DD'
+          nullable: true
+        roleId:
+          type: integer
+        personId:
+          type: integer
+        jobTitle:
+          description: This feature is currently hidden, and can not be seen in the app
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was created.
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was last updated.
+      required:
+      - id
+      - costPerHour
+      - employmentType
+      - minutesPerDay
+      - rosteredDays
+      - startDate
+      - endDate
+      - roleId
+      - personId
+      - jobTitle
+      - createdAt
+      - updatedAt
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+x-readme:
+  proxy-enabled: false

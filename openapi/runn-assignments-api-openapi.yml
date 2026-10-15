@@ -1,0 +1,383 @@
+openapi: 3.2.0
+info:
+  title: Runn Assignments API
+  version: 1.0.0
+  description: 'See the full documentation and guide to using the Runn API.
+
+
+    The domain for your API endpoint can be found in Accounts > Settings > API in your Runn application'
+servers:
+- url: https://api.runn.io
+  description: EU Server
+- url: https://api.us.runn.io
+  description: US Server
+security:
+- bearerAuth: []
+tags:
+- name: Assignments
+paths:
+  /assignments/:
+    post:
+      operationId: createAssignment
+      summary: Create an assignment
+      description: Creates a new assignment covering every working day between `startDate` and `endDate`, and returns it in an array. The same `minutesPerDay` applies to each of those days, and is never derived from the person's contract. Learn more.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                phaseId:
+                  description: The phase this assignment is for, if any
+                  type: number
+                  nullable: true
+                personId:
+                  description: The person this assignment is for
+                  type: number
+                projectId:
+                  description: The project this assignment is for
+                  type: number
+                roleId:
+                  description: The role the person will be in for this assignment
+                  type: number
+                startDate:
+                  type: string
+                  format: date
+                  description: 'The date this assignment starts. Format: YYYY-MM-DD'
+                endDate:
+                  type: string
+                  format: date
+                  description: 'The date this assignment ends. When using isNonWorkingDay=true, this needs to be the same as the startDate. Format: YYYY-MM-DD'
+                minutesPerDay:
+                  description: How many minutes per day are assigned
+                  default: 0
+                  minimum: 0
+                  type: number
+                note:
+                  description: A note about this assignment
+                  type: string
+                isBillable:
+                  description: Whether this assignment is billable. Must be false if the project is non-billable.
+                  default: true
+                  type: boolean
+                isNonWorkingDay:
+                  description: Determine whether this assignment is for a single weekend day or a single holiday. If left blank it will be set automatically
+                  type: boolean
+                workstreamId:
+                  description: The workstream this assignment is for, if any
+                  type: number
+                  nullable: true
+              required:
+              - personId
+              - projectId
+              - roleId
+              - startDate
+              - endDate
+              - minutesPerDay
+      parameters:
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '201':
+          description: Assignment created successfully. Returns an array containing the created assignment.
+          content:
+            application/json:
+              schema:
+                description: Assignment created successfully. Returns an array containing the created assignment.
+                type: array
+                items:
+                  $ref: '#/components/schemas/Assignment'
+        '400':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+      tags:
+      - Assignments
+    get:
+      operationId: listAssignments
+      summary: List assignments
+      description: Get a list of assignments, paginated. Learn more.
+      parameters:
+      - schema:
+          type: string
+        in: query
+        name: cursor
+        required: false
+        description: Cursor for paginated requests
+      - schema:
+          default: 100
+          minimum: 1
+          maximum: 200
+          type: integer
+        in: query
+        name: limit
+        required: false
+        description: The number of results per page
+      - schema:
+          type: string
+          enum:
+          - createdAt
+          - updatedAt
+          - id
+          default: id
+        in: query
+        name: sortBy
+        required: false
+        description: 'Field to sort by: createdAt or updatedAt or id'
+      - schema:
+          type: string
+          enum:
+          - asc
+          - desc
+          default: asc
+        in: query
+        name: order
+        required: false
+        description: 'Sort order: asc or desc'
+      - schema:
+          type: integer
+        in: query
+        name: personId
+        required: false
+      - schema:
+          type: integer
+        in: query
+        name: roleId
+        required: false
+      - schema:
+          type: integer
+        in: query
+        name: projectId
+        required: false
+      - schema:
+          type: string
+          format: date
+        in: query
+        name: startDate
+        required: false
+        description: 'Format: YYYY-MM-DD'
+      - schema:
+          type: string
+          format: date
+        in: query
+        name: endDate
+        required: false
+        description: 'Format: YYYY-MM-DD'
+      - schema:
+          $ref: '#/components/schemas/ModifiedAfter'
+        in: query
+        name: modifiedAfter
+        required: false
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  values:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Assignment'
+                  nextCursor:
+                    type: string
+                    nullable: true
+                required:
+                - values
+                - nextCursor
+        '400':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+      tags:
+      - Assignments
+  /assignments/{assignmentId}/:
+    delete:
+      operationId: deleteAssignment
+      summary: Delete an assignment
+      parameters:
+      - schema:
+          type: integer
+        in: path
+        name: assignmentId
+        required: true
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Assignment'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+      tags:
+      - Assignments
+components:
+  schemas:
+    ModifiedAfter:
+      description: 'If provided, will only return objects modified after this timestamp. Format: YYYY-MM-DD or YYYY-MM-DDTHH:MM:SSZ.'
+      anyOf:
+      - format: date
+        type: string
+      - format: date-time
+        type: string
+    Assignment:
+      type: object
+      properties:
+        id:
+          description: The unique identifier for the assignment.
+          type: integer
+        personId:
+          description: id referencing the person associated with the assignment.
+          type: integer
+        startDate:
+          type: string
+          format: date
+          description: 'The start date of the assignment. Format: YYYY-MM-DD'
+        endDate:
+          type: string
+          format: date
+          description: 'The end date of the assignment. Format: YYYY-MM-DD'
+        projectId:
+          description: The ID referencing the project to which the assignment belongs.
+          type: integer
+        minutesPerDay:
+          description: The number of minutes allocated to the assignment per day.
+          type: integer
+        roleId:
+          description: The ID referencing the role associated with the assignment.
+          type: integer
+        isActive:
+          description: A flag indicating whether the assignment is currently active. (Deprecated. Assignments are always hard delete so are now always active).
+          deprecated: true
+          type: boolean
+        note:
+          type: string
+          nullable: true
+        isBillable:
+          description: A flag indicating whether the assignment is billable.
+          type: boolean
+        phaseId:
+          type: integer
+          nullable: true
+        isNonWorkingDay:
+          description: A flag indicating if the assignment falls on a non-working day.
+          type: boolean
+        isTemplate:
+          description: A flag indicating if the assignment is a template.
+          type: boolean
+        isPlaceholder:
+          description: A flag indicating if the assignment's person is a placeholder.
+          type: boolean
+        workstreamId:
+          type: number
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was created.
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was last updated.
+      required:
+      - id
+      - personId
+      - startDate
+      - endDate
+      - projectId
+      - minutesPerDay
+      - roleId
+      - isActive
+      - note
+      - isBillable
+      - phaseId
+      - isNonWorkingDay
+      - isTemplate
+      - isPlaceholder
+      - workstreamId
+      - createdAt
+      - updatedAt
+    BadRequest:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - Bad Request
+        message:
+          type: string
+        statusCode:
+          type: number
+          enum:
+          - 400
+      required:
+      - error
+      - message
+      - statusCode
+    Unauthorized:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - Unauthorized
+        message:
+          type: string
+          enum:
+          - Unauthorized
+        statusCode:
+          type: number
+          enum:
+          - 401
+      required:
+      - error
+      - message
+      - statusCode
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+x-readme:
+  proxy-enabled: false

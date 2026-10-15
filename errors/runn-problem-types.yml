@@ -1,0 +1,48 @@
+generated: '2026-10-14'
+method: derived
+generator: derive-problem-types.py
+source:
+- openapi/runn-openapi.json
+format: custom
+envelope:
+  media_type: application/json
+  schema: Unauthorized
+coverage:
+  operations: 196
+  statuses_declared: 5
+problems:
+- status: 400
+  title: Bad Request
+  description: Default Response
+  operations: 122
+  media_types:
+  - application/json
+  schema: BadRequest
+- status: 401
+  title: Unauthorized
+  description: Default Response
+  operations: 196
+  media_types:
+  - application/json
+  schema: Unauthorized
+- status: 404
+  title: Not Found
+  description: Default Response
+  operations: 124
+  media_types:
+  - application/json
+  schema: NotFound
+- status: 409
+  title: Conflict
+  description: Default Response
+  operations: 5
+  media_types:
+  - application/json
+  schema: Conflict
+- status: 422
+  title: Unprocessable Content
+  description: Default Response
+  operations: 1
+  media_types:
+  - application/json
+  schema: UnprocessableEntity

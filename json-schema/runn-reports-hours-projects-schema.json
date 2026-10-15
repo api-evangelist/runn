@@ -1,0 +1,128 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/runn/main/json-schema/runn-reports-hours-projects-schema.json",
+  "title": "ReportsHoursProjects",
+  "x-generated": "2026-10-14",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/runn-openapi.json#/components/schemas/ReportsHoursProjects",
+  "type": "object",
+  "properties": {
+    "date": {
+      "type": "string",
+      "format": "date",
+      "description": "The date of the entry. Multi-day assignments will get split over multiple days. Format: YYYY-MM-DD"
+    },
+    "roleId": {
+      "description": "The project-specific role for the associated person",
+      "type": "integer"
+    },
+    "personId": {
+      "description": "The person related to this entry",
+      "type": "integer"
+    },
+    "projectId": {
+      "description": "The project for this entry",
+      "type": "integer"
+    },
+    "workstreamId": {
+      "description": "The workstream for this entry",
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "phaseId": {
+      "description": "Associated phase (using actual phase, and falling back to assignment phase)",
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "billableMinutes": {
+      "description": "Billable minutes for this day. Returns Actual minutes where it exists, otherwise returns Assignment minutes.",
+      "type": "integer"
+    },
+    "nonBillableMinutes": {
+      "description": "Non-billable minutes for this day. Returns Actual minutes where it exists, otherwise returns Assignment minutes.",
+      "type": "integer"
+    },
+    "totalMinutes": {
+      "description": "Total minutes for this day (sum of billable and non-billable)",
+      "type": "integer"
+    },
+    "assignments": {
+      "type": "object",
+      "properties": {
+        "billableMinutes": {
+          "description": "Billable minutes for this assignment",
+          "type": "integer"
+        },
+        "nonBillableMinutes": {
+          "description": "Non-billable minutes for this assignment",
+          "type": "integer"
+        },
+        "totalMinutes": {
+          "description": "Total billable and non-billable minutes for this assignment",
+          "type": "integer"
+        },
+        "phaseId": {
+          "description": "Associated phase",
+          "type": [
+            "integer",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "billableMinutes",
+        "nonBillableMinutes",
+        "totalMinutes",
+        "phaseId"
+      ]
+    },
+    "actuals": {
+      "type": "object",
+      "properties": {
+        "billableMinutes": {
+          "description": "Billable minutes for this actual",
+          "type": "integer"
+        },
+        "nonBillableMinutes": {
+          "description": "Non-billable minutes for this actual",
+          "type": "integer"
+        },
+        "totalMinutes": {
+          "description": "Total billable and non-billable minutes for this actual",
+          "type": "integer"
+        },
+        "phaseId": {
+          "description": "Associated phase",
+          "type": [
+            "integer",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "billableMinutes",
+        "nonBillableMinutes",
+        "totalMinutes",
+        "phaseId"
+      ]
+    }
+  },
+  "required": [
+    "date",
+    "roleId",
+    "personId",
+    "projectId",
+    "workstreamId",
+    "phaseId",
+    "billableMinutes",
+    "nonBillableMinutes",
+    "totalMinutes",
+    "assignments",
+    "actuals"
+  ]
+}

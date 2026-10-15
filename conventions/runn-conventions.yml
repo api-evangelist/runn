@@ -1,0 +1,29 @@
+generated: '2026-10-14'
+method: searched
+generator: extract-docs-artifacts.py (local)
+source: https://developer.runn.io/docs/pagination.md
+sources:
+- https://developer.runn.io/docs/pagination.md
+- https://help.runn.io/en/articles/9288619-on-the-matching-columns-page-what-do-i-do-if-the-column-headers-are-not-matched
+- https://help.runn.io/en/articles/10396402-filtering-the-list-of-resourcing-requests.md
+- https://help.runn.io/en/articles/13172959-15-dec-25-sorting-settings-can-now-be-saved-to-custom-reports.md
+idempotency:
+  coverage: none
+  evidence: The documentation does not describe any idempotency key or mechanism.
+pagination:
+  style: cursor-based
+  params:
+  - limit
+  - cursor
+  response_fields:
+  - values
+  - nextCursor
+  evidence: All collection endpoints are paginated, default 50 items, limit up to 200 via `limit`. A `nextCursor` field indicates more records;
+    pass it as `cursor` parameter to retrieve next page. When no further items, `nextCursor` is null.
+versioning: absent
+error_envelope: absent
+authentication: absent
+request_tracing: absent
+rate_limit_signaling: absent
+field_expansion: absent
+docs: https://developer.runn.io/docs/pagination.md

@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/runn/main/json-schema/runn-actual-time-entry-schema.json",
+  "title": "ActualTimeEntry",
+  "x-generated": "2026-10-14",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/runn-openapi.json#/components/schemas/ActualTimeEntry",
+  "type": "object",
+  "properties": {
+    "date": {
+      "type": "string",
+      "format": "date",
+      "description": "The date the actual is for. Format: YYYY-MM-DD"
+    },
+    "billableMinutes": {
+      "description": "The number of billable minutes to either add to a matching actual or create a new actual with",
+      "default": 0,
+      "minimum": 0,
+      "type": "number"
+    },
+    "billableNote": {
+      "description": "A note about the billable minutes",
+      "type": "string"
+    },
+    "nonbillableNote": {
+      "description": "A note about the nonbillable minutes",
+      "type": "string"
+    },
+    "nonbillableMinutes": {
+      "description": "The number of nonbillable minutes to either add to a matching actual or create a new actual with",
+      "default": 0,
+      "minimum": 0,
+      "type": "number"
+    },
+    "phaseId": {
+      "description": "The optional phase the actual is for. Leaving this undefined will not update the phase id on any existing actual. Providing `null` will clear it. Providing a value will update the phase id",
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "personId": {
+      "description": "The person this time entry is for",
+      "type": "number"
+    },
+    "projectId": {
+      "description": "The project this time entry is for",
+      "type": "number"
+    },
+    "roleId": {
+      "description": "The role the person was in for the actual",
+      "type": "number"
+    },
+    "workstreamId": {
+      "description": "The workstream the actual is for. Omitting this field matches an actual on any workstream and leaves that actual's workstream unchanged. `null` matches only an actual that has no workstream, and ignores actuals with workstreams in its filter. A value matches only an actual on that workstream, and ignores actuals on every other workstream. `workstreamId` will not update the existing actual's workstream. If nothing matches, the actual is created on the workstream you sent, or with no workstream when the field is omitted or `null`, in which case it appears under No Workstream. Where two or more actuals exist for the same date, project, person, and role on different workstreams, omitting this field updates the oldest of them. Send `workstreamId` on every request if the project uses workstreams.",
+      "type": [
+        "number",
+        "null"
+      ]
+    }
+  },
+  "required": [
+    "date",
+    "billableMinutes",
+    "nonbillableMinutes",
+    "personId",
+    "projectId",
+    "roleId"
+  ]
+}

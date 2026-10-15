@@ -1,0 +1,808 @@
+openapi: 3.2.0
+info:
+  title: Runn Reports API
+  version: 1.0.0
+  description: 'See the full documentation and guide to using the Runn API.
+
+
+    The domain for your API endpoint can be found in Accounts > Settings > API in your Runn application'
+servers:
+- url: https://api.runn.io
+  description: EU Server
+- url: https://api.us.runn.io
+  description: US Server
+security:
+- bearerAuth: []
+tags:
+- name: Reports
+paths:
+  /reports/hours/people/{personId}:
+    get:
+      operationId: getPersonHoursReport
+      summary: Get by-day entries for a person with assignments and actuals
+      parameters:
+      - schema:
+          type: string
+        in: query
+        name: cursor
+        required: false
+        description: Cursor for paginated requests
+      - schema:
+          default: 50
+          minimum: 1
+          maximum: 200
+          type: integer
+        in: query
+        name: limit
+        required: false
+        description: The number of results per page
+      - schema:
+          type: string
+          format: date
+        in: query
+        name: startDate
+        required: false
+        description: 'Only include entries that start on or after this date. Format: YYYY-MM-DD'
+      - schema:
+          type: string
+          format: date
+        in: query
+        name: endDate
+        required: false
+        description: 'Only include entries that end on or before this date. Format: YYYY-MM-DD'
+      - schema:
+          type: integer
+        in: path
+        name: personId
+        required: true
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  values:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ReportsHoursPeople'
+                  nextCursor:
+                    type: string
+                    nullable: true
+                required:
+                - values
+                - nextCursor
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+      tags:
+      - Reports
+  /reports/hours/projects/{projectId}:
+    get:
+      operationId: getProjectHoursReport
+      summary: Get by-day entries for a project with assignments and actuals
+      parameters:
+      - schema:
+          type: string
+        in: query
+        name: cursor
+        required: false
+        description: Cursor for paginated requests
+      - schema:
+          default: 50
+          minimum: 1
+          maximum: 200
+          type: integer
+        in: query
+        name: limit
+        required: false
+        description: The number of results per page
+      - schema:
+          type: string
+          format: date
+        in: query
+        name: startDate
+        required: false
+        description: 'Only include entries that start on or after this date. Format: YYYY-MM-DD'
+      - schema:
+          type: string
+          format: date
+        in: query
+        name: endDate
+        required: false
+        description: 'Only include entries that end on or before this date. Format: YYYY-MM-DD'
+      - schema:
+          type: integer
+        in: path
+        name: projectId
+        required: true
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  values:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ReportsHoursProjects'
+                  nextCursor:
+                    type: string
+                    nullable: true
+                required:
+                - values
+                - nextCursor
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+      tags:
+      - Reports
+  /reports/people/{personId}/:
+    get:
+      operationId: getPersonReport
+      summary: Show metrics (beta)
+      description: Get a report for a person containing data from the People Overview Report. This endpoint is available only to Advanced Plan users, and the beta is currently closed. Please contact help@runn.io if you'd like to join the waiting list.
+      parameters:
+      - schema:
+          type: string
+          format: date
+        in: query
+        name: startDate
+        required: false
+        description: 'The start date for the report. For monthly reports, this must be the first day of the month. For weekly reports, this must be a Monday. For quarterly reports, this must be the first day of the quarter. Format: YYYY-MM-DD'
+      - schema:
+          type: string
+          enum:
+          - monthly
+          - weekly
+          - quarterly
+          default: monthly
+        in: query
+        name: periodType
+        required: false
+        description: The time interval at which to split the metrics on the report. A monthly report made in June, for instance, will show revenue for June, July, August, and September.
+      - schema:
+          type: integer
+        in: path
+        name: personId
+        required: true
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  firstName:
+                    type: string
+                  lastName:
+                    type: string
+                  email:
+                    type: string
+                  jobTitle:
+                    type: string
+                  team:
+                    type: string
+                  employmentType:
+                    type: string
+                  metrics:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        startDate:
+                          type: string
+                        endDate:
+                          type: string
+                        revenue:
+                          type: number
+                        projectCosts:
+                          type: number
+                        businessCosts:
+                          type: number
+                        totalEffortHours:
+                          type: number
+                        billableEffortHours:
+                          type: number
+                        nonBillableEffortHours:
+                          type: number
+                        totalUtilization:
+                          type: number
+                        billableUtilization:
+                          type: number
+                        contractCapacity:
+                          type: number
+                        effectiveCapacity:
+                          type: number
+                        overtime:
+                          type: number
+                        remainingAvailability:
+                          type: number
+                        timeOffHours:
+                          type: number
+                        completedTimesheet:
+                          type: boolean
+                      required:
+                      - startDate
+                      - endDate
+                      - revenue
+                      - projectCosts
+                      - businessCosts
+                      - totalEffortHours
+                      - billableEffortHours
+                      - nonBillableEffortHours
+                      - totalUtilization
+                      - billableUtilization
+                      - contractCapacity
+                      - effectiveCapacity
+                      - overtime
+                      - remainingAvailability
+                      - timeOffHours
+                      - completedTimesheet
+                required:
+                - id
+                - firstName
+                - lastName
+                - email
+                - jobTitle
+                - team
+                - employmentType
+                - metrics
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+      tags:
+      - Reports
+  /reports/projects/{projectId}/:
+    get:
+      operationId: getProjectReport
+      summary: Show metrics (beta)
+      description: 'Get a report for a project containing data from the Project Overview Report. Tentative projects are included: as in the in-app report, days scheduled before today are treated as not having materialised and are excluded from a tentative project''s metrics. This endpoint is available only to Advanced Plan users, and the beta is currently closed. Please contact help@runn.io if you''d like to join the waiting list.'
+      parameters:
+      - schema:
+          type: string
+          format: date
+        in: query
+        name: startDate
+        required: false
+        description: 'The start date for the report. For monthly reports, this must be the first day of the month. For weekly reports, this must be a Monday. For quarterly reports, this must be the first day of the quarter. Format: YYYY-MM-DD'
+      - schema:
+          type: string
+          enum:
+          - monthly
+          - weekly
+          - quarterly
+        in: query
+        name: periodType
+        required: false
+        description: The time interval at which to split the metrics on the report. A monthly report made in June, for instance, will show revenue for June, July, August, and September. If not provided, the report will be for the Overview report (all inclusive).
+      - schema:
+          type: integer
+        in: path
+        name: projectId
+        required: true
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  period:
+                    type: string
+                  pricingModel:
+                    type: string
+                    enum:
+                    - tm
+                    - fp
+                    - nb
+                  budget:
+                    type: number
+                    nullable: true
+                  budgetRemaining:
+                    type: number
+                  timeBudgetRemaining:
+                    type: number
+                    nullable: true
+                  metrics:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        startDate:
+                          type: string
+                          nullable: true
+                        endDate:
+                          type: string
+                          nullable: true
+                        timeMaterialsBenchmark:
+                          type: number
+                        revenue:
+                          type: number
+                        profit:
+                          type: number
+                        costs:
+                          type: number
+                        margin:
+                          description: Percentage value of the profit margin
+                          type: number
+                        totalEffortHours:
+                          type: number
+                        billableEffortHours:
+                          type: number
+                        nonBillableEffortHours:
+                          type: number
+                      required:
+                      - startDate
+                      - endDate
+                      - timeMaterialsBenchmark
+                      - revenue
+                      - profit
+                      - costs
+                      - margin
+                      - totalEffortHours
+                      - billableEffortHours
+                      - nonBillableEffortHours
+                required:
+                - id
+                - name
+                - pricingModel
+                - budget
+                - budgetRemaining
+                - timeBudgetRemaining
+                - metrics
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                required:
+                - message
+      tags:
+      - Reports
+  /reports/totals/projects/:
+    get:
+      operationId: listProjectTotalsReports
+      summary: List totals for projects with assignments and actuals
+      parameters:
+      - schema:
+          type: string
+        in: query
+        name: cursor
+        required: false
+        description: Cursor for paginated requests
+      - schema:
+          default: 10
+          minimum: 1
+          maximum: 10
+          type: integer
+        in: query
+        name: limit
+        required: false
+        description: The number of results per page
+      - schema:
+          default: false
+          type: boolean
+        in: query
+        name: includeArchived
+        required: true
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  values:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ProjectAggregate'
+                  nextCursor:
+                    type: string
+                    nullable: true
+                required:
+                - values
+                - nextCursor
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+      tags:
+      - Reports
+  /reports/totals/projects/{projectId}:
+    get:
+      operationId: getProjectTotalsReport
+      summary: Show totals for a project with assignments and actuals
+      parameters:
+      - schema:
+          type: integer
+        in: path
+        name: projectId
+        required: true
+        description: The unique identifier for the project.
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectAggregate'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+      tags:
+      - Reports
+components:
+  schemas:
+    ReportsHoursPeople:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+          description: 'The date of the entry. Multi-day assignments will get split over multiple days. Format: YYYY-MM-DD'
+        roleId:
+          description: The project-specific role for the associated person
+          type: integer
+        projectId:
+          description: The project related to this entry
+          type: integer
+        personId:
+          description: The person for this entry
+          type: integer
+        workstreamId:
+          description: The workstream for this entry
+          type: integer
+          nullable: true
+        phaseId:
+          description: Associated phase (using actual phase, and falling back to assignment phase)
+          type: integer
+          nullable: true
+        billableMinutes:
+          description: Billable minutes for this day. Returns Actual minutes where it exists, otherwise returns Assignment minutes.
+          type: integer
+        nonBillableMinutes:
+          description: Non-billable minutes for this day. Returns Actual minutes where it exists, otherwise returns Assignment minutes.
+          type: integer
+        totalMinutes:
+          description: Total minutes for this day (sum of billable and non-billable)
+          type: integer
+        assignments:
+          type: object
+          properties:
+            billableMinutes:
+              description: Billable minutes for this assignment
+              type: integer
+            nonBillableMinutes:
+              description: Non-billable minutes for this assignment
+              type: integer
+            totalMinutes:
+              description: Total billable and non-billable minutes for this assignment
+              type: integer
+            phaseId:
+              description: Associated phase
+              type: integer
+              nullable: true
+          required:
+          - billableMinutes
+          - nonBillableMinutes
+          - totalMinutes
+          - phaseId
+        actuals:
+          type: object
+          properties:
+            billableMinutes:
+              description: Billable minutes for this actual
+              type: integer
+            nonBillableMinutes:
+              description: Non-billable minutes for this actual
+              type: integer
+            totalMinutes:
+              description: Total billable and non-billable minutes for this actual
+              type: integer
+            phaseId:
+              description: Associated phase
+              type: integer
+              nullable: true
+          required:
+          - billableMinutes
+          - nonBillableMinutes
+          - totalMinutes
+          - phaseId
+      required:
+      - date
+      - roleId
+      - projectId
+      - personId
+      - workstreamId
+      - phaseId
+      - billableMinutes
+      - nonBillableMinutes
+      - totalMinutes
+      - assignments
+      - actuals
+    ProjectAggregate:
+      type: object
+      properties:
+        id:
+          description: The project identifier
+          type: integer
+        billableMinutes:
+          description: Sum of billable minutes (using actuals if available, falling back to assignments)
+          type: integer
+        nonBillableMinutes:
+          description: Sum of non-billable minutes (using actuals if available, falling back to assignments)
+          type: integer
+        totalMinutes:
+          description: Total of the sums of billable and non-billable minutes
+          type: integer
+        assignments:
+          type: object
+          properties:
+            billableMinutes:
+              description: Sum of billable minutes for assignments
+              type: integer
+            nonBillableMinutes:
+              description: Sum of non-billable minutes for assignments
+              type: integer
+            totalMinutes:
+              description: Total of the sums of billable and non-billable minutes
+              type: integer
+          required:
+          - billableMinutes
+          - nonBillableMinutes
+          - totalMinutes
+        actuals:
+          type: object
+          properties:
+            billableMinutes:
+              description: Sum of billable minutes for actuals
+              type: integer
+            nonBillableMinutes:
+              description: Sum of non-billable minutes for actuals
+              type: integer
+            totalMinutes:
+              description: Total of the sums of billable and non-billable minutes
+              type: integer
+          required:
+          - billableMinutes
+          - nonBillableMinutes
+          - totalMinutes
+      required:
+      - id
+      - billableMinutes
+      - nonBillableMinutes
+      - totalMinutes
+      - assignments
+      - actuals
+    NotFound:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - Not Found
+        message:
+          type: string
+        statusCode:
+          type: number
+          enum:
+          - 404
+      required:
+      - error
+      - message
+      - statusCode
+    ReportsHoursProjects:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+          description: 'The date of the entry. Multi-day assignments will get split over multiple days. Format: YYYY-MM-DD'
+        roleId:
+          description: The project-specific role for the associated person
+          type: integer
+        personId:
+          description: The person related to this entry
+          type: integer
+        projectId:
+          description: The project for this entry
+          type: integer
+        workstreamId:
+          description: The workstream for this entry
+          type: integer
+          nullable: true
+        phaseId:
+          description: Associated phase (using actual phase, and falling back to assignment phase)
+          type: integer
+          nullable: true
+        billableMinutes:
+          description: Billable minutes for this day. Returns Actual minutes where it exists, otherwise returns Assignment minutes.
+          type: integer
+        nonBillableMinutes:
+          description: Non-billable minutes for this day. Returns Actual minutes where it exists, otherwise returns Assignment minutes.
+          type: integer
+        totalMinutes:
+          description: Total minutes for this day (sum of billable and non-billable)
+          type: integer
+        assignments:
+          type: object
+          properties:
+            billableMinutes:
+              description: Billable minutes for this assignment
+              type: integer
+            nonBillableMinutes:
+              description: Non-billable minutes for this assignment
+              type: integer
+            totalMinutes:
+              description: Total billable and non-billable minutes for this assignment
+              type: integer
+            phaseId:
+              description: Associated phase
+              type: integer
+              nullable: true
+          required:
+          - billableMinutes
+          - nonBillableMinutes
+          - totalMinutes
+          - phaseId
+        actuals:
+          type: object
+          properties:
+            billableMinutes:
+              description: Billable minutes for this actual
+              type: integer
+            nonBillableMinutes:
+              description: Non-billable minutes for this actual
+              type: integer
+            totalMinutes:
+              description: Total billable and non-billable minutes for this actual
+              type: integer
+            phaseId:
+              description: Associated phase
+              type: integer
+              nullable: true
+          required:
+          - billableMinutes
+          - nonBillableMinutes
+          - totalMinutes
+          - phaseId
+      required:
+      - date
+      - roleId
+      - personId
+      - projectId
+      - workstreamId
+      - phaseId
+      - billableMinutes
+      - nonBillableMinutes
+      - totalMinutes
+      - assignments
+      - actuals
+    Unauthorized:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - Unauthorized
+        message:
+          type: string
+          enum:
+          - Unauthorized
+        statusCode:
+          type: number
+          enum:
+          - 401
+      required:
+      - error
+      - message
+      - statusCode
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+x-readme:
+  proxy-enabled: false

@@ -1,0 +1,12 @@
+generated: '2026-10-14'
+method: searched
+probe: true
+source: https://trust.runn.io/
+url: https://trust.runn.io/
+certifications:
+- SOC 2
+evidence:
+- source: https://trust.runn.io/
+  keywords:
+  - soc2
+  - trust center

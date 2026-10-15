@@ -1,0 +1,11 @@
+generated: '2026-10-14'
+method: generated
+generator: extract-docs-artifacts.py skills (local)
+source: openapi/runn-openapi.json
+skills:
+- file: skills/runn-create-client.md
+  name: runn-create-client
+  api: openapi/runn-openapi.json
+  operations:
+  - createClient
+  - getClient

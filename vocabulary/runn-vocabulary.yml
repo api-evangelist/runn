@@ -1,0 +1,420 @@
+generated: '2026-10-14'
+method: derived
+generator: derive-vocabulary.py
+source: openapi/runn-openapi.json
+vocabulary:
+  name: Runn Domain Vocabulary
+  description: 'Terms declared by Runn''s own API contract: its resource groups, objects and enumerations, with the contract''s definitions. Derived,
+    not authored.'
+  version: '2026-10-14'
+  terms:
+  - term: Role
+    definition: 'Object declared by the contract with fields: id, name, isArchived, defaultHourCost, standardRate, references, personIds, createdAt,
+      updatedAt.'
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/Role
+  - term: SortOrder
+    definition: 'Sort order: asc or desc'
+    tags:
+    - Enumeration
+    source: openapi/runn-openapi.json#/components/schemas/SortOrder
+  - term: ClientInput
+    definition: 'Object declared by the contract with fields: name, website, references.'
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/ClientInput
+  - term: Client
+    definition: 'Object declared by the contract with fields: id, name, website, isArchived, references, createdAt, updatedAt.'
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/Client
+  - term: ActualInput
+    definition: 'Object declared by the contract with fields: date, billableMinutes, nonbillableMinutes, billableNote, nonbillableNote, phaseId,
+      personId, projectId, roleId, workstreamId.'
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/ActualInput
+  - term: Actual
+    definition: 'Object declared by the contract with fields: id, date, billableMinutes, nonbillableMinutes, billableNote, nonbillableNote, phaseId,
+      personId, projectId, roleId, workstreamId, createdAt. (1 more)'
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/Actual
+  - term: ActualTimeEntry
+    definition: 'Object declared by the contract with fields: date, billableMinutes, billableNote, nonbillableNote, nonbillableMinutes, phaseId,
+      personId, projectId, roleId, workstreamId.'
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/ActualTimeEntry
+  - term: Assignment
+    definition: 'Object declared by the contract with fields: id, personId, startDate, endDate, projectId, minutesPerDay, roleId, isActive, note,
+      isBillable, phaseId, isNonWorkingDay. (5 more)'
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/Assignment
+  - term: BadRequest
+    definition: 'Object declared by the contract with fields: error, message, statusCode.'
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/BadRequest
+  - term: CollectionPerson
+    definition: 'Object declared by the contract with fields: id, firstName, lastName, email, isArchived, teamId, references, tags, holidaysGroupId,
+      managers, createdAt, updatedAt.'
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/CollectionPerson
+  - term: Competency
+    definition: 'Object declared by the contract with fields: level, skillId, createdAt, updatedAt.'
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/Competency
+  - term: Conflict
+    definition: 'Object declared by the contract with fields: error, message, statusCode.'
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/Conflict
+  - term: ContractInput
+    definition: 'Object declared by the contract with fields: roleId, startDate, endDate, employmentType, costPerHour, minutesPerDay, rosteredDays,
+      jobTitle.'
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/ContractInput
+  - term: Contract
+    definition: 'Object declared by the contract with fields: id, costPerHour, employmentType, minutesPerDay, rosteredDays, startDate, endDate,
+      roleId, personId, jobTitle, createdAt, updatedAt.'
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/Contract
+  - term: CustomFieldCheckbox
+    definition: 'Object declared by the contract with fields: id, name, description, model, required, showInPlanner, sortOrder, filterableInPlanner.'
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/CustomFieldCheckbox
+  - term: CustomFieldDate
+    definition: 'Object declared by the contract with fields: id, name, description, model, required, showInPlanner, sortOrder, filterableInPlanner.'
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/CustomFieldDate
+  - term: CustomFieldSelect
+    definition: 'Object declared by the contract with fields: id, name, description, model, options, singleSelect, required, showInPlanner, sortOrder,
+      filterableInPlanner.'
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/CustomFieldSelect
+  - term: CustomFieldText
+    definition: 'Object declared by the contract with fields: id, name, description, model, required, showInPlanner, sortOrder, filterableInPlanner.'
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/CustomFieldText
+  - term: Milestone
+    definition: 'Object declared by the contract with fields: id, title, icon, note, date, projectId, createdAt, updatedAt.'
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/Milestone
+  - term: ModifiedAfter
+    definition: 'If provided, will only return objects modified after this timestamp. Format: YYYY-MM-DD or YYYY-MM-DDTHH:MM:SSZ.'
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/ModifiedAfter
+  - term: NotFound
+    definition: 'Object declared by the contract with fields: error, message, statusCode.'
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/NotFound
+  - term: PersonRequest
+    definition: 'Object declared by the contract with fields: id, personId, projectId, status, requesterId, updaterId, createdAt, updatedAt.'
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/PersonRequest
+  - term: Person
+    definition: 'Object declared by the contract with fields: id, firstName, lastName, email, isArchived, references, notes, teamId, tags, skills,
+      holidaysGroupId, customFields. (3 more)'
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/Person
+  - term: PersonNote
+    definition: 'Object declared by the contract with fields: id, createdBy, createdByEmail, note, personId, createdAt, updatedAt.'
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/PersonNote
+  - term: Project Phase
+    definition: Project phases divide your project into smaller sections so you can group similar tasks and assignments together.
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/ProjectPhase
+  - term: Placeholder
+    definition: 'Object declared by the contract with fields: id, firstName, lastName, isArchived, tags, references, createdAt, updatedAt.'
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/Placeholder
+  - term: PlaceholderInput
+    definition: 'Object declared by the contract with fields: id, firstName, lastName, costPerHour, roleId, teamId, tags.'
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/PlaceholderInput
+  - term: ProjectBudgetRole
+    definition: Project budget role
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/ProjectBudgetRole
+  - term: ProjectNote
+    definition: 'Object declared by the contract with fields: id, createdBy, createdByEmail, note, projectId, createdAt, updatedAt.'
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/ProjectNote
+  - term: Project Other Expense
+    definition: A non-labour expense for a project.
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/ProjectOtherExpense
+  - term: ProjectRate
+    definition: 'Object declared by the contract with fields: id, projectId, roleId, rate, createdAt, updatedAt.'
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/ProjectRate
+  - term: Project
+    definition: 'Object declared by the contract with fields: id, name, isTemplate, isArchived, isConfirmed, pricingModel, rateType, budgetMethod,
+      teamId, budget, expensesBudget, references. (7 more)'
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/Project
+  - term: Reference
+    definition: 'Object declared by the contract with fields: referenceName, externalId.'
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/Reference
+  - term: RosteredDays
+    definition: Shows minutes per day working.
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/RosteredDays
+  - term: Tag
+    definition: 'Object declared by the contract with fields: id, name.'
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/Tag
+  - term: Team
+    definition: 'Object declared by the contract with fields: id, name, createdAt, updatedAt.'
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/Team
+  - term: TimeOffLeaveInput
+    definition: 'Object declared by the contract with fields: personId, startDate, endDate, note, minutesPerDay.'
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/TimeOffLeaveInput
+  - term: TimeOff
+    definition: 'Object declared by the contract with fields: id, personId, startDate, endDate, note, createdAt, updatedAt, minutesPerDay.'
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/TimeOff
+  - term: Unauthorized
+    definition: 'Object declared by the contract with fields: error, message, statusCode.'
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/Unauthorized
+  - term: UnprocessableEntity
+    definition: 'Object declared by the contract with fields: error, message, statusCode.'
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/UnprocessableEntity
+  - term: Workstream
+    definition: 'Object declared by the contract with fields: id, name, archived, createdAt, updatedAt.'
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/Workstream
+  - term: CustomTextFieldCollection
+    definition: 'Object declared by the contract with fields: name, type, customTextId, value.'
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/CustomTextFieldCollection
+  - term: CustomSelectFieldCollection
+    definition: 'Object declared by the contract with fields: name, type, customSelectId, value.'
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/CustomSelectFieldCollection
+  - term: CustomCheckboxFieldCollection
+    definition: 'Object declared by the contract with fields: name, type, customCheckboxId, value.'
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/CustomCheckboxFieldCollection
+  - term: CustomDateFieldCollection
+    definition: 'Object declared by the contract with fields: name, type, customDateId, value.'
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/CustomDateFieldCollection
+  - term: PersonCustomField
+    definition: 'Object declared by the contract with fields: personId, customFields, createdAt, updatedAt.'
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/PersonCustomField
+  - term: ProjectCustomField
+    definition: 'Object declared by the contract with fields: projectId, customFields, createdAt, updatedAt.'
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/ProjectCustomField
+  - term: Runn Support Actor
+    definition: The Runn Support actor represents an action performed by the Runn supprt team. If you have questions about actions performed by
+      the Runn support team, please contact the Runn team.
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/ActorRunnSupport
+  - term: User Actor
+    definition: The user actor represents a user. This usually means a user who interacted with the web application.
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/ActorUser
+  - term: API Actor
+    definition: The api actor represents an action performed by an api key.
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/ActorApi
+  - term: CSV Actor
+    definition: The csv actor represents an action performed by a csv file upload.
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/ActorCsv
+  - term: Integration Actor
+    definition: The integration actor represents an action performed by an integration with a third-party service.
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/ActorIntegration
+  - term: System Actor
+    definition: The system actor represents an action performed by the system, such as a scheduled task, migration, or other automated process.
+      Some actions may not have a specific actor and will default to the system actor.
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/ActorSystem
+  - term: Actor
+    definition: An actor represents an entity that can perform actions such as a user, api key, or system process. Each actor type has a unique
+      set of properties. The `type` property is used to determine the actor type.
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/Actor
+  - term: Person Event Subresource
+    definition: A subset of details about the person used on an event
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/Event.Subresource.Person
+  - term: Project Event Subresource
+    definition: A subset of details about the project used on an event
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/Event.Subresource.Project
+  - term: Role Event Subresource
+    definition: A subset of details about the role used on an event
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/Event.Subresource.Role
+  - term: Phase Event Subresource
+    definition: A subset of details about the phase used on an event
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/Event.Subresource.Phase
+  - term: Workstream Event Subresource
+    definition: A subset of details about the workstream used on an event
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/Event.Subresource.Workstream
+  - term: Actual Deleted Event
+    definition: An actual was deleted.
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/Event.ActualDeleted
+  - term: Contract Deleted Event
+    definition: A contract was deleted.
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/Event.ContractDeleted
+  - term: Person Deleted Event
+    definition: A person was deleted.
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/Event.PersonDeleted
+  - term: Project Deleted Event
+    definition: A project was deleted.
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/Event.ProjectDeleted
+  - term: Time Off Deleted Event
+    definition: A time off was deleted.
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/Event.TimeOffDeleted
+  - term: Assignment Deleted Event
+    definition: An assignment was deleted.
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/Event.AssignmentDeleted
+  - term: Event
+    definition: An event represents an action that occurred. Every event has a `type`, `actor`, and `timestamp` property. Use the `type` property
+      to determine which event occurred.
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/Event
+  - term: HolidayGroup
+    definition: 'Object declared by the contract with fields: id, name, countryCode, countryName, regionName, holidayIds.'
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/HolidayGroup
+  - term: Holiday
+    definition: 'Object declared by the contract with fields: id, name, date, observed, type.'
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/Holiday
+  - term: Invitation
+    definition: 'Object declared by the contract with fields: id, email, userType, financialPermission, editProjectsPermission, editOthersPermission,
+      manageProjectsPermission, managePeoplePermission, manageAccountPermission, addAllPeopleToProjectsPermission, viewPlannerPermission, peopleTeams.
+      (3 more)'
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/Invitation
+  - term: ProjectTag
+    definition: 'Object declared by the contract with fields: id, name, projectIds, archived, createdAt, updatedAt.'
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/ProjectTag
+  - term: ProjectWorkstream
+    definition: 'Object declared by the contract with fields: id, name, archived, projectIds.'
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/ProjectWorkstream
+  - term: RateCard
+    definition: 'Object declared by the contract with fields: id, name, description, isArchived, references, isBlendedRateCard, blendedRate, rateType,
+      projectIds, rates, createdAt, updatedAt.'
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/RateCard
+  - term: ReportsHoursPeople
+    definition: 'Object declared by the contract with fields: date, roleId, projectId, personId, workstreamId, phaseId, billableMinutes, nonBillableMinutes,
+      totalMinutes, assignments, actuals.'
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/ReportsHoursPeople
+  - term: ReportsHoursProjects
+    definition: 'Object declared by the contract with fields: date, roleId, personId, projectId, workstreamId, phaseId, billableMinutes, nonBillableMinutes,
+      totalMinutes, assignments, actuals.'
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/ReportsHoursProjects
+  - term: ProjectAggregate
+    definition: 'Object declared by the contract with fields: id, billableMinutes, nonBillableMinutes, totalMinutes, assignments, actuals.'
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/ProjectAggregate
+  - term: Skill
+    definition: 'Object declared by the contract with fields: id, name, createdAt, updatedAt.'
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/Skill
+  - term: User
+    definition: 'Object declared by the contract with fields: id, firstName, lastName, email, personId, permissions, peopleTeams, createdAt, updatedAt.'
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/User
+  - term: View
+    definition: 'Object declared by the contract with fields: id, name, description, createdAt, updatedAt.'
+    tags:
+    - Object
+    source: openapi/runn-openapi.json#/components/schemas/View

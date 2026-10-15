@@ -1,0 +1,20 @@
+generated: '2026-10-14'
+method: searched
+generator: extract-docs-artifacts.py (local)
+source: https://developer.runn.io/docs/rate-limits.md
+sources:
+- https://developer.runn.io/docs/rate-limits.md
+name: Runn rate limits
+limits:
+- name: default
+  limit_text: 120 requests every 1 minute
+  max: 120
+  window: 1 minute
+  scope: per API key and per IP
+headers:
+- x-ratelimit-limit
+- x-ratelimit-remaining
+- x-ratelimit-reset
+- retry-after
+exhaustion_status: 429
+docs: https://developer.runn.io/docs/rate-limits.md

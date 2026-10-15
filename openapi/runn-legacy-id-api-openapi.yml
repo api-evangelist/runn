@@ -1,0 +1,132 @@
+openapi: 3.2.0
+info:
+  title: Runn Legacy Id API
+  version: 1.0.0
+  description: 'See the full documentation and guide to using the Runn API.
+
+
+    The domain for your API endpoint can be found in Accounts > Settings > API in your Runn application'
+servers:
+- url: https://api.runn.io
+  description: EU Server
+- url: https://api.us.runn.io
+  description: US Server
+security:
+- bearerAuth: []
+tags:
+- name: Legacy Id
+paths:
+  /legacy-id/{model}/{legacyId}:
+    get:
+      operationId: getLegacyId
+      summary: Convert a legacy ID from API v0 to a new ID
+      parameters:
+      - schema:
+          type: string
+          enum:
+          - accounts
+          - actuals
+          - assignments
+          - clients
+          - contracts
+          - help_documents
+          - invitations
+          - milestones
+          - notes
+          - people
+          - phases
+          - project_member
+          - project_rates
+          - projects
+          - rate_cards
+          - role_charge_our_rate
+          - roles
+          - tags
+          - teams
+          - time_offs
+          - users
+          - user_accounts
+          - holiday_groups
+          - skills
+          - other_expenses
+          - people_notes
+        in: path
+        name: model
+        required: true
+      - schema:
+          type: string
+        in: path
+        name: legacyId
+        required: true
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: integer
+        '400':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+      tags:
+      - Legacy Id
+components:
+  schemas:
+    BadRequest:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - Bad Request
+        message:
+          type: string
+        statusCode:
+          type: number
+          enum:
+          - 400
+      required:
+      - error
+      - message
+      - statusCode
+    Unauthorized:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - Unauthorized
+        message:
+          type: string
+          enum:
+          - Unauthorized
+        statusCode:
+          type: number
+          enum:
+          - 401
+      required:
+      - error
+      - message
+      - statusCode
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+x-readme:
+  proxy-enabled: false

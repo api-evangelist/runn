@@ -1,0 +1,649 @@
+openapi: 3.2.0
+info:
+  title: Runn Skills API
+  version: 1.0.0
+  description: 'See the full documentation and guide to using the Runn API.
+
+
+    The domain for your API endpoint can be found in Accounts > Settings > API in your Runn application'
+servers:
+- url: https://api.runn.io
+  description: EU Server
+- url: https://api.us.runn.io
+  description: US Server
+security:
+- bearerAuth: []
+tags:
+- name: Skills
+paths:
+  /skills/:
+    get:
+      operationId: listSkills
+      summary: List skills
+      parameters:
+      - schema:
+          type: string
+        in: query
+        name: cursor
+        required: false
+        description: Cursor for paginated requests
+      - schema:
+          default: 50
+          minimum: 1
+          maximum: 200
+          type: integer
+        in: query
+        name: limit
+        required: false
+        description: The number of results per page
+      - schema:
+          type: string
+          enum:
+          - id
+          - createdAt
+          - updatedAt
+          default: id
+        in: query
+        name: sortBy
+        required: true
+      - schema:
+          $ref: '#/components/schemas/SortOrder'
+        in: query
+        name: order
+        required: false
+      - schema:
+          $ref: '#/components/schemas/ModifiedAfter'
+        in: query
+        name: modifiedAfter
+        required: false
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  values:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Skill'
+                  nextCursor:
+                    type: string
+                    nullable: true
+                required:
+                - values
+                - nextCursor
+        '400':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+      tags:
+      - Skills
+    post:
+      operationId: createSkill
+      summary: Create a skill
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  minLength: 1
+                  type: string
+              required:
+              - name
+      parameters:
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '201':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Skill'
+        '400':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+      tags:
+      - Skills
+  /skills/{skillId}:
+    get:
+      operationId: getSkill
+      summary: Show a skill
+      parameters:
+      - schema:
+          type: integer
+        in: path
+        name: skillId
+        required: true
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Skill'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+      tags:
+      - Skills
+    patch:
+      operationId: updateSkill
+      summary: Update a skill
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  minLength: 1
+                  type: string
+              required:
+              - name
+      parameters:
+      - schema:
+          type: integer
+        in: path
+        name: skillId
+        required: true
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Skill'
+        '400':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+      tags:
+      - Skills
+    delete:
+      operationId: deleteSkill
+      summary: Delete a skill
+      parameters:
+      - schema:
+          type: integer
+        in: path
+        name: skillId
+        required: true
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '204':
+          description: Default Response
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    enum:
+                    - 404
+                  error:
+                    type: string
+                    enum:
+                    - Not Found
+                  message:
+                    type: string
+                required:
+                - statusCode
+                - error
+                - message
+      tags:
+      - Skills
+  /skills/{skillId}/people/:
+    get:
+      operationId: listSkillPeople
+      summary: List people for a skill
+      parameters:
+      - schema:
+          type: string
+        in: query
+        name: cursor
+        required: false
+        description: Cursor for paginated requests
+      - schema:
+          default: 50
+          minimum: 1
+          maximum: 200
+          type: integer
+        in: query
+        name: limit
+        required: false
+        description: The number of results per page
+      - schema:
+          type: integer
+        in: path
+        name: skillId
+        required: true
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  values:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CollectionPerson'
+                  nextCursor:
+                    type: string
+                    nullable: true
+                required:
+                - values
+                - nextCursor
+        '400':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+      tags:
+      - Skills
+    post:
+      operationId: createSkillPerson
+      summary: Add people to a skill
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                people:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      personId:
+                        type: integer
+                      level:
+                        anyOf:
+                        - type: number
+                          enum:
+                          - 1
+                          nullable: true
+                        - type: number
+                          enum:
+                          - 2
+                          nullable: true
+                        - type: number
+                          enum:
+                          - 3
+                          nullable: true
+                        - type: number
+                          enum:
+                          - 4
+                          nullable: true
+                    required:
+                    - personId
+              required:
+              - people
+      parameters:
+      - schema:
+          type: integer
+        in: path
+        name: skillId
+        required: true
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '201':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  values:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Competency'
+                required:
+                - values
+        '400':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+      tags:
+      - Skills
+components:
+  schemas:
+    Skill:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was created.
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was last updated.
+      required:
+      - id
+      - name
+      - createdAt
+      - updatedAt
+    ModifiedAfter:
+      description: 'If provided, will only return objects modified after this timestamp. Format: YYYY-MM-DD or YYYY-MM-DDTHH:MM:SSZ.'
+      anyOf:
+      - format: date
+        type: string
+      - format: date-time
+        type: string
+    BadRequest:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - Bad Request
+        message:
+          type: string
+        statusCode:
+          type: number
+          enum:
+          - 400
+      required:
+      - error
+      - message
+      - statusCode
+    NotFound:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - Not Found
+        message:
+          type: string
+        statusCode:
+          type: number
+          enum:
+          - 404
+      required:
+      - error
+      - message
+      - statusCode
+    Tag:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+      required:
+      - id
+      - name
+    Competency:
+      type: object
+      properties:
+        level:
+          anyOf:
+          - type: number
+            enum:
+            - 1
+            nullable: true
+          - type: number
+            enum:
+            - 2
+            nullable: true
+          - type: number
+            enum:
+            - 3
+            nullable: true
+          - type: number
+            enum:
+            - 4
+            nullable: true
+        skillId:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was created.
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was last updated.
+      required:
+      - skillId
+      - createdAt
+      - updatedAt
+    CollectionPerson:
+      type: object
+      properties:
+        id:
+          type: number
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+          nullable: true
+        isArchived:
+          type: boolean
+        teamId:
+          type: integer
+          nullable: true
+        references:
+          type: array
+          items:
+            $ref: '#/components/schemas/Reference'
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tag'
+        holidaysGroupId:
+          type: number
+          nullable: true
+        managers:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                description: The ID referencing the user managing the person.
+                type: integer
+            required:
+            - id
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was created.
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was last updated.
+      required:
+      - id
+      - firstName
+      - lastName
+      - email
+      - isArchived
+      - teamId
+      - references
+      - tags
+      - holidaysGroupId
+      - managers
+      - createdAt
+      - updatedAt
+    Reference:
+      type: object
+      properties:
+        referenceName:
+          minLength: 1
+          type: string
+        externalId:
+          minLength: 1
+          type: string
+      required:
+      - referenceName
+      - externalId
+    SortOrder:
+      type: string
+      enum:
+      - asc
+      - desc
+      description: 'Sort order: asc or desc'
+      default: asc
+    Unauthorized:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - Unauthorized
+        message:
+          type: string
+          enum:
+          - Unauthorized
+        statusCode:
+          type: number
+          enum:
+          - 401
+      required:
+      - error
+      - message
+      - statusCode
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+x-readme:
+  proxy-enabled: false

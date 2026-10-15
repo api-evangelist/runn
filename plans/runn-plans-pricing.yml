@@ -1,0 +1,24 @@
+generated: '2026-10-14'
+method: searched
+generator: extract-docs-artifacts.py (local)
+source: https://www.runn.io/pricing
+sources:
+- https://www.runn.io/pricing
+- https://help.runn.io/en/articles/4107307-pricing-billing-faqs
+- https://help.runn.io/en/articles/13417524-overview-pricing-billing
+name: Runn pricing
+audience: business-product
+pricing_basis: per-seat
+plans:
+- name: Lite
+  price_text: $ 7 USD Per resource seat  /month
+  price: 7
+  description: Core essentials for getting started.
+- name: Standard
+  price_text: $ 11 USD Per resource seat  /month
+  price: 11
+  description: Almost-everything for more visibility.
+- name: Advanced
+  price_text: Contact us for custom pricing
+  description: Everything for strong strategic clarity.
+docs: https://www.runn.io/pricing

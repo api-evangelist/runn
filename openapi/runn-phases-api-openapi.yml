@@ -1,0 +1,160 @@
+openapi: 3.2.0
+info:
+  title: Runn Phases API
+  version: 1.0.0
+  description: 'See the full documentation and guide to using the Runn API.
+
+
+    The domain for your API endpoint can be found in Accounts > Settings > API in your Runn application'
+servers:
+- url: https://api.runn.io
+  description: EU Server
+- url: https://api.us.runn.io
+  description: US Server
+security:
+- bearerAuth: []
+tags:
+- name: Phases
+paths:
+  /phases/:
+    get:
+      operationId: listPhases
+      summary: List phases
+      description: List all phases across all projects
+      parameters:
+      - schema:
+          type: string
+        in: query
+        name: cursor
+        required: false
+        description: Cursor for paginated requests
+      - schema:
+          default: 100
+          minimum: 1
+          maximum: 500
+          type: integer
+        in: query
+        name: limit
+        required: false
+        description: The number of results per page
+      - schema:
+          $ref: '#/components/schemas/ModifiedAfter'
+        in: query
+        name: modifiedAfter
+        required: false
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  values:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ProjectPhase'
+                  nextCursor:
+                    type: string
+                    nullable: true
+                required:
+                - values
+                - nextCursor
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Default Response
+      tags:
+      - Phases
+components:
+  schemas:
+    ModifiedAfter:
+      description: 'If provided, will only return objects modified after this timestamp. Format: YYYY-MM-DD or YYYY-MM-DDTHH:MM:SSZ.'
+      anyOf:
+      - format: date
+        type: string
+      - format: date-time
+        type: string
+    ProjectPhase:
+      title: Project Phase
+      description: Project phases divide your project into smaller sections so you can group similar tasks and assignments together.
+      type: object
+      properties:
+        id:
+          description: Unique identifier for the phase
+          type: number
+        name:
+          description: The name of the project phase
+          type: string
+        color:
+          description: Color of the project phase (hex code)
+          type: string
+        startDate:
+          type: string
+          format: date
+          description: Start date of the project phase in ISO 8601 format
+        endDate:
+          type: string
+          format: date
+          description: End date of the phase in ISO 8601 format
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was last updated.
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was created.
+        projectId:
+          description: The project the phase is associated with.
+          type: number
+        budget:
+          description: 'The budget for the phase. This is returned when the project''s budget method is set to ''PHASE'' or ''PHASE_AND_ROLE'', and is null when it is set to ''ROLE''. Note: for ''PHASE_AND_ROLE'' the budget is derived from role estimates and rates held on related records, so it can change without updating the phase''s `updatedAt` and is therefore not picked up by the `modifiedAfter` filter.'
+          type: number
+          nullable: true
+      required:
+      - id
+      - name
+      - color
+      - startDate
+      - endDate
+      - updatedAt
+      - createdAt
+      - projectId
+      - budget
+    Unauthorized:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - Unauthorized
+        message:
+          type: string
+          enum:
+          - Unauthorized
+        statusCode:
+          type: number
+          enum:
+          - 401
+      required:
+      - error
+      - message
+      - statusCode
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+x-readme:
+  proxy-enabled: false

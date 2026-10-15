@@ -1,0 +1,277 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/runn/main/json-schema/runn-project-schema.json",
+  "title": "Project",
+  "x-generated": "2026-10-14",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/runn-openapi.json#/components/schemas/Project",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "integer"
+    },
+    "name": {
+      "type": "string"
+    },
+    "isTemplate": {
+      "type": "boolean"
+    },
+    "isArchived": {
+      "type": "boolean"
+    },
+    "isConfirmed": {
+      "type": "boolean"
+    },
+    "pricingModel": {
+      "type": "string",
+      "enum": [
+        "fp",
+        "tm",
+        "nb"
+      ]
+    },
+    "rateType": {
+      "type": "string",
+      "enum": [
+        "hours",
+        "days"
+      ]
+    },
+    "budgetMethod": {
+      "type": "string",
+      "enum": [
+        "ROLE",
+        "PHASE",
+        "PHASE_AND_ROLE"
+      ],
+      "description": "How the project budget is structured. One of ROLE, PHASE, or PHASE_AND_ROLE."
+    },
+    "teamId": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "budget": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "expensesBudget": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "references": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Reference"
+      }
+    },
+    "clientId": {
+      "type": "integer"
+    },
+    "rateCardId": {
+      "type": "integer"
+    },
+    "customFields": {
+      "type": "object",
+      "properties": {
+        "select": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "name": {
+                "type": "string"
+              },
+              "values": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "id": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "id"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "values"
+            ]
+          }
+        },
+        "text": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "name": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "value"
+            ]
+          }
+        },
+        "checkbox": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "name": {
+                "type": "string"
+              },
+              "value": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "value"
+            ]
+          }
+        },
+        "date": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "name": {
+                "type": "string"
+              },
+              "value": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "date",
+                "description": "Format: YYYY-MM-DD"
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "value"
+            ]
+          }
+        }
+      },
+      "required": [
+        "select",
+        "text",
+        "checkbox",
+        "date"
+      ]
+    },
+    "managerIds": {
+      "type": "array",
+      "items": {
+        "type": "number"
+      }
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Tag"
+      }
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp of when the object was created."
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp of when the object was last updated."
+    }
+  },
+  "required": [
+    "id",
+    "name",
+    "isTemplate",
+    "isArchived",
+    "isConfirmed",
+    "pricingModel",
+    "rateType",
+    "budgetMethod",
+    "teamId",
+    "budget",
+    "expensesBudget",
+    "references",
+    "clientId",
+    "rateCardId",
+    "customFields",
+    "managerIds",
+    "tags",
+    "createdAt",
+    "updatedAt"
+  ],
+  "$defs": {
+    "Reference": {
+      "type": "object",
+      "properties": {
+        "referenceName": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "externalId": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "referenceName",
+        "externalId"
+      ]
+    },
+    "Tag": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name"
+      ]
+    }
+  }
+}

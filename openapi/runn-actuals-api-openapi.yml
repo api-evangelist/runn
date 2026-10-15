@@ -1,0 +1,538 @@
+openapi: 3.2.0
+info:
+  title: Runn Actuals API
+  version: 1.0.0
+  description: 'See the full documentation and guide to using the Runn API.
+
+
+    The domain for your API endpoint can be found in Accounts > Settings > API in your Runn application'
+servers:
+- url: https://api.runn.io
+  description: EU Server
+- url: https://api.us.runn.io
+  description: US Server
+security:
+- bearerAuth: []
+tags:
+- name: Actuals
+paths:
+  /actuals/:
+    get:
+      operationId: listActuals
+      summary: List actuals
+      parameters:
+      - schema:
+          type: string
+        in: query
+        name: cursor
+        required: false
+        description: Cursor for paginated requests
+      - schema:
+          default: 100
+          minimum: 1
+          maximum: 500
+          type: integer
+        in: query
+        name: limit
+        required: false
+        description: The number of results per page
+      - schema:
+          type: string
+          enum:
+          - createdAt
+          - updatedAt
+          - id
+          default: id
+        in: query
+        name: sortBy
+        required: false
+        description: 'Field to sort by: createdAt or updatedAt or id'
+      - schema:
+          type: string
+          enum:
+          - asc
+          - desc
+          default: asc
+        in: query
+        name: order
+        required: false
+        description: 'Sort order: asc or desc'
+      - schema:
+          type: string
+          format: date
+        in: query
+        name: minDate
+        required: false
+        description: 'Start date to filter by. Format: YYYY-MM-DD'
+      - schema:
+          type: string
+          format: date
+        in: query
+        name: maxDate
+        required: false
+        description: 'End date (inclusive). Format: YYYY-MM-DD'
+      - schema:
+          type: integer
+        in: query
+        name: projectId
+        required: false
+      - schema:
+          type: integer
+        in: query
+        name: roleId
+        required: false
+      - schema:
+          type: integer
+        in: query
+        name: personId
+        required: false
+      - schema:
+          type: integer
+        in: query
+        name: workstreamId
+        required: false
+      - schema:
+          $ref: '#/components/schemas/ModifiedAfter'
+        in: query
+        name: modifiedAfter
+        required: false
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  values:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Actual'
+                  nextCursor:
+                    type: string
+                    nullable: true
+                required:
+                - values
+                - nextCursor
+        '400':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+      tags:
+      - Actuals
+    post:
+      operationId: createActual
+      summary: Create or overwrite an actual
+      description: Actuals are matched on date, project, person, role, and workstream. Minutes values represent the total time for the day and overwrite any previous actual with the same `date`, `projectId`, `personId`, `roleId`, and `workstreamId`. Learn more.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ActualInput'
+      parameters:
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '201':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Actual'
+        '400':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+      tags:
+      - Actuals
+  /actuals/time-entry:
+    post:
+      operationId: createActualTimeEntry
+      summary: Create or add to an existing actual
+      description: Adds minutes to an existing actual. If no actual matches the date, project, person, role, and workstream, a new one is created. To overwrite the existing minutes instead of adding to them, use Create or overwrite an actual. Learn more.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ActualTimeEntry'
+      parameters:
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '201':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Actual'
+        '400':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+      tags:
+      - Actuals
+  /actuals/{actualId}/:
+    delete:
+      operationId: deleteActual
+      summary: Delete a specific actual
+      description: Deletes the actual record identified by the provided unique identifier `actualId`. This operation is irreversible and removes the actual record from the system.
+      parameters:
+      - schema:
+          type: integer
+        in: path
+        name: actualId
+        required: true
+        description: Unique identifier of the actual to be deleted.
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '204':
+          description: Successful deletion of the actual record.
+        '400':
+          description: Invalid actualId format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: The actual record with the specified ID was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+      tags:
+      - Actuals
+  /actuals/bulk/:
+    post:
+      operationId: createActualsBulk
+      summary: Create or overwrite actuals in bulk
+      description: Create or overwrite up to 100 'actuals' in a single API call. Each actual is matched on date, project, person, role, and workstream, and its minutes overwrite any previous actual for that combination. Learn more.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                actuals:
+                  minItems: 1
+                  maxItems: 100
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ActualInput'
+              required:
+              - actuals
+      parameters:
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Actual'
+        '400':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                anyOf:
+                - $ref: '#/components/schemas/BadRequest'
+                - type: array
+                  items:
+                    $ref: '#/components/schemas/Actual'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+      tags:
+      - Actuals
+components:
+  schemas:
+    Actual:
+      type: object
+      properties:
+        id:
+          description: The unique identifier for the actual
+          type: integer
+        date:
+          type: string
+          format: date
+          description: 'The date the actual took place. Format: YYYY-MM-DD'
+        billableMinutes:
+          description: The number of billable minutes for the actual
+          type: number
+        nonbillableMinutes:
+          description: The number of nonbillable minutes for the actual
+          type: number
+        billableNote:
+          description: A note or comment related to the billable minutes, if any.
+          type: string
+          nullable: true
+        nonbillableNote:
+          description: A note or comment related to the nonbillable minutes, if any.
+          type: string
+          nullable: true
+        phaseId:
+          description: The ID referencing the phase of the actual, if applicable.
+          type: number
+          nullable: true
+        personId:
+          description: The ID referencing the person associated with the actual.
+          type: number
+        projectId:
+          description: The ID referencing the project associated with the actual.
+          type: number
+        roleId:
+          description: The ID referencing the role associated with the actual.
+          type: number
+        workstreamId:
+          description: The ID referencing the workstream of the actual. `null` when the actual has no workstream, in which case it appears under No Workstream in Runn.
+          type: number
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was created.
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was last updated.
+      required:
+      - id
+      - date
+      - billableMinutes
+      - nonbillableMinutes
+      - billableNote
+      - nonbillableNote
+      - phaseId
+      - personId
+      - projectId
+      - roleId
+      - workstreamId
+      - createdAt
+      - updatedAt
+    ModifiedAfter:
+      description: 'If provided, will only return objects modified after this timestamp. Format: YYYY-MM-DD or YYYY-MM-DDTHH:MM:SSZ.'
+      anyOf:
+      - format: date
+        type: string
+      - format: date-time
+        type: string
+    ActualInput:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+          description: 'The date this actual is for. Format: YYYY-MM-DD'
+        billableMinutes:
+          description: The number of minutes that are billable. Either this or nonbillableMinutes must be set
+          default: 0
+          minimum: 0
+          type: number
+        nonbillableMinutes:
+          description: The number of minutes that are non billable. Either this or billableMinutes must be set
+          default: 0
+          minimum: 0
+          type: number
+        billableNote:
+          description: A note about the billable minutes
+          type: string
+        nonbillableNote:
+          description: A note about the nonbillable minutes
+          type: string
+        phaseId:
+          description: The phase this actual is for, if any.
+          type: number
+          nullable: true
+        personId:
+          description: The person this actual is for
+          type: number
+        projectId:
+          description: The project this actual is for
+          type: number
+        roleId:
+          description: The role the person was in when for this actual
+          type: number
+        workstreamId:
+          description: The workstream the actual is for. Omitting this field matches an actual on any workstream and leaves that actual's workstream unchanged. `null` matches only an actual that has no workstream, and ignores actuals with workstreams in its filter. A value matches only an actual on that workstream, and ignores actuals on every other workstream. `workstreamId` will not update the existing actual's workstream. If nothing matches, the actual is created on the workstream you sent, or with no workstream when the field is omitted or `null`, in which case it appears under No Workstream. Where two or more actuals exist for the same date, project, person, and role on different workstreams, omitting this field updates the oldest of them. Send `workstreamId` on every request if the project uses workstreams.
+          type: number
+          nullable: true
+      required:
+      - date
+      - billableMinutes
+      - nonbillableMinutes
+      - personId
+      - projectId
+      - roleId
+    BadRequest:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - Bad Request
+        message:
+          type: string
+        statusCode:
+          type: number
+          enum:
+          - 400
+      required:
+      - error
+      - message
+      - statusCode
+    NotFound:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - Not Found
+        message:
+          type: string
+        statusCode:
+          type: number
+          enum:
+          - 404
+      required:
+      - error
+      - message
+      - statusCode
+    ActualTimeEntry:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+          description: 'The date the actual is for. Format: YYYY-MM-DD'
+        billableMinutes:
+          description: The number of billable minutes to either add to a matching actual or create a new actual with
+          default: 0
+          minimum: 0
+          type: number
+        billableNote:
+          description: A note about the billable minutes
+          type: string
+        nonbillableNote:
+          description: A note about the nonbillable minutes
+          type: string
+        nonbillableMinutes:
+          description: The number of nonbillable minutes to either add to a matching actual or create a new actual with
+          default: 0
+          minimum: 0
+          type: number
+        phaseId:
+          description: The optional phase the actual is for. Leaving this undefined will not update the phase id on any existing actual. Providing `null` will clear it. Providing a value will update the phase id
+          type: number
+          nullable: true
+        personId:
+          description: The person this time entry is for
+          type: number
+        projectId:
+          description: The project this time entry is for
+          type: number
+        roleId:
+          description: The role the person was in for the actual
+          type: number
+        workstreamId:
+          description: The workstream the actual is for. Omitting this field matches an actual on any workstream and leaves that actual's workstream unchanged. `null` matches only an actual that has no workstream, and ignores actuals with workstreams in its filter. A value matches only an actual on that workstream, and ignores actuals on every other workstream. `workstreamId` will not update the existing actual's workstream. If nothing matches, the actual is created on the workstream you sent, or with no workstream when the field is omitted or `null`, in which case it appears under No Workstream. Where two or more actuals exist for the same date, project, person, and role on different workstreams, omitting this field updates the oldest of them. Send `workstreamId` on every request if the project uses workstreams.
+          type: number
+          nullable: true
+      required:
+      - date
+      - billableMinutes
+      - nonbillableMinutes
+      - personId
+      - projectId
+      - roleId
+    Unauthorized:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - Unauthorized
+        message:
+          type: string
+          enum:
+          - Unauthorized
+        statusCode:
+          type: number
+          enum:
+          - 401
+      required:
+      - error
+      - message
+      - statusCode
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+x-readme:
+  proxy-enabled: false

@@ -1,0 +1,611 @@
+{
+  "@context": {
+    "@vocab": "https://runn.io/schema#",
+    "schema": "https://schema.org/",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "dcterms": "http://purl.org/dc/terms/",
+    "runn": "https://runn.io/schema#",
+    "Role": "runn:Role",
+    "id": {
+      "@id": "runn:id",
+      "@type": "xsd:integer"
+    },
+    "name": {
+      "@id": "runn:name",
+      "@type": "xsd:string"
+    },
+    "isArchived": {
+      "@id": "runn:isArchived",
+      "@type": "xsd:boolean"
+    },
+    "defaultHourCost": {
+      "@id": "runn:defaultHourCost",
+      "@type": "xsd:decimal"
+    },
+    "standardRate": {
+      "@id": "runn:standardRate",
+      "@type": "xsd:decimal"
+    },
+    "references": {
+      "@id": "runn:references",
+      "@container": "@list"
+    },
+    "personIds": {
+      "@id": "runn:personIds",
+      "@container": "@list"
+    },
+    "createdAt": {
+      "@id": "runn:createdAt",
+      "@type": "xsd:dateTime"
+    },
+    "updatedAt": {
+      "@id": "runn:updatedAt",
+      "@type": "xsd:dateTime"
+    },
+    "SortOrder": "runn:SortOrder",
+    "ClientInput": "runn:ClientInput",
+    "website": {
+      "@id": "runn:website",
+      "@type": "@id"
+    },
+    "Client": "runn:Client",
+    "ActualInput": "runn:ActualInput",
+    "date": {
+      "@id": "runn:date",
+      "@type": "xsd:date"
+    },
+    "billableMinutes": {
+      "@id": "runn:billableMinutes",
+      "@type": "xsd:decimal"
+    },
+    "nonbillableMinutes": {
+      "@id": "runn:nonbillableMinutes",
+      "@type": "xsd:decimal"
+    },
+    "billableNote": {
+      "@id": "runn:billableNote",
+      "@type": "xsd:string"
+    },
+    "nonbillableNote": {
+      "@id": "runn:nonbillableNote",
+      "@type": "xsd:string"
+    },
+    "phaseId": {
+      "@id": "runn:phaseId",
+      "@type": "xsd:decimal"
+    },
+    "personId": {
+      "@id": "runn:personId",
+      "@type": "xsd:decimal"
+    },
+    "projectId": {
+      "@id": "runn:projectId",
+      "@type": "xsd:decimal"
+    },
+    "roleId": {
+      "@id": "runn:roleId",
+      "@type": "xsd:decimal"
+    },
+    "workstreamId": {
+      "@id": "runn:workstreamId",
+      "@type": "xsd:decimal"
+    },
+    "Actual": "runn:Actual",
+    "ActualTimeEntry": "runn:ActualTimeEntry",
+    "Assignment": "runn:Assignment",
+    "startDate": {
+      "@id": "runn:startDate",
+      "@type": "xsd:date"
+    },
+    "endDate": {
+      "@id": "runn:endDate",
+      "@type": "xsd:date"
+    },
+    "minutesPerDay": {
+      "@id": "runn:minutesPerDay",
+      "@type": "xsd:integer"
+    },
+    "isActive": {
+      "@id": "runn:isActive",
+      "@type": "xsd:boolean"
+    },
+    "note": {
+      "@id": "runn:note",
+      "@type": "xsd:string"
+    },
+    "isBillable": {
+      "@id": "runn:isBillable",
+      "@type": "xsd:boolean"
+    },
+    "isNonWorkingDay": {
+      "@id": "runn:isNonWorkingDay",
+      "@type": "xsd:boolean"
+    },
+    "isTemplate": {
+      "@id": "runn:isTemplate",
+      "@type": "xsd:boolean"
+    },
+    "isPlaceholder": {
+      "@id": "runn:isPlaceholder",
+      "@type": "xsd:boolean"
+    },
+    "BadRequest": "runn:BadRequest",
+    "error": {
+      "@id": "runn:error",
+      "@type": "xsd:string"
+    },
+    "message": {
+      "@id": "runn:message",
+      "@type": "xsd:string"
+    },
+    "statusCode": {
+      "@id": "runn:statusCode",
+      "@type": "xsd:decimal"
+    },
+    "CollectionPerson": "runn:CollectionPerson",
+    "firstName": {
+      "@id": "runn:firstName",
+      "@type": "xsd:string"
+    },
+    "lastName": {
+      "@id": "runn:lastName",
+      "@type": "xsd:string"
+    },
+    "email": {
+      "@id": "runn:email",
+      "@type": "xsd:string"
+    },
+    "teamId": {
+      "@id": "runn:teamId",
+      "@type": "xsd:integer"
+    },
+    "tags": {
+      "@id": "runn:tags",
+      "@container": "@list"
+    },
+    "holidaysGroupId": {
+      "@id": "runn:holidaysGroupId",
+      "@type": "xsd:decimal"
+    },
+    "managers": {
+      "@id": "runn:managers",
+      "@container": "@list"
+    },
+    "Competency": "runn:Competency",
+    "level": {
+      "@id": "runn:level"
+    },
+    "skillId": {
+      "@id": "runn:skillId",
+      "@type": "xsd:integer"
+    },
+    "Conflict": "runn:Conflict",
+    "ContractInput": "runn:ContractInput",
+    "employmentType": {
+      "@id": "runn:employmentType",
+      "@type": "xsd:string"
+    },
+    "costPerHour": {
+      "@id": "runn:costPerHour",
+      "@type": "xsd:decimal"
+    },
+    "rosteredDays": {
+      "@id": "runn:rosteredDays"
+    },
+    "jobTitle": {
+      "@id": "runn:jobTitle",
+      "@type": "xsd:string"
+    },
+    "Contract": "runn:Contract",
+    "CustomFieldCheckbox": "runn:CustomFieldCheckbox",
+    "description": {
+      "@id": "runn:description",
+      "@type": "xsd:string"
+    },
+    "model": {
+      "@id": "runn:model",
+      "@type": "xsd:string"
+    },
+    "required": {
+      "@id": "runn:required",
+      "@type": "xsd:boolean"
+    },
+    "showInPlanner": {
+      "@id": "runn:showInPlanner",
+      "@type": "xsd:boolean"
+    },
+    "sortOrder": {
+      "@id": "runn:sortOrder",
+      "@type": "xsd:integer"
+    },
+    "filterableInPlanner": {
+      "@id": "runn:filterableInPlanner",
+      "@type": "xsd:boolean"
+    },
+    "CustomFieldDate": "runn:CustomFieldDate",
+    "CustomFieldSelect": "runn:CustomFieldSelect",
+    "options": {
+      "@id": "runn:options",
+      "@container": "@list"
+    },
+    "singleSelect": {
+      "@id": "runn:singleSelect",
+      "@type": "xsd:boolean"
+    },
+    "CustomFieldText": "runn:CustomFieldText",
+    "Milestone": "runn:Milestone",
+    "title": {
+      "@id": "runn:title",
+      "@type": "xsd:string"
+    },
+    "icon": {
+      "@id": "runn:icon",
+      "@type": "xsd:string"
+    },
+    "NotFound": "runn:NotFound",
+    "PersonRequest": "runn:PersonRequest",
+    "status": {
+      "@id": "runn:status",
+      "@type": "xsd:string"
+    },
+    "requesterId": {
+      "@id": "runn:requesterId",
+      "@type": "xsd:decimal"
+    },
+    "updaterId": {
+      "@id": "runn:updaterId",
+      "@type": "xsd:decimal"
+    },
+    "Person": "runn:Person",
+    "notes": {
+      "@id": "runn:notes",
+      "@container": "@list"
+    },
+    "skills": {
+      "@id": "runn:skills",
+      "@container": "@list"
+    },
+    "customFields": {
+      "@id": "runn:customFields"
+    },
+    "PersonNote": "runn:PersonNote",
+    "createdBy": {
+      "@id": "runn:createdBy",
+      "@type": "xsd:string"
+    },
+    "createdByEmail": {
+      "@id": "runn:createdByEmail",
+      "@type": "xsd:string"
+    },
+    "ProjectPhase": "runn:ProjectPhase",
+    "color": {
+      "@id": "runn:color",
+      "@type": "xsd:string"
+    },
+    "budget": {
+      "@id": "runn:budget",
+      "@type": "xsd:decimal"
+    },
+    "Placeholder": "runn:Placeholder",
+    "PlaceholderInput": "runn:PlaceholderInput",
+    "ProjectBudgetRole": "runn:ProjectBudgetRole",
+    "estimatedMinutes": {
+      "@id": "runn:estimatedMinutes",
+      "@type": "xsd:integer"
+    },
+    "estimatedBudget": {
+      "@id": "runn:estimatedBudget",
+      "@type": "xsd:integer"
+    },
+    "ProjectNote": "runn:ProjectNote",
+    "ProjectOtherExpense": "runn:ProjectOtherExpense",
+    "cost": {
+      "@id": "runn:cost",
+      "@type": "xsd:decimal"
+    },
+    "charge": {
+      "@id": "runn:charge",
+      "@type": "xsd:decimal"
+    },
+    "ProjectRate": "runn:ProjectRate",
+    "rate": {
+      "@id": "runn:rate",
+      "@type": "xsd:decimal"
+    },
+    "Project": "runn:Project",
+    "isConfirmed": {
+      "@id": "runn:isConfirmed",
+      "@type": "xsd:boolean"
+    },
+    "pricingModel": {
+      "@id": "runn:pricingModel",
+      "@type": "xsd:string"
+    },
+    "rateType": {
+      "@id": "runn:rateType",
+      "@type": "xsd:string"
+    },
+    "budgetMethod": {
+      "@id": "runn:budgetMethod",
+      "@type": "xsd:string"
+    },
+    "expensesBudget": {
+      "@id": "runn:expensesBudget",
+      "@type": "xsd:decimal"
+    },
+    "clientId": {
+      "@id": "runn:clientId",
+      "@type": "xsd:integer"
+    },
+    "rateCardId": {
+      "@id": "runn:rateCardId",
+      "@type": "xsd:integer"
+    },
+    "managerIds": {
+      "@id": "runn:managerIds",
+      "@container": "@list"
+    },
+    "Reference": "runn:Reference",
+    "referenceName": {
+      "@id": "runn:referenceName",
+      "@type": "xsd:string"
+    },
+    "externalId": {
+      "@id": "runn:externalId",
+      "@type": "xsd:string"
+    },
+    "RosteredDays": "runn:RosteredDays",
+    "monday": {
+      "@id": "runn:monday",
+      "@type": "xsd:decimal"
+    },
+    "tuesday": {
+      "@id": "runn:tuesday",
+      "@type": "xsd:decimal"
+    },
+    "wednesday": {
+      "@id": "runn:wednesday",
+      "@type": "xsd:decimal"
+    },
+    "thursday": {
+      "@id": "runn:thursday",
+      "@type": "xsd:decimal"
+    },
+    "friday": {
+      "@id": "runn:friday",
+      "@type": "xsd:decimal"
+    },
+    "Tag": "runn:Tag",
+    "Team": "runn:Team",
+    "TimeOffLeaveInput": "runn:TimeOffLeaveInput",
+    "TimeOff": "runn:TimeOff",
+    "Unauthorized": "runn:Unauthorized",
+    "UnprocessableEntity": "runn:UnprocessableEntity",
+    "Workstream": "runn:Workstream",
+    "archived": {
+      "@id": "runn:archived",
+      "@type": "xsd:boolean"
+    },
+    "CustomTextFieldCollection": "runn:CustomTextFieldCollection",
+    "type": {
+      "@id": "runn:type",
+      "@type": "xsd:string"
+    },
+    "customTextId": {
+      "@id": "runn:customTextId",
+      "@type": "xsd:integer"
+    },
+    "value": {
+      "@id": "runn:value",
+      "@type": "xsd:string"
+    },
+    "CustomSelectFieldCollection": "runn:CustomSelectFieldCollection",
+    "customSelectId": {
+      "@id": "runn:customSelectId",
+      "@type": "xsd:integer"
+    },
+    "CustomCheckboxFieldCollection": "runn:CustomCheckboxFieldCollection",
+    "customCheckboxId": {
+      "@id": "runn:customCheckboxId",
+      "@type": "xsd:integer"
+    },
+    "CustomDateFieldCollection": "runn:CustomDateFieldCollection",
+    "customDateId": {
+      "@id": "runn:customDateId",
+      "@type": "xsd:integer"
+    },
+    "PersonCustomField": "runn:PersonCustomField",
+    "ProjectCustomField": "runn:ProjectCustomField",
+    "ActorRunnSupport": "runn:ActorRunnSupport",
+    "ActorUser": "runn:ActorUser",
+    "userId": {
+      "@id": "runn:userId",
+      "@type": "xsd:decimal"
+    },
+    "userEmail": {
+      "@id": "runn:userEmail",
+      "@type": "xsd:string"
+    },
+    "ActorApi": "runn:ActorApi",
+    "tokenId": {
+      "@id": "runn:tokenId",
+      "@type": "xsd:decimal"
+    },
+    "tokenName": {
+      "@id": "runn:tokenName",
+      "@type": "xsd:string"
+    },
+    "apiVersion": {
+      "@id": "runn:apiVersion",
+      "@type": "xsd:string"
+    },
+    "ActorCsv": "runn:ActorCsv",
+    "ActorIntegration": "runn:ActorIntegration",
+    "ActorSystem": "runn:ActorSystem",
+    "Event.Subresource.Person": "runn:Event.Subresource.Person",
+    "Event.Subresource.Project": "runn:Event.Subresource.Project",
+    "Event.Subresource.Role": "runn:Event.Subresource.Role",
+    "active": {
+      "@id": "runn:active",
+      "@type": "xsd:boolean"
+    },
+    "Event.Subresource.Phase": "runn:Event.Subresource.Phase",
+    "Event.Subresource.Workstream": "runn:Event.Subresource.Workstream",
+    "Event.ActualDeleted": "runn:Event.ActualDeleted",
+    "eventId": {
+      "@id": "runn:eventId",
+      "@type": "xsd:string"
+    },
+    "actor": {
+      "@id": "runn:actor",
+      "@type": "@id"
+    },
+    "timestamp": {
+      "@id": "runn:timestamp",
+      "@type": "xsd:dateTime"
+    },
+    "actual": {
+      "@id": "runn:actual"
+    },
+    "Event.ContractDeleted": "runn:Event.ContractDeleted",
+    "contract": {
+      "@id": "runn:contract"
+    },
+    "Event.PersonDeleted": "runn:Event.PersonDeleted",
+    "person": {
+      "@id": "runn:person"
+    },
+    "Event.ProjectDeleted": "runn:Event.ProjectDeleted",
+    "project": {
+      "@id": "runn:project"
+    },
+    "Event.TimeOffDeleted": "runn:Event.TimeOffDeleted",
+    "timeOff": {
+      "@id": "runn:timeOff"
+    },
+    "Event.AssignmentDeleted": "runn:Event.AssignmentDeleted",
+    "assignment": {
+      "@id": "runn:assignment"
+    },
+    "HolidayGroup": "runn:HolidayGroup",
+    "countryCode": {
+      "@id": "runn:countryCode",
+      "@type": "xsd:string"
+    },
+    "countryName": {
+      "@id": "runn:countryName",
+      "@type": "xsd:string"
+    },
+    "regionName": {
+      "@id": "runn:regionName",
+      "@type": "xsd:string"
+    },
+    "holidayIds": {
+      "@id": "runn:holidayIds",
+      "@container": "@list"
+    },
+    "Holiday": "runn:Holiday",
+    "observed": {
+      "@id": "runn:observed",
+      "@type": "xsd:date"
+    },
+    "Invitation": "runn:Invitation",
+    "userType": {
+      "@id": "runn:userType",
+      "@type": "xsd:string"
+    },
+    "financialPermission": {
+      "@id": "runn:financialPermission",
+      "@type": "xsd:string"
+    },
+    "editProjectsPermission": {
+      "@id": "runn:editProjectsPermission",
+      "@type": "xsd:string"
+    },
+    "editOthersPermission": {
+      "@id": "runn:editOthersPermission",
+      "@type": "xsd:string"
+    },
+    "manageProjectsPermission": {
+      "@id": "runn:manageProjectsPermission",
+      "@type": "xsd:string"
+    },
+    "managePeoplePermission": {
+      "@id": "runn:managePeoplePermission",
+      "@type": "xsd:string"
+    },
+    "manageAccountPermission": {
+      "@id": "runn:manageAccountPermission",
+      "@type": "xsd:boolean"
+    },
+    "addAllPeopleToProjectsPermission": {
+      "@id": "runn:addAllPeopleToProjectsPermission",
+      "@type": "xsd:boolean"
+    },
+    "viewPlannerPermission": {
+      "@id": "runn:viewPlannerPermission",
+      "@type": "xsd:boolean"
+    },
+    "peopleTeams": {
+      "@id": "runn:peopleTeams",
+      "@container": "@list"
+    },
+    "sentAt": {
+      "@id": "runn:sentAt",
+      "@type": "xsd:dateTime"
+    },
+    "expiresAt": {
+      "@id": "runn:expiresAt",
+      "@type": "xsd:dateTime"
+    },
+    "ProjectTag": "runn:ProjectTag",
+    "projectIds": {
+      "@id": "runn:projectIds",
+      "@container": "@list"
+    },
+    "ProjectWorkstream": "runn:ProjectWorkstream",
+    "RateCard": "runn:RateCard",
+    "isBlendedRateCard": {
+      "@id": "runn:isBlendedRateCard",
+      "@type": "xsd:boolean"
+    },
+    "blendedRate": {
+      "@id": "runn:blendedRate",
+      "@type": "xsd:decimal"
+    },
+    "rates": {
+      "@id": "runn:rates",
+      "@container": "@list"
+    },
+    "ReportsHoursPeople": "runn:ReportsHoursPeople",
+    "nonBillableMinutes": {
+      "@id": "runn:nonBillableMinutes",
+      "@type": "xsd:integer"
+    },
+    "totalMinutes": {
+      "@id": "runn:totalMinutes",
+      "@type": "xsd:integer"
+    },
+    "assignments": {
+      "@id": "runn:assignments"
+    },
+    "actuals": {
+      "@id": "runn:actuals"
+    },
+    "ReportsHoursProjects": "runn:ReportsHoursProjects",
+    "ProjectAggregate": "runn:ProjectAggregate",
+    "Skill": "runn:Skill",
+    "User": "runn:User",
+    "permissions": {
+      "@id": "runn:permissions"
+    },
+    "View": "runn:View"
+  },
+  "@type": "schema:Dataset",
+  "schema:name": "Runn API JSON-LD context",
+  "schema:description": "A JSON-LD @context for the objects Runn's own API contract declares: one class per component schema, one property per declared field, typed from the contract. Derived by script (derive-json-ld.py, 2026-10-14) from openapi/runn-openapi.json.",
+  "dcterms:created": "2026-10-14",
+  "dcterms:source": [
+    "openapi/runn-openapi.json"
+  ]
+}

@@ -1,0 +1,141 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/runn/main/json-schema/runn-invitation-schema.json",
+  "title": "Invitation",
+  "x-generated": "2026-10-14",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/runn-openapi.json#/components/schemas/Invitation",
+  "type": "object",
+  "properties": {
+    "id": {
+      "description": "Unique identifier for the invitation.",
+      "type": "integer"
+    },
+    "email": {
+      "description": "Email for the invitation.",
+      "type": "string"
+    },
+    "userType": {
+      "type": "string",
+      "enum": [
+        "admin",
+        "editor",
+        "viewer_all",
+        "viewer_basic",
+        "timesheet_only",
+        "manager",
+        "contributor"
+      ],
+      "description": "Permission level"
+    },
+    "financialPermission": {
+      "type": "string",
+      "enum": [
+        "all",
+        "no_salaries",
+        "restricted",
+        "none"
+      ],
+      "description": "Financial permission level"
+    },
+    "editProjectsPermission": {
+      "type": "string",
+      "enum": [
+        "all",
+        "specific",
+        "restricted",
+        "none"
+      ],
+      "deprecated": true,
+      "description": "Edit projects permission level (deprecated: use manageProjectsPermission)"
+    },
+    "editOthersPermission": {
+      "type": "string",
+      "enum": [
+        "all",
+        "none"
+      ],
+      "deprecated": true,
+      "description": "Edit others permission level (deprecated: use managePeoplePermission)"
+    },
+    "manageProjectsPermission": {
+      "type": "string",
+      "enum": [
+        "all",
+        "specific",
+        "restricted",
+        "none"
+      ],
+      "description": "Manage projects permission level"
+    },
+    "managePeoplePermission": {
+      "type": "string",
+      "enum": [
+        "all",
+        "restricted",
+        "none"
+      ],
+      "description": "Manage people permission level"
+    },
+    "manageAccountPermission": {
+      "description": "Manage account permission level",
+      "type": "boolean"
+    },
+    "addAllPeopleToProjectsPermission": {
+      "description": "Add all people to projects permission level",
+      "type": "boolean"
+    },
+    "viewPlannerPermission": {
+      "description": "View planner permission level",
+      "type": "boolean"
+    },
+    "peopleTeams": {
+      "description": "Teams staged for this invitation; they become people-management grants when the invitation is accepted. Always returned; empty when none were requested.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp of when the object was created."
+    },
+    "sentAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date and time when the invitation was last sent"
+    },
+    "expiresAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date and time when the invitation expires"
+    }
+  },
+  "required": [
+    "id",
+    "email",
+    "userType",
+    "financialPermission",
+    "editProjectsPermission",
+    "editOthersPermission",
+    "manageProjectsPermission",
+    "managePeoplePermission",
+    "manageAccountPermission",
+    "addAllPeopleToProjectsPermission",
+    "viewPlannerPermission",
+    "peopleTeams",
+    "createdAt",
+    "sentAt",
+    "expiresAt"
+  ]
+}

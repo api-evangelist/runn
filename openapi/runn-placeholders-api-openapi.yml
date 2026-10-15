@@ -1,0 +1,562 @@
+openapi: 3.2.0
+info:
+  title: Runn Placeholders API
+  version: 1.0.0
+  description: 'See the full documentation and guide to using the Runn API.
+
+
+    The domain for your API endpoint can be found in Accounts > Settings > API in your Runn application'
+servers:
+- url: https://api.runn.io
+  description: EU Server
+- url: https://api.us.runn.io
+  description: US Server
+security:
+- bearerAuth: []
+tags:
+- name: Placeholders
+paths:
+  /placeholders/:
+    get:
+      operationId: listPlaceholders
+      summary: List placeholders
+      description: 'Note: The /people/* endpoints also allows getting information on placeholders when using the `includePlaceholders` query parameter.'
+      parameters:
+      - schema:
+          type: string
+        in: query
+        name: cursor
+        required: false
+        description: Cursor for paginated requests
+      - schema:
+          default: 50
+          minimum: 1
+          maximum: 200
+          type: integer
+        in: query
+        name: limit
+        required: false
+        description: The number of results per page
+      - schema:
+          type: string
+          enum:
+          - createdAt
+          - updatedAt
+          - id
+          default: id
+        in: query
+        name: sortBy
+        required: false
+        description: 'Field to sort by: createdAt or updatedAt or id'
+      - schema:
+          type: string
+          enum:
+          - asc
+          - desc
+          default: asc
+        in: query
+        name: order
+        required: false
+        description: 'Sort order: asc or desc'
+      - schema:
+          $ref: '#/components/schemas/ModifiedAfter'
+        in: query
+        name: modifiedAfter
+        required: false
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  values:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Placeholder'
+                  nextCursor:
+                    type: string
+                    nullable: true
+                required:
+                - values
+                - nextCursor
+        '400':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+      tags:
+      - Placeholders
+    post:
+      operationId: createPlaceholder
+      summary: Create a placeholder
+      description: 'Also creates a contract that defaults to the role cost.
+
+        Please note that placeholders that are not assigned to a project will be deleted within 24 hours.'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                roleId:
+                  type: integer
+                costPerHour:
+                  description: Defaults to the role's cost per hour
+                  type: number
+                teamId:
+                  type: integer
+                  nullable: true
+                tags:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                    required:
+                    - id
+              required:
+              - roleId
+      parameters:
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '201':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlaceholderInput'
+        '400':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+      tags:
+      - Placeholders
+  /placeholders/{placeholderId}/skills/:
+    post:
+      operationId: createPlaceholderSkill
+      summary: Add a skill to a placeholder
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                skillId:
+                  type: integer
+                level:
+                  anyOf:
+                  - type: number
+                    enum:
+                    - 1
+                    nullable: true
+                  - type: number
+                    enum:
+                    - 2
+                    nullable: true
+                  - type: number
+                    enum:
+                    - 3
+                    nullable: true
+                  - type: number
+                    enum:
+                    - 4
+                    nullable: true
+              required:
+              - skillId
+      parameters:
+      - schema:
+          type: integer
+        in: path
+        name: placeholderId
+        required: true
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '201':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Competency'
+        '400':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+      tags:
+      - Placeholders
+  /placeholders/{placeholderId}/skills/{skillId}:
+    delete:
+      operationId: deletePlaceholderSkill
+      summary: Remove a skill from a placeholder
+      parameters:
+      - schema:
+          type: integer
+        in: path
+        name: placeholderId
+        required: true
+      - schema:
+          type: integer
+        in: path
+        name: skillId
+        required: true
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '204':
+          description: Default Response
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+      tags:
+      - Placeholders
+  /placeholders/{placeholderId}/teams/:
+    post:
+      operationId: createPlaceholderTeam
+      summary: Add a placeholder to a team
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                teamId:
+                  type: integer
+              required:
+              - teamId
+      parameters:
+      - schema:
+          type: integer
+        in: path
+        name: placeholderId
+        required: true
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '201':
+          description: Default Response
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+      tags:
+      - Placeholders
+  /placeholders/{placeholderId}/teams/{teamId}:
+    delete:
+      operationId: deletePlaceholderTeam
+      summary: Remove a placeholder from a team
+      parameters:
+      - schema:
+          type: integer
+        in: path
+        name: placeholderId
+        required: true
+      - schema:
+          type: integer
+        in: path
+        name: teamId
+        required: true
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '202':
+          description: Default Response
+        '400':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+      tags:
+      - Placeholders
+components:
+  schemas:
+    ModifiedAfter:
+      description: 'If provided, will only return objects modified after this timestamp. Format: YYYY-MM-DD or YYYY-MM-DDTHH:MM:SSZ.'
+      anyOf:
+      - format: date
+        type: string
+      - format: date-time
+        type: string
+    Placeholder:
+      type: object
+      properties:
+        id:
+          type: integer
+        firstName:
+          type: string
+        lastName:
+          type: string
+        isArchived:
+          type: boolean
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tag'
+        references:
+          type: array
+          items:
+            $ref: '#/components/schemas/Reference'
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was created.
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was last updated.
+      required:
+      - id
+      - firstName
+      - lastName
+      - isArchived
+      - tags
+      - references
+      - createdAt
+      - updatedAt
+    BadRequest:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - Bad Request
+        message:
+          type: string
+        statusCode:
+          type: number
+          enum:
+          - 400
+      required:
+      - error
+      - message
+      - statusCode
+    NotFound:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - Not Found
+        message:
+          type: string
+        statusCode:
+          type: number
+          enum:
+          - 404
+      required:
+      - error
+      - message
+      - statusCode
+    PlaceholderInput:
+      type: object
+      properties:
+        id:
+          type: number
+        firstName:
+          type: string
+        lastName:
+          type: string
+        costPerHour:
+          type: number
+        roleId:
+          type: number
+        teamId:
+          type: number
+          nullable: true
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tag'
+      required:
+      - id
+      - firstName
+      - lastName
+      - costPerHour
+      - roleId
+      - teamId
+      - tags
+    Competency:
+      type: object
+      properties:
+        level:
+          anyOf:
+          - type: number
+            enum:
+            - 1
+            nullable: true
+          - type: number
+            enum:
+            - 2
+            nullable: true
+          - type: number
+            enum:
+            - 3
+            nullable: true
+          - type: number
+            enum:
+            - 4
+            nullable: true
+        skillId:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was created.
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was last updated.
+      required:
+      - skillId
+      - createdAt
+      - updatedAt
+    Tag:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+      required:
+      - id
+      - name
+    Reference:
+      type: object
+      properties:
+        referenceName:
+          minLength: 1
+          type: string
+        externalId:
+          minLength: 1
+          type: string
+      required:
+      - referenceName
+      - externalId
+    Unauthorized:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - Unauthorized
+        message:
+          type: string
+          enum:
+          - Unauthorized
+        statusCode:
+          type: number
+          enum:
+          - 401
+      required:
+      - error
+      - message
+      - statusCode
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+x-readme:
+  proxy-enabled: false

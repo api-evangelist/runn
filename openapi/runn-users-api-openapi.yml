@@ -1,0 +1,604 @@
+openapi: 3.2.0
+info:
+  title: Runn Users API
+  version: 1.0.0
+  description: 'See the full documentation and guide to using the Runn API.
+
+
+    The domain for your API endpoint can be found in Accounts > Settings > API in your Runn application'
+servers:
+- url: https://api.runn.io
+  description: EU Server
+- url: https://api.us.runn.io
+  description: US Server
+security:
+- bearerAuth: []
+tags:
+- name: Users
+paths:
+  /users/:
+    get:
+      operationId: listUsers
+      summary: List users
+      description: See `POST /invitations` for creating users
+      parameters:
+      - schema:
+          type: string
+        in: query
+        name: cursor
+        required: false
+        description: Cursor for paginated requests
+      - schema:
+          default: 50
+          minimum: 1
+          maximum: 200
+          type: integer
+        in: query
+        name: limit
+        required: false
+        description: The number of results per page
+      - schema:
+          $ref: '#/components/schemas/ModifiedAfter'
+        in: query
+        name: modifiedAfter
+        required: false
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  values:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
+                  nextCursor:
+                    type: string
+                    nullable: true
+                required:
+                - values
+                - nextCursor
+        '400':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+      tags:
+      - Users
+  /users/{userId}:
+    get:
+      operationId: getUser
+      summary: Show a user
+      parameters:
+      - schema:
+          type: integer
+        in: path
+        name: userId
+        required: true
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+      tags:
+      - Users
+    patch:
+      operationId: updateUser
+      summary: Update a user
+      description: Currently supports updating people team access for restricted people managers.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                peopleTeams:
+                  maxItems: 1000
+                  uniqueItems: true
+                  description: Teams whose members this restricted people manager can manage. An empty array revokes every team grant; omitting the field leaves them untouched. Sending this field, including an empty array, returns 403 when the account does not have the feature.
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        minimum: 1
+                        maximum: 2147483647
+                        type: integer
+                    required:
+                    - id
+      parameters:
+      - schema:
+          type: integer
+        in: path
+        name: userId
+        required: true
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+      tags:
+      - Users
+    delete:
+      operationId: deleteUser
+      summary: Delete a user
+      parameters:
+      - schema:
+          type: integer
+        in: path
+        name: userId
+        required: true
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '204':
+          description: Default Response
+        '400':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+      tags:
+      - Users
+  /users/{userId}/views/:
+    get:
+      operationId: listUserViews
+      summary: List allocated views for a user
+      parameters:
+      - schema:
+          type: string
+        in: query
+        name: cursor
+        required: false
+        description: Cursor for paginated requests
+      - schema:
+          default: 50
+          minimum: 1
+          maximum: 200
+          type: integer
+        in: query
+        name: limit
+        required: false
+        description: The number of results per page
+      - schema:
+          type: integer
+        in: path
+        name: userId
+        required: true
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  values:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/View'
+                  nextCursor:
+                    type: string
+                    nullable: true
+                required:
+                - values
+                - nextCursor
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+      tags:
+      - Users
+  /users/{userId}/views/{viewId}:
+    post:
+      operationId: createUserView
+      summary: Allocate a view to a user
+      parameters:
+      - schema:
+          type: integer
+        in: path
+        name: userId
+        required: true
+        description: The Id of the user to allocate the view to.
+      - schema:
+          type: integer
+        in: path
+        name: viewId
+        required: true
+        description: The Id of the view to allocate to the user.
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '201':
+          description: Default Response
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+        '409':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Conflict'
+      tags:
+      - Users
+  /users/{userId}/views/{viewId}/:
+    delete:
+      operationId: deleteUserView
+      summary: Remove allocated view from user
+      parameters:
+      - schema:
+          type: integer
+        in: path
+        name: userId
+        required: true
+      - schema:
+          type: integer
+        in: path
+        name: viewId
+        required: true
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '204':
+          description: Default Response
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+      tags:
+      - Users
+components:
+  schemas:
+    View:
+      type: object
+      properties:
+        id:
+          minimum: 0
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was created.
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was last updated.
+      required:
+      - id
+      - name
+      - description
+      - createdAt
+      - updatedAt
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        firstName:
+          type: string
+          nullable: true
+        lastName:
+          type: string
+          nullable: true
+        email:
+          type: string
+        personId:
+          type: integer
+          nullable: true
+        permissions:
+          type: object
+          properties:
+            type:
+              type: string
+              enum:
+              - superuser
+              - admin
+              - editor
+              - viewer_all
+              - viewer_basic
+              - timesheet_only
+              deprecated: true
+              description: 'Mapped permission type (deprecated: use userType)'
+            userType:
+              type: string
+              enum:
+              - superuser
+              - admin
+              - manager
+              - contributor
+              description: The user's unmapped database permission type
+            financial:
+              type: string
+              enum:
+              - all
+              - no_salaries
+              - restricted
+              - none
+            editProjects:
+              type: string
+              enum:
+              - all
+              - specific
+              - restricted
+              - none
+              deprecated: true
+              description: 'Edit projects permission (deprecated: use manageProjects)'
+            manageProjects:
+              type: string
+              enum:
+              - all
+              - specific
+              - restricted
+              - none
+            editOthers:
+              type: string
+              enum:
+              - all
+              - none
+              deprecated: true
+              description: 'Edit others permission (deprecated: use managePeople)'
+            managePeople:
+              type: string
+              enum:
+              - all
+              - restricted
+              - none
+            manageAccount:
+              type: boolean
+            addAllPeopleToProjects:
+              type: boolean
+            viewPlanner:
+              type: boolean
+          required:
+          - type
+          - userType
+          - financial
+          - editProjects
+          - manageProjects
+          - editOthers
+          - managePeople
+          - manageAccount
+          - addAllPeopleToProjects
+          - viewPlanner
+        peopleTeams:
+          description: Teams this user manages people through when their managePeople permission is 'restricted'. Always returned; empty when they have no team grants.
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+            required:
+            - id
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was created.
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was last updated.
+      required:
+      - id
+      - firstName
+      - lastName
+      - email
+      - personId
+      - permissions
+      - peopleTeams
+      - createdAt
+      - updatedAt
+    ModifiedAfter:
+      description: 'If provided, will only return objects modified after this timestamp. Format: YYYY-MM-DD or YYYY-MM-DDTHH:MM:SSZ.'
+      anyOf:
+      - format: date
+        type: string
+      - format: date-time
+        type: string
+    BadRequest:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - Bad Request
+        message:
+          type: string
+        statusCode:
+          type: number
+          enum:
+          - 400
+      required:
+      - error
+      - message
+      - statusCode
+    NotFound:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - Not Found
+        message:
+          type: string
+        statusCode:
+          type: number
+          enum:
+          - 404
+      required:
+      - error
+      - message
+      - statusCode
+    Conflict:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - Conflict
+        message:
+          type: string
+        statusCode:
+          type: number
+          enum:
+          - 409
+      required:
+      - error
+      - message
+      - statusCode
+    Unauthorized:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - Unauthorized
+        message:
+          type: string
+          enum:
+          - Unauthorized
+        statusCode:
+          type: number
+          enum:
+          - 401
+      required:
+      - error
+      - message
+      - statusCode
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+x-readme:
+  proxy-enabled: false

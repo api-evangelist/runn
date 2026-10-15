@@ -1,0 +1,1366 @@
+openapi: 3.2.0
+info:
+  title: Runn Custom Fields API
+  version: 1.0.0
+  description: 'See the full documentation and guide to using the Runn API.
+
+
+    The domain for your API endpoint can be found in Accounts > Settings > API in your Runn application'
+servers:
+- url: https://api.runn.io
+  description: EU Server
+- url: https://api.us.runn.io
+  description: US Server
+security:
+- bearerAuth: []
+tags:
+- name: Custom Fields
+paths:
+  /custom-fields/checkbox/:
+    get:
+      operationId: listCheckboxCustomFields
+      summary: List checkbox custom fields
+      parameters:
+      - schema:
+          type: string
+        in: query
+        name: cursor
+        required: false
+        description: Cursor for paginated requests
+      - schema:
+          default: 50
+          minimum: 1
+          maximum: 200
+          type: integer
+        in: query
+        name: limit
+        required: false
+        description: The number of results per page
+      - schema:
+          type: string
+          enum:
+          - PERSON
+          - PROJECT
+        in: query
+        name: model
+        required: false
+        description: The field type of the custom field
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  values:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CustomFieldCheckbox'
+                  nextCursor:
+                    type: string
+                    nullable: true
+                required:
+                - values
+                - nextCursor
+        '400':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+      tags:
+      - Custom Fields
+    post:
+      operationId: createCheckboxCustomField
+      summary: Create a checkbox custom field
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  minLength: 1
+                  type: string
+                description:
+                  type: string
+                model:
+                  type: string
+                  enum:
+                  - PERSON
+                  - PROJECT
+                  description: The field type of the custom field
+                required:
+                  default: false
+                  type: boolean
+                showInPlanner:
+                  default: false
+                  type: boolean
+                filterableInPlanner:
+                  default: true
+                  type: boolean
+              required:
+              - name
+              - model
+              - required
+              - showInPlanner
+              - filterableInPlanner
+      parameters:
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '201':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomFieldCheckbox'
+        '400':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+      tags:
+      - Custom Fields
+  /custom-fields/checkbox/{checkboxFieldId}:
+    patch:
+      operationId: updateCheckboxCustomField
+      summary: Update a checkbox custom field
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  minLength: 1
+                  type: string
+                description:
+                  type: string
+                required:
+                  type: boolean
+                showInPlanner:
+                  type: boolean
+                filterableInPlanner:
+                  type: boolean
+      parameters:
+      - schema:
+          type: integer
+        in: path
+        name: checkboxFieldId
+        required: true
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomFieldCheckbox'
+        '400':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+      tags:
+      - Custom Fields
+    delete:
+      operationId: deleteCheckboxCustomField
+      summary: Delete a checkbox custom field
+      parameters:
+      - schema:
+          type: integer
+        in: path
+        name: checkboxFieldId
+        required: true
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '204':
+          description: Default Response
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+      tags:
+      - Custom Fields
+  /custom-fields/date/:
+    post:
+      operationId: createDateCustomField
+      summary: Create a date custom field
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+                model:
+                  type: string
+                  enum:
+                  - PERSON
+                  - PROJECT
+                  description: The field type of the custom field
+                required:
+                  default: false
+                  type: boolean
+                showInPlanner:
+                  default: false
+                  type: boolean
+                filterableInPlanner:
+                  default: true
+                  type: boolean
+              required:
+              - name
+              - model
+              - required
+              - showInPlanner
+              - filterableInPlanner
+      parameters:
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '201':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomFieldDate'
+        '400':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+      tags:
+      - Custom Fields
+    get:
+      operationId: listDateCustomFields
+      summary: List date custom fields
+      parameters:
+      - schema:
+          type: string
+        in: query
+        name: cursor
+        required: false
+        description: Cursor for paginated requests
+      - schema:
+          default: 50
+          minimum: 1
+          maximum: 200
+          type: integer
+        in: query
+        name: limit
+        required: false
+        description: The number of results per page
+      - schema:
+          type: string
+          enum:
+          - PERSON
+          - PROJECT
+        in: query
+        name: model
+        required: false
+        description: The field type of the custom field
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  values:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CustomFieldDate'
+                  nextCursor:
+                    type: string
+                    nullable: true
+                required:
+                - values
+                - nextCursor
+        '400':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+      tags:
+      - Custom Fields
+  /custom-fields/date/{dateFieldId}:
+    delete:
+      operationId: deleteDateCustomField
+      summary: Delete a date custom field
+      parameters:
+      - schema:
+          type: integer
+        in: path
+        name: dateFieldId
+        required: true
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '204':
+          description: Default Response
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+      tags:
+      - Custom Fields
+    patch:
+      operationId: updateDateCustomField
+      summary: Update a date custom field
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+                required:
+                  type: boolean
+                showInPlanner:
+                  type: boolean
+                filterableInPlanner:
+                  type: boolean
+      parameters:
+      - schema:
+          type: integer
+        in: path
+        name: dateFieldId
+        required: true
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomFieldDate'
+        '400':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+      tags:
+      - Custom Fields
+  /custom-fields/select/:
+    post:
+      operationId: createSelectCustomField
+      summary: Create a select custom field
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  minLength: 1
+                  type: string
+                description:
+                  type: string
+                model:
+                  type: string
+                  enum:
+                  - PERSON
+                  - PROJECT
+                  description: The field type of the custom field
+                options:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      name:
+                        description: Display name for the select option
+                        type: string
+                    required:
+                    - name
+                singleSelect:
+                  default: false
+                  type: boolean
+                required:
+                  default: false
+                  type: boolean
+                showInPlanner:
+                  default: false
+                  type: boolean
+                filterableInPlanner:
+                  default: true
+                  type: boolean
+              required:
+              - name
+              - model
+              - options
+              - singleSelect
+              - required
+              - showInPlanner
+              - filterableInPlanner
+      parameters:
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '201':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomFieldSelect'
+        '400':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+      tags:
+      - Custom Fields
+    get:
+      operationId: listSelectCustomFields
+      summary: Show a select custom field
+      parameters:
+      - schema:
+          type: string
+        in: query
+        name: cursor
+        required: false
+        description: Cursor for paginated requests
+      - schema:
+          default: 50
+          minimum: 1
+          maximum: 200
+          type: integer
+        in: query
+        name: limit
+        required: false
+        description: The number of results per page
+      - schema:
+          type: string
+          enum:
+          - PERSON
+          - PROJECT
+        in: query
+        name: model
+        required: false
+        description: The field type of the custom field
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  values:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CustomFieldSelect'
+                  nextCursor:
+                    type: string
+                    nullable: true
+                required:
+                - values
+                - nextCursor
+        '400':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+      tags:
+      - Custom Fields
+  /custom-fields/select/{selectFieldId}:
+    patch:
+      operationId: updateSelectCustomField
+      summary: Update a select custom field
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  minLength: 1
+                  type: string
+                description:
+                  type: string
+                required:
+                  type: boolean
+                showInPlanner:
+                  type: boolean
+                filterableInPlanner:
+                  type: boolean
+      parameters:
+      - schema:
+          type: integer
+        in: path
+        name: selectFieldId
+        required: true
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomFieldSelect'
+        '400':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+      tags:
+      - Custom Fields
+    delete:
+      operationId: deleteSelectCustomField
+      summary: Delete a select custom field
+      parameters:
+      - schema:
+          type: integer
+        in: path
+        name: selectFieldId
+        required: true
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '204':
+          description: Default Response
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+      tags:
+      - Custom Fields
+  /custom-fields/select/{selectFieldId}/options/{selectOptionId}:
+    delete:
+      operationId: deleteSelectCustomFieldOption
+      summary: Delete a select custom field option
+      parameters:
+      - schema:
+          type: integer
+        in: path
+        name: selectFieldId
+        required: true
+      - schema:
+          type: integer
+        in: path
+        name: selectOptionId
+        required: true
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '204':
+          description: Default Response
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+      tags:
+      - Custom Fields
+    patch:
+      operationId: updateSelectCustomFieldOption
+      summary: Update a select custom field option
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  minLength: 1
+                  type: string
+              required:
+              - name
+      parameters:
+      - schema:
+          type: integer
+        in: path
+        name: selectFieldId
+        required: true
+      - schema:
+          type: integer
+        in: path
+        name: selectOptionId
+        required: true
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  option:
+                    type: object
+                    properties:
+                      id:
+                        description: Unique identifier for the select option
+                        type: integer
+                      name:
+                        description: Display name for the select option
+                        type: string
+                    required:
+                    - id
+                    - name
+                required:
+                - option
+        '400':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+      tags:
+      - Custom Fields
+  /custom-fields/select/{selectFieldId}/options:
+    post:
+      operationId: createSelectCustomFieldOption
+      summary: Create a select custom field option
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  minLength: 1
+                  type: string
+              required:
+              - name
+      parameters:
+      - schema:
+          type: integer
+        in: path
+        name: selectFieldId
+        required: true
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '201':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  option:
+                    type: object
+                    properties:
+                      id:
+                        description: Unique identifier for the select option
+                        type: integer
+                      name:
+                        description: Display name for the select option
+                        type: string
+                    required:
+                    - id
+                    - name
+                required:
+                - option
+        '400':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+      tags:
+      - Custom Fields
+  /custom-fields/text/:
+    post:
+      operationId: createTextCustomField
+      summary: Create a text custom field
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  minLength: 1
+                  type: string
+                description:
+                  type: string
+                model:
+                  type: string
+                  enum:
+                  - PERSON
+                  - PROJECT
+                  description: The field type of the custom field
+                required:
+                  default: false
+                  type: boolean
+                showInPlanner:
+                  default: false
+                  type: boolean
+                filterableInPlanner:
+                  default: true
+                  type: boolean
+              required:
+              - name
+              - model
+              - required
+              - showInPlanner
+              - filterableInPlanner
+      parameters:
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '201':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomFieldText'
+        '400':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+      tags:
+      - Custom Fields
+    get:
+      operationId: listTextCustomFields
+      summary: Show a text custom field
+      parameters:
+      - schema:
+          type: string
+        in: query
+        name: cursor
+        required: false
+        description: Cursor for paginated requests
+      - schema:
+          default: 50
+          minimum: 1
+          maximum: 200
+          type: integer
+        in: query
+        name: limit
+        required: false
+        description: The number of results per page
+      - schema:
+          type: string
+          enum:
+          - PERSON
+          - PROJECT
+        in: query
+        name: model
+        required: false
+        description: The field type of the custom field
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  values:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CustomFieldText'
+                  nextCursor:
+                    type: string
+                    nullable: true
+                required:
+                - values
+                - nextCursor
+        '400':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+      tags:
+      - Custom Fields
+  /custom-fields/text/{textFieldId}:
+    delete:
+      operationId: deleteTextCustomField
+      summary: Delete a text custom field
+      parameters:
+      - schema:
+          type: integer
+        in: path
+        name: textFieldId
+        required: true
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '204':
+          description: Default Response
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+      tags:
+      - Custom Fields
+    patch:
+      operationId: updateTextCustomField
+      summary: Update a text custom field
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  minLength: 1
+                  type: string
+                description:
+                  type: string
+                required:
+                  type: boolean
+                showInPlanner:
+                  type: boolean
+                filterableInPlanner:
+                  type: boolean
+      parameters:
+      - schema:
+          type: integer
+        in: path
+        name: textFieldId
+        required: true
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomFieldText'
+        '400':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+      tags:
+      - Custom Fields
+components:
+  schemas:
+    CustomFieldDate:
+      type: object
+      properties:
+        id:
+          description: Unique identifier for the custom field date
+          type: integer
+        name:
+          description: Display name for the custom field date
+          type: string
+        description:
+          description: Description for the custom field date
+          type: string
+          nullable: true
+        model:
+          type: string
+          enum:
+          - PERSON
+          - PROJECT
+          description: The field type of the custom field
+        required:
+          description: Whether or not the date is a required field
+          type: boolean
+        showInPlanner:
+          description: Whether or not the custom field date is shown in the project or person planner in the app UI
+          type: boolean
+        sortOrder:
+          description: The sort order of the custom field date
+          type: integer
+        filterableInPlanner:
+          description: Whether or not the custom field select is filterable in the project or person planner in the app UI
+          type: boolean
+      required:
+      - id
+      - name
+      - description
+      - model
+      - required
+      - showInPlanner
+      - sortOrder
+      - filterableInPlanner
+    CustomFieldSelect:
+      type: object
+      properties:
+        id:
+          description: Unique identifier for the custom field select
+          type: integer
+        name:
+          description: Display name for the custom field select
+          type: string
+        description:
+          type: string
+          nullable: true
+        model:
+          type: string
+          enum:
+          - PERSON
+          - PROJECT
+          description: The field type of the custom field
+        options:
+          description: All selectable options
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                description: Unique identifier for the select option
+                type: integer
+              name:
+                description: Display name for the select option
+                type: string
+            required:
+            - id
+            - name
+        singleSelect:
+          description: Whether this select is a single or multi select
+          type: boolean
+        required:
+          description: Whether or not the select is a required field
+          type: boolean
+        showInPlanner:
+          description: Whether or not the custom field select is shown in the project or person planner in the app UI
+          type: boolean
+        sortOrder:
+          description: The sort order of the custom field select
+          type: integer
+        filterableInPlanner:
+          description: Whether or not the custom field select is filterable in the project or person planner in the app UI
+          type: boolean
+      required:
+      - id
+      - name
+      - description
+      - model
+      - options
+      - singleSelect
+      - required
+      - showInPlanner
+      - sortOrder
+      - filterableInPlanner
+    BadRequest:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - Bad Request
+        message:
+          type: string
+        statusCode:
+          type: number
+          enum:
+          - 400
+      required:
+      - error
+      - message
+      - statusCode
+    NotFound:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - Not Found
+        message:
+          type: string
+        statusCode:
+          type: number
+          enum:
+          - 404
+      required:
+      - error
+      - message
+      - statusCode
+    CustomFieldText:
+      type: object
+      properties:
+        id:
+          description: Unique identifier for the custom field text
+          type: integer
+        name:
+          description: Display name for the custom field text
+          type: string
+        description:
+          type: string
+          nullable: true
+        model:
+          type: string
+          enum:
+          - PERSON
+          - PROJECT
+          description: The field type of the custom field
+        required:
+          description: Whether or not the text is a required field
+          type: boolean
+        showInPlanner:
+          description: Whether or not the custom field text is shown in the project or person planner in the app UI
+          type: boolean
+        sortOrder:
+          description: The sort order of the custom field text
+          type: integer
+        filterableInPlanner:
+          description: Whether or not the custom field text is filterable in the project or person planner in the app UI
+          type: boolean
+      required:
+      - id
+      - name
+      - description
+      - model
+      - required
+      - showInPlanner
+      - sortOrder
+      - filterableInPlanner
+    CustomFieldCheckbox:
+      type: object
+      properties:
+        id:
+          description: Unique identifier for the custom field checkbox
+          type: integer
+        name:
+          description: Display name for the custom field checkbox
+          type: string
+        description:
+          type: string
+          nullable: true
+        model:
+          type: string
+          enum:
+          - PERSON
+          - PROJECT
+          description: The field type of the custom field
+        required:
+          description: Whether or not the checkbox is a required field
+          type: boolean
+        showInPlanner:
+          description: Whether or not the custom field checkbox is shown in the project or person planner in the app UI
+          type: boolean
+        sortOrder:
+          description: The sort order of the custom field checkbox
+          type: integer
+        filterableInPlanner:
+          description: Whether or not the custom field checkbox is filterable in the project or person planner in the app UI
+          type: boolean
+      required:
+      - id
+      - name
+      - description
+      - model
+      - required
+      - showInPlanner
+      - sortOrder
+      - filterableInPlanner
+    Unauthorized:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - Unauthorized
+        message:
+          type: string
+          enum:
+          - Unauthorized
+        statusCode:
+          type: number
+          enum:
+          - 401
+      required:
+      - error
+      - message
+      - statusCode
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+x-readme:
+  proxy-enabled: false

@@ -1,0 +1,664 @@
+openapi: 3.2.0
+info:
+  title: Runn Clients API
+  version: 1.0.0
+  description: 'See the full documentation and guide to using the Runn API.
+
+
+    The domain for your API endpoint can be found in Accounts > Settings > API in your Runn application'
+servers:
+- url: https://api.runn.io
+  description: EU Server
+- url: https://api.us.runn.io
+  description: US Server
+security:
+- bearerAuth: []
+tags:
+- name: Clients
+paths:
+  /clients/:
+    get:
+      operationId: listClients
+      summary: List clients
+      parameters:
+      - schema:
+          type: string
+        in: query
+        name: name
+        required: false
+        description: If provided, will only return clients with a name that is a substring of this value (case-insensitive).
+      - schema:
+          type: string
+          enum:
+          - id
+          - createdAt
+          - updatedAt
+          default: id
+        in: query
+        name: sortBy
+        required: true
+      - schema:
+          $ref: '#/components/schemas/SortOrder'
+        in: query
+        name: order
+        required: false
+      - schema:
+          type: string
+        in: query
+        name: cursor
+        required: false
+        description: Cursor for paginated requests
+      - schema:
+          default: 50
+          minimum: 1
+          maximum: 200
+          type: integer
+        in: query
+        name: limit
+        required: false
+        description: The number of results per page
+      - schema:
+          $ref: '#/components/schemas/ModifiedAfter'
+        in: query
+        name: modifiedAfter
+        required: false
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  values:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Client'
+                  nextCursor:
+                    type: string
+                    nullable: true
+                required:
+                - values
+                - nextCursor
+        '400':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+      tags:
+      - Clients
+    post:
+      operationId: createClient
+      summary: Create a client
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClientInput'
+      parameters:
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '201':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Client'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+      tags:
+      - Clients
+  /clients/{clientId}:
+    get:
+      operationId: getClient
+      summary: Show a client
+      parameters:
+      - schema:
+          type: integer
+        in: path
+        name: clientId
+        required: true
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Client'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '404':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+      tags:
+      - Clients
+    patch:
+      operationId: updateClient
+      summary: Update a client
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  minLength: 1
+                  type: string
+                website:
+                  format: url
+                  type: string
+                isArchived:
+                  type: boolean
+                references:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Reference'
+      parameters:
+      - schema:
+          type: integer
+        in: path
+        name: clientId
+        required: true
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Client'
+        '400':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+      tags:
+      - Clients
+  /clients/{clientId}/projects/:
+    get:
+      operationId: listClientProjects
+      summary: List a client's projects
+      parameters:
+      - schema:
+          type: string
+        in: query
+        name: cursor
+        required: false
+        description: Cursor for paginated requests
+      - schema:
+          default: 50
+          minimum: 1
+          maximum: 200
+          type: integer
+        in: query
+        name: limit
+        required: false
+        description: The number of results per page
+      - schema:
+          default: false
+          type: boolean
+        in: query
+        name: includeArchived
+        required: true
+      - schema:
+          $ref: '#/components/schemas/ModifiedAfter'
+        in: query
+        name: modifiedAfter
+        required: false
+      - schema:
+          type: integer
+        in: path
+        name: clientId
+        required: true
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  values:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Project'
+                  nextCursor:
+                    type: string
+                    nullable: true
+                required:
+                - values
+                - nextCursor
+        '400':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+      tags:
+      - Clients
+  /clients/bulk/:
+    post:
+      operationId: createClientsBulk
+      summary: Create clients in bulk
+      description: Create up to 100 'clients' in a single API call. Learn more.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                clients:
+                  minItems: 1
+                  maxItems: 100
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ClientInput'
+              required:
+              - clients
+      parameters:
+      - schema:
+          default: 1.0.0
+          enum:
+          - 1.0.0
+        in: header
+        name: accept-version
+        required: true
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Client'
+        '400':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '401':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+      tags:
+      - Clients
+components:
+  schemas:
+    ModifiedAfter:
+      description: 'If provided, will only return objects modified after this timestamp. Format: YYYY-MM-DD or YYYY-MM-DDTHH:MM:SSZ.'
+      anyOf:
+      - format: date
+        type: string
+      - format: date-time
+        type: string
+    ClientInput:
+      type: object
+      properties:
+        name:
+          minLength: 1
+          type: string
+        website:
+          format: url
+          type: string
+        references:
+          type: array
+          items:
+            $ref: '#/components/schemas/Reference'
+      required:
+      - name
+    BadRequest:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - Bad Request
+        message:
+          type: string
+        statusCode:
+          type: number
+          enum:
+          - 400
+      required:
+      - error
+      - message
+      - statusCode
+    NotFound:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - Not Found
+        message:
+          type: string
+        statusCode:
+          type: number
+          enum:
+          - 404
+      required:
+      - error
+      - message
+      - statusCode
+    Tag:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+      required:
+      - id
+      - name
+    Project:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        isTemplate:
+          type: boolean
+        isArchived:
+          type: boolean
+        isConfirmed:
+          type: boolean
+        pricingModel:
+          type: string
+          enum:
+          - fp
+          - tm
+          - nb
+        rateType:
+          type: string
+          enum:
+          - hours
+          - days
+        budgetMethod:
+          type: string
+          enum:
+          - ROLE
+          - PHASE
+          - PHASE_AND_ROLE
+          description: How the project budget is structured. One of ROLE, PHASE, or PHASE_AND_ROLE.
+        teamId:
+          type: integer
+          nullable: true
+        budget:
+          type: number
+          nullable: true
+        expensesBudget:
+          type: number
+          nullable: true
+        references:
+          type: array
+          items:
+            $ref: '#/components/schemas/Reference'
+        clientId:
+          type: integer
+        rateCardId:
+          type: integer
+        customFields:
+          type: object
+          properties:
+            select:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  values:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        id:
+                          type: integer
+                      required:
+                      - name
+                      - id
+                required:
+                - id
+                - name
+                - values
+            text:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  value:
+                    type: string
+                required:
+                - id
+                - name
+                - value
+            checkbox:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  value:
+                    type: boolean
+                required:
+                - id
+                - name
+                - value
+            date:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  value:
+                    type: string
+                    format: date
+                    description: 'Format: YYYY-MM-DD'
+                    nullable: true
+                required:
+                - id
+                - name
+                - value
+          required:
+          - select
+          - text
+          - checkbox
+          - date
+        managerIds:
+          type: array
+          items:
+            type: number
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tag'
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was created.
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was last updated.
+      required:
+      - id
+      - name
+      - isTemplate
+      - isArchived
+      - isConfirmed
+      - pricingModel
+      - rateType
+      - budgetMethod
+      - teamId
+      - budget
+      - expensesBudget
+      - references
+      - clientId
+      - rateCardId
+      - customFields
+      - managerIds
+      - tags
+      - createdAt
+      - updatedAt
+    Client:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        website:
+          type: string
+          nullable: true
+        isArchived:
+          type: boolean
+        references:
+          type: array
+          items:
+            $ref: '#/components/schemas/Reference'
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was created.
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was last updated.
+      required:
+      - id
+      - name
+      - website
+      - isArchived
+      - references
+      - createdAt
+      - updatedAt
+    Reference:
+      type: object
+      properties:
+        referenceName:
+          minLength: 1
+          type: string
+        externalId:
+          minLength: 1
+          type: string
+      required:
+      - referenceName
+      - externalId
+    SortOrder:
+      type: string
+      enum:
+      - asc
+      - desc
+      description: 'Sort order: asc or desc'
+      default: asc
+    Unauthorized:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - Unauthorized
+        message:
+          type: string
+          enum:
+          - Unauthorized
+        statusCode:
+          type: number
+          enum:
+          - 401
+      required:
+      - error
+      - message
+      - statusCode
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+x-readme:
+  proxy-enabled: false

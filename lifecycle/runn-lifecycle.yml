@@ -1,0 +1,15 @@
+generated: '2026-10-14'
+method: searched
+generator: extract-docs-artifacts.py (local)
+source: https://developer.runn.io/docs/versioning.md
+sources:
+- https://developer.runn.io/docs/versioning.md
+- https://developer.runn.io/changelog/return-400-for-milestone-titles-and-notes-that-are-too-long.md
+- https://developer.runn.io/changelog/allow-overlapping-assignments-in-different-phases.md
+- https://developer.runn.io/changelog/return-400-for-phase-names-longer-than-the-allowed-length.md
+versioning:
+  how_selected: Accept-Version header
+  docs: https://developer.runn.io/docs/versioning.md
+deprecation: {}
+status_page: null
+docs: https://developer.runn.io/docs/versioning.md

@@ -1,23 +1,839 @@
 aid: runn
 name: Runn
-description: 'Runn is a company surfaced via the API Evangelist harvest backlog (source: tag-qc) and added
-  to the network as a stub for full-pipeline profiling.'
+description: Runn provides resource management and capacity planning software for teams handling technical projects. It helps organizations forecast
+  staffing needs, schedule resources, track project progress, and analyze financials. Runn integrates with various tools and offers APIs for automating
+  workflows, making it suitable for engineering, consulting, and agency environments. The platform emphasizes capacity planning, resource allocation,
+  and data-driven decision making to improve efficiency and avoid burnout.
 url: https://raw.githubusercontent.com/api-evangelist/runn/refs/heads/main/apis.yml
 x-type: company
 x-source: harvest:tag-qc
-x-tier: stub
-x-tier-reason: harvest
+x-tier: profiled
+x-tier-reason: enrichment pass 2026-10-14 (modular-v1; was harvest)
 specificationVersion: '0.20'
 created: '2026-10-14'
 modified: '2026-10-14'
 tags:
 - Company
-apis: []
+- Resource-Management
+- Capacity-Planning
+- Project-Management
+- API
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: AgenticAccess
+  url: agentic-access/runn-agentic-access.yml
+- type: RateLimits
+  url: rate-limits/runn-rate-limits.yml
+- type: Plans
+  url: plans/runn-plans-pricing.yml
+- type: Spectral
+  url: rules/runn-rules.yml
+- type: JSONLD
+  url: json-ld/runn-context.jsonld
+- type: Vocabulary
+  url: vocabulary/runn-vocabulary.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: DataModel
+  url: data-model/runn-data-model.yml
+- type: Conventions
+  url: conventions/runn-conventions.yml
+- type: Compliance
+  url: https://trust.runn.io/
+- type: Security
+  url: security/runn-vulnerability-disclosure.yml
+- type: Lifecycle
+  url: lifecycle/runn-lifecycle.yml
+- type: ErrorCatalog
+  url: errors/runn-problem-types.yml
+- type: Conformance
+  url: conformance/runn-conformance.yml
+- type: LLMsTxt
+  url: llms/runn-llms.txt
+- type: SecurityTxt
+  url: well-known/runn-help-security.txt
+- type: WellKnown
+  url: well-known/runn-well-known.yml
+- type: Hosts
+  url: hosts/runn-hosts.yml
+- type: Vendors
+  url: vendors/runn-vendors.yml
+- type: StatusPage
+  url: https://status.runn.io/
+- type: Leadership
+  url: https://www.runn.io/team/iryna-viter
+- type: Authentication
+  url: authentication/runn-authentication.yml
+- type: TrustCenter
+  url: security/runn-trust-center.yml
+- type: VulnerabilityDisclosure
+  url: security/runn-vulnerability-disclosure.yml
+- type: DomainSecurity
+  url: security/runn-domain-security.yml
 - type: Website
   url: https://www.runn.io
+- type: Documentation
+  url: https://www.runn.io/features/api-integrations
+- type: APIReference
+  url: https://www.runn.io/features/api-integrations
+- type: GettingStarted
+  url: https://www.runn.io/what-is-runn
+- type: Support
+  url: https://www.runn.io/security
+- type: Blog
+  url: https://www.runn.io/blog
+- type: Pricing
+  url: https://www.runn.io/pricing
+- type: TermsOfService
+  url: https://www.runn.io/terms
+- type: PrivacyPolicy
+  url: https://www.runn.io/privacy
+apis:
+- aid: runn:runn-activity-log-api
+  name: Runn Activity Log API
+  description: The Activity Log API from Runn — 1 operation(s) for activity log.
+  humanURL: https://developer.runn.io/docs/getting-started.md
+  baseURL: https://api.runn.io
+  tags:
+  - Activity Log
+  properties:
+  - type: OpenAPI
+    url: openapi/runn-activity-log-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/runn-person-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-project-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-invitation-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-reports-hours-people-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-reports-hours-projects-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-actual-time-entry-schema.json
+- aid: runn:runn-actuals-api
+  name: Runn Actuals API
+  description: The Actuals API from Runn — 4 operation(s) for actuals.
+  humanURL: https://developer.runn.io/docs/getting-started.md
+  baseURL: https://api.runn.io
+  tags:
+  - Actuals
+  properties:
+  - type: OpenAPI
+    url: openapi/runn-actuals-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/runn-person-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-project-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-invitation-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-reports-hours-people-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-reports-hours-projects-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-actual-time-entry-schema.json
+- aid: runn:runn-assignments-api
+  name: Runn Assignments API
+  description: The Assignments API from Runn — 2 operation(s) for assignments.
+  humanURL: https://developer.runn.io/docs/getting-started.md
+  baseURL: https://api.runn.io
+  tags:
+  - Assignments
+  properties:
+  - type: OpenAPI
+    url: openapi/runn-assignments-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/runn-person-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-project-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-invitation-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-reports-hours-people-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-reports-hours-projects-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-actual-time-entry-schema.json
+- aid: runn:runn-budget-roles-api
+  name: Runn Budget Roles API
+  description: The Budget Roles API from Runn — 1 operation(s) for budget roles.
+  humanURL: https://developer.runn.io/docs/getting-started.md
+  baseURL: https://api.runn.io
+  tags:
+  - Budget Roles
+  properties:
+  - type: OpenAPI
+    url: openapi/runn-budget-roles-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/runn-person-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-project-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-invitation-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-reports-hours-people-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-reports-hours-projects-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-actual-time-entry-schema.json
+- aid: runn:runn-clients-api
+  name: Runn Clients API
+  description: The Clients API from Runn — 4 operation(s) for clients.
+  humanURL: https://developer.runn.io/docs/getting-started.md
+  baseURL: https://api.runn.io
+  tags:
+  - Clients
+  properties:
+  - type: OpenAPI
+    url: openapi/runn-clients-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/runn-person-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-project-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-invitation-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-reports-hours-people-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-reports-hours-projects-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-actual-time-entry-schema.json
+- aid: runn:runn-contracts-api
+  name: Runn Contracts API
+  description: The Contracts API from Runn — 2 operation(s) for contracts.
+  humanURL: https://developer.runn.io/docs/getting-started.md
+  baseURL: https://api.runn.io
+  tags:
+  - Contracts
+  properties:
+  - type: OpenAPI
+    url: openapi/runn-contracts-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/runn-person-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-project-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-invitation-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-reports-hours-people-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-reports-hours-projects-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-actual-time-entry-schema.json
+- aid: runn:runn-custom-fields-api
+  name: Runn Custom Fields API
+  description: The Custom Fields API from Runn — 10 operation(s) for custom fields.
+  humanURL: https://developer.runn.io/docs/getting-started.md
+  baseURL: https://api.runn.io
+  tags:
+  - Custom Fields
+  properties:
+  - type: OpenAPI
+    url: openapi/runn-custom-fields-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/runn-person-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-project-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-invitation-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-reports-hours-people-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-reports-hours-projects-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-actual-time-entry-schema.json
+- aid: runn:runn-holiday-groups-api
+  name: Runn Holiday Groups API
+  description: The Holiday Groups API from Runn — 3 operation(s) for holiday groups.
+  humanURL: https://developer.runn.io/docs/getting-started.md
+  baseURL: https://api.runn.io
+  tags:
+  - Holiday Groups
+  properties:
+  - type: OpenAPI
+    url: openapi/runn-holiday-groups-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/runn-person-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-project-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-invitation-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-reports-hours-people-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-reports-hours-projects-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-actual-time-entry-schema.json
+- aid: runn:runn-invitations-api
+  name: Runn Invitations API
+  description: The Invitations API from Runn — 2 operation(s) for invitations.
+  humanURL: https://developer.runn.io/docs/getting-started.md
+  baseURL: https://api.runn.io
+  tags:
+  - Invitations
+  properties:
+  - type: OpenAPI
+    url: openapi/runn-invitations-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/runn-person-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-project-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-invitation-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-reports-hours-people-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-reports-hours-projects-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-actual-time-entry-schema.json
+- aid: runn:runn-legacy-id-api
+  name: Runn Legacy Id API
+  description: The Legacy Id API from Runn — 1 operation(s) for legacy id.
+  humanURL: https://developer.runn.io/docs/getting-started.md
+  baseURL: https://api.runn.io
+  tags:
+  - Legacy Id
+  properties:
+  - type: OpenAPI
+    url: openapi/runn-legacy-id-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/runn-person-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-project-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-invitation-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-reports-hours-people-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-reports-hours-projects-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-actual-time-entry-schema.json
+- aid: runn:runn-me-api
+  name: Runn Me API
+  description: The Me API from Runn — 1 operation(s) for me.
+  humanURL: https://developer.runn.io/docs/getting-started.md
+  baseURL: https://api.runn.io
+  tags:
+  - Me
+  properties:
+  - type: OpenAPI
+    url: openapi/runn-me-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/runn-person-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-project-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-invitation-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-reports-hours-people-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-reports-hours-projects-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-actual-time-entry-schema.json
+- aid: runn:runn-milestones-api
+  name: Runn Milestones API
+  description: The Milestones API from Runn — 1 operation(s) for milestones.
+  humanURL: https://developer.runn.io/docs/getting-started.md
+  baseURL: https://api.runn.io
+  tags:
+  - Milestones
+  properties:
+  - type: OpenAPI
+    url: openapi/runn-milestones-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/runn-person-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-project-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-invitation-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-reports-hours-people-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-reports-hours-projects-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-actual-time-entry-schema.json
+- aid: runn:runn-other-expenses-api
+  name: Runn Other Expenses API
+  description: The Other Expenses API from Runn — 1 operation(s) for other expenses.
+  humanURL: https://developer.runn.io/docs/getting-started.md
+  baseURL: https://api.runn.io
+  tags:
+  - Other Expenses
+  properties:
+  - type: OpenAPI
+    url: openapi/runn-other-expenses-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/runn-person-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-project-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-invitation-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-reports-hours-people-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-reports-hours-projects-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-actual-time-entry-schema.json
+- aid: runn:runn-people-api
+  name: Runn People API
+  description: The People API from Runn — 24 operation(s) for people.
+  humanURL: https://developer.runn.io/docs/getting-started.md
+  baseURL: https://api.runn.io
+  tags:
+  - People
+  properties:
+  - type: OpenAPI
+    url: openapi/runn-people-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/runn-person-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-project-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-invitation-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-reports-hours-people-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-reports-hours-projects-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-actual-time-entry-schema.json
+- aid: runn:runn-people-tags-api
+  name: Runn People Tags API
+  description: The People Tags API from Runn — 2 operation(s) for people tags.
+  humanURL: https://developer.runn.io/docs/getting-started.md
+  baseURL: https://api.runn.io
+  tags:
+  - People Tags
+  properties:
+  - type: OpenAPI
+    url: openapi/runn-people-tags-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/runn-person-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-project-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-invitation-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-reports-hours-people-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-reports-hours-projects-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-actual-time-entry-schema.json
+- aid: runn:runn-person-requests-api
+  name: Runn Person Requests API
+  description: The Person Requests API from Runn — 1 operation(s) for person requests.
+  humanURL: https://developer.runn.io/docs/getting-started.md
+  baseURL: https://api.runn.io
+  tags:
+  - Person Requests
+  properties:
+  - type: OpenAPI
+    url: openapi/runn-person-requests-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/runn-person-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-project-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-invitation-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-reports-hours-people-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-reports-hours-projects-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-actual-time-entry-schema.json
+- aid: runn:runn-phases-api
+  name: Runn Phases API
+  description: The Phases API from Runn — 1 operation(s) for phases.
+  humanURL: https://developer.runn.io/docs/getting-started.md
+  baseURL: https://api.runn.io
+  tags:
+  - Phases
+  properties:
+  - type: OpenAPI
+    url: openapi/runn-phases-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/runn-person-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-project-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-invitation-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-reports-hours-people-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-reports-hours-projects-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-actual-time-entry-schema.json
+- aid: runn:runn-placeholders-api
+  name: Runn Placeholders API
+  description: The Placeholders API from Runn — 5 operation(s) for placeholders.
+  humanURL: https://developer.runn.io/docs/getting-started.md
+  baseURL: https://api.runn.io
+  tags:
+  - Placeholders
+  properties:
+  - type: OpenAPI
+    url: openapi/runn-placeholders-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/runn-person-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-project-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-invitation-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-reports-hours-people-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-reports-hours-projects-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-actual-time-entry-schema.json
+- aid: runn:runn-project-members-api
+  name: Runn Project Members API
+  description: The Project Members API from Runn — 1 operation(s) for project members.
+  humanURL: https://developer.runn.io/docs/getting-started.md
+  baseURL: https://api.runn.io
+  tags:
+  - Project Members
+  properties:
+  - type: OpenAPI
+    url: openapi/runn-project-members-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/runn-person-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-project-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-invitation-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-reports-hours-people-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-reports-hours-projects-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-actual-time-entry-schema.json
+- aid: runn:runn-project-notes-api
+  name: Runn Project Notes API
+  description: The Project Notes API from Runn — 1 operation(s) for project notes.
+  humanURL: https://developer.runn.io/docs/getting-started.md
+  baseURL: https://api.runn.io
+  tags:
+  - Project Notes
+  properties:
+  - type: OpenAPI
+    url: openapi/runn-project-notes-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/runn-person-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-project-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-invitation-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-reports-hours-people-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-reports-hours-projects-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-actual-time-entry-schema.json
+- aid: runn:runn-project-rates-api
+  name: Runn Project Rates API
+  description: The Project Rates API from Runn — 1 operation(s) for project rates.
+  humanURL: https://developer.runn.io/docs/getting-started.md
+  baseURL: https://api.runn.io
+  tags:
+  - Project Rates
+  properties:
+  - type: OpenAPI
+    url: openapi/runn-project-rates-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/runn-person-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-project-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-invitation-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-reports-hours-people-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-reports-hours-projects-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-actual-time-entry-schema.json
+- aid: runn:runn-project-tags-api
+  name: Runn Project Tags API
+  description: The Project Tags API from Runn — 3 operation(s) for project tags.
+  humanURL: https://developer.runn.io/docs/getting-started.md
+  baseURL: https://api.runn.io
+  tags:
+  - Project Tags
+  properties:
+  - type: OpenAPI
+    url: openapi/runn-project-tags-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/runn-person-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-project-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-invitation-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-reports-hours-people-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-reports-hours-projects-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-actual-time-entry-schema.json
+- aid: runn:runn-project-workstreams-api
+  name: Runn Project Workstreams API
+  description: The Project Workstreams API from Runn — 1 operation(s) for project workstreams.
+  humanURL: https://developer.runn.io/docs/getting-started.md
+  baseURL: https://api.runn.io
+  tags:
+  - Project Workstreams
+  properties:
+  - type: OpenAPI
+    url: openapi/runn-project-workstreams-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/runn-person-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-project-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-invitation-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-reports-hours-people-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-reports-hours-projects-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-actual-time-entry-schema.json
+- aid: runn:runn-projects-api
+  name: Runn Projects API
+  description: The Projects API from Runn — 27 operation(s) for projects.
+  humanURL: https://developer.runn.io/docs/getting-started.md
+  baseURL: https://api.runn.io
+  tags:
+  - Projects
+  properties:
+  - type: OpenAPI
+    url: openapi/runn-projects-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/runn-person-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-project-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-invitation-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-reports-hours-people-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-reports-hours-projects-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-actual-time-entry-schema.json
+- aid: runn:runn-rate-cards-api
+  name: Runn Rate Cards API
+  description: The Rate Cards API from Runn — 2 operation(s) for rate cards.
+  humanURL: https://developer.runn.io/docs/getting-started.md
+  baseURL: https://api.runn.io
+  tags:
+  - Rate Cards
+  properties:
+  - type: OpenAPI
+    url: openapi/runn-rate-cards-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/runn-person-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-project-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-invitation-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-reports-hours-people-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-reports-hours-projects-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-actual-time-entry-schema.json
+- aid: runn:runn-reports-api
+  name: Runn Reports API
+  description: The Reports API from Runn — 6 operation(s) for reports.
+  humanURL: https://developer.runn.io/docs/getting-started.md
+  baseURL: https://api.runn.io
+  tags:
+  - Reports
+  properties:
+  - type: OpenAPI
+    url: openapi/runn-reports-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/runn-person-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-project-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-invitation-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-reports-hours-people-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-reports-hours-projects-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-actual-time-entry-schema.json
+- aid: runn:runn-roles-api
+  name: Runn Roles API
+  description: The Roles API from Runn — 2 operation(s) for roles.
+  humanURL: https://developer.runn.io/docs/getting-started.md
+  baseURL: https://api.runn.io
+  tags:
+  - Roles
+  properties:
+  - type: OpenAPI
+    url: openapi/runn-roles-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/runn-person-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-project-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-invitation-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-reports-hours-people-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-reports-hours-projects-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-actual-time-entry-schema.json
+- aid: runn:runn-skills-api
+  name: Runn Skills API
+  description: The Skills API from Runn — 3 operation(s) for skills.
+  humanURL: https://developer.runn.io/docs/getting-started.md
+  baseURL: https://api.runn.io
+  tags:
+  - Skills
+  properties:
+  - type: OpenAPI
+    url: openapi/runn-skills-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/runn-person-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-project-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-invitation-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-reports-hours-people-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-reports-hours-projects-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-actual-time-entry-schema.json
+- aid: runn:runn-teams-api
+  name: Runn Teams API
+  description: The Teams API from Runn — 3 operation(s) for teams.
+  humanURL: https://developer.runn.io/docs/getting-started.md
+  baseURL: https://api.runn.io
+  tags:
+  - Teams
+  properties:
+  - type: OpenAPI
+    url: openapi/runn-teams-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/runn-person-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-project-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-invitation-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-reports-hours-people-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-reports-hours-projects-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-actual-time-entry-schema.json
+- aid: runn:runn-time-offs-api
+  name: Runn Time Offs API
+  description: The Time Offs API from Runn — 6 operation(s) for time offs.
+  humanURL: https://developer.runn.io/docs/getting-started.md
+  baseURL: https://api.runn.io
+  tags:
+  - Time Offs
+  properties:
+  - type: OpenAPI
+    url: openapi/runn-time-offs-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/runn-person-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-project-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-invitation-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-reports-hours-people-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-reports-hours-projects-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-actual-time-entry-schema.json
+- aid: runn:runn-users-api
+  name: Runn Users API
+  description: The Users API from Runn — 5 operation(s) for users.
+  humanURL: https://developer.runn.io/docs/getting-started.md
+  baseURL: https://api.runn.io
+  tags:
+  - Users
+  properties:
+  - type: OpenAPI
+    url: openapi/runn-users-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/runn-person-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-project-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-invitation-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-reports-hours-people-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-reports-hours-projects-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-actual-time-entry-schema.json
+- aid: runn:runn-views-api
+  name: Runn Views API
+  description: The Views API from Runn — 1 operation(s) for views.
+  humanURL: https://developer.runn.io/docs/getting-started.md
+  baseURL: https://api.runn.io
+  tags:
+  - Views
+  properties:
+  - type: OpenAPI
+    url: openapi/runn-views-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/runn-person-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-project-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-invitation-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-reports-hours-people-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-reports-hours-projects-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-actual-time-entry-schema.json
+- aid: runn:runn-workstreams-api
+  name: Runn Workstreams API
+  description: The Workstreams API from Runn — 2 operation(s) for workstreams.
+  humanURL: https://developer.runn.io/docs/getting-started.md
+  baseURL: https://api.runn.io
+  tags:
+  - Workstreams
+  properties:
+  - type: OpenAPI
+    url: openapi/runn-workstreams-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/runn-person-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-project-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-invitation-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-reports-hours-people-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-reports-hours-projects-schema.json
+  - type: JSONSchema
+    url: json-schema/runn-actual-time-entry-schema.json
+x-coverage:
+  state: gated
+  reason: partner-login
+  method: derived
+  generated: '2026-10-14'
+  generator: derive-coverage.py (pre-flight evidence)
+  detail: the company serves an API surface but requires credentials before any description of it can be read
+  evidence:
+  - url: https://developer.runn.io/mcp
+    status: 401
+  - url: https://www.runn.io
+    status: 200
+x-enrichment:
+  date: '2026-10-14'
+  status: enriched
+  artifacts_added: 27
+  pass: modular-v1
+  engine: identity=local,contract=local,surfaces=local,docs=local,regulatory=local
