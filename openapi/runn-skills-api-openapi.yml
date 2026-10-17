@@ -438,50 +438,6 @@ paths:
       - Skills
 components:
   schemas:
-    Skill:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        createdAt:
-          type: string
-          format: date-time
-          description: Timestamp of when the object was created.
-        updatedAt:
-          type: string
-          format: date-time
-          description: Timestamp of when the object was last updated.
-      required:
-      - id
-      - name
-      - createdAt
-      - updatedAt
-    ModifiedAfter:
-      description: 'If provided, will only return objects modified after this timestamp. Format: YYYY-MM-DD or YYYY-MM-DDTHH:MM:SSZ.'
-      anyOf:
-      - format: date
-        type: string
-      - format: date-time
-        type: string
-    BadRequest:
-      type: object
-      properties:
-        error:
-          type: string
-          enum:
-          - Bad Request
-        message:
-          type: string
-        statusCode:
-          type: number
-          enum:
-          - 400
-      required:
-      - error
-      - message
-      - statusCode
     NotFound:
       type: object
       properties:
@@ -499,51 +455,6 @@ components:
       - error
       - message
       - statusCode
-    Tag:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-      required:
-      - id
-      - name
-    Competency:
-      type: object
-      properties:
-        level:
-          anyOf:
-          - type: number
-            enum:
-            - 1
-            nullable: true
-          - type: number
-            enum:
-            - 2
-            nullable: true
-          - type: number
-            enum:
-            - 3
-            nullable: true
-          - type: number
-            enum:
-            - 4
-            nullable: true
-        skillId:
-          type: integer
-        createdAt:
-          type: string
-          format: date-time
-          description: Timestamp of when the object was created.
-        updatedAt:
-          type: string
-          format: date-time
-          description: Timestamp of when the object was last updated.
-      required:
-      - skillId
-      - createdAt
-      - updatedAt
     CollectionPerson:
       type: object
       properties:
@@ -603,6 +514,61 @@ components:
       - managers
       - createdAt
       - updatedAt
+    Competency:
+      type: object
+      properties:
+        level:
+          anyOf:
+          - type: number
+            enum:
+            - 1
+            nullable: true
+          - type: number
+            enum:
+            - 2
+            nullable: true
+          - type: number
+            enum:
+            - 3
+            nullable: true
+          - type: number
+            enum:
+            - 4
+            nullable: true
+        skillId:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was created.
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was last updated.
+      required:
+      - skillId
+      - createdAt
+      - updatedAt
+    Skill:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was created.
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was last updated.
+      required:
+      - id
+      - name
+      - createdAt
+      - updatedAt
     Reference:
       type: object
       properties:
@@ -622,6 +588,16 @@ components:
       - desc
       description: 'Sort order: asc or desc'
       default: asc
+    Tag:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+      required:
+      - id
+      - name
     Unauthorized:
       type: object
       properties:
@@ -641,6 +617,30 @@ components:
       - error
       - message
       - statusCode
+    BadRequest:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - Bad Request
+        message:
+          type: string
+        statusCode:
+          type: number
+          enum:
+          - 400
+      required:
+      - error
+      - message
+      - statusCode
+    ModifiedAfter:
+      description: 'If provided, will only return objects modified after this timestamp. Format: YYYY-MM-DD or YYYY-MM-DDTHH:MM:SSZ.'
+      anyOf:
+      - format: date
+        type: string
+      - format: date-time
+        type: string
   securitySchemes:
     bearerAuth:
       type: http

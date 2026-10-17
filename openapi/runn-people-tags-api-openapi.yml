@@ -350,13 +350,25 @@ paths:
       - People Tags
 components:
   schemas:
-    ModifiedAfter:
-      description: 'If provided, will only return objects modified after this timestamp. Format: YYYY-MM-DD or YYYY-MM-DDTHH:MM:SSZ.'
-      anyOf:
-      - format: date
-        type: string
-      - format: date-time
-        type: string
+    Unauthorized:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - Unauthorized
+        message:
+          type: string
+          enum:
+          - Unauthorized
+        statusCode:
+          type: number
+          enum:
+          - 401
+      required:
+      - error
+      - message
+      - statusCode
     BadRequest:
       type: object
       properties:
@@ -391,25 +403,13 @@ components:
       - error
       - message
       - statusCode
-    Unauthorized:
-      type: object
-      properties:
-        error:
-          type: string
-          enum:
-          - Unauthorized
-        message:
-          type: string
-          enum:
-          - Unauthorized
-        statusCode:
-          type: number
-          enum:
-          - 401
-      required:
-      - error
-      - message
-      - statusCode
+    ModifiedAfter:
+      description: 'If provided, will only return objects modified after this timestamp. Format: YYYY-MM-DD or YYYY-MM-DDTHH:MM:SSZ.'
+      anyOf:
+      - format: date
+        type: string
+      - format: date-time
+        type: string
   securitySchemes:
     bearerAuth:
       type: http

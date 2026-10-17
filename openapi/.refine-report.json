@@ -1,7 +1,7 @@
 {
   "provider": "runn",
   "sources": [
-    "runn-openapi.json"
+    "_original/runn-openapi.json"
   ],
   "outputs": [
     "runn-activity-log-api-openapi.yml",
@@ -38,12 +38,11 @@
     "runn-views-api-openapi.yml",
     "runn-workstreams-api-openapi.yml"
   ],
-  "archived": [
-    "archived openapi/runn-openapi.json"
-  ],
+  "archived": [],
   "errors": [],
   "warnings": [],
   "notes": [
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
     "runn-openapi.json: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
     "runn-openapi.json: tagged paths GET /activity-log/ -> Activity Log",
     "runn-openapi.json: tagged paths GET /actuals/ -> Actuals",
@@ -274,7 +273,41 @@
     "runn-openapi.json: declared missing tag: Users",
     "runn-openapi.json: declared missing tag: Views",
     "runn-openapi.json: declared missing tag: Workstreams",
-    "apis.yml register: written (+33 apis, 33 total)"
+    "apis.yml register: already-registered"
   ],
-  "skipped": []
+  "skipped": [
+    "runn-activity-log-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "runn-actuals-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "runn-assignments-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "runn-budget-roles-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "runn-clients-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "runn-contracts-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "runn-custom-fields-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "runn-holiday-groups-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "runn-invitations-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "runn-legacy-id-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "runn-me-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "runn-milestones-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "runn-other-expenses-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "runn-people-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "runn-people-tags-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "runn-person-requests-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "runn-phases-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "runn-placeholders-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "runn-project-members-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "runn-project-notes-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "runn-project-rates-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "runn-project-tags-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "runn-project-workstreams-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "runn-projects-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "runn-rate-cards-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "runn-reports-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "runn-roles-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "runn-skills-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "runn-teams-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "runn-time-offs-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "runn-users-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "runn-views-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "runn-workstreams-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }

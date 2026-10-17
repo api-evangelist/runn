@@ -79,6 +79,25 @@ paths:
       - Phases
 components:
   schemas:
+    Unauthorized:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - Unauthorized
+        message:
+          type: string
+          enum:
+          - Unauthorized
+        statusCode:
+          type: number
+          enum:
+          - 401
+      required:
+      - error
+      - message
+      - statusCode
     ModifiedAfter:
       description: 'If provided, will only return objects modified after this timestamp. Format: YYYY-MM-DD or YYYY-MM-DDTHH:MM:SSZ.'
       anyOf:
@@ -133,25 +152,6 @@ components:
       - createdAt
       - projectId
       - budget
-    Unauthorized:
-      type: object
-      properties:
-        error:
-          type: string
-          enum:
-          - Unauthorized
-        message:
-          type: string
-          enum:
-          - Unauthorized
-        statusCode:
-          type: number
-          enum:
-          - 401
-      required:
-      - error
-      - message
-      - statusCode
   securitySchemes:
     bearerAuth:
       type: http

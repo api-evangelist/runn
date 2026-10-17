@@ -116,6 +116,102 @@ paths:
       - Activity Log
 components:
   schemas:
+    ActorCsv:
+      title: CSV Actor
+      description: The csv actor represents an action performed by a csv file upload.
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - csv
+        userId:
+          description: The id of the user who uploaded the csv file.
+          type: number
+        userEmail:
+          description: The email of the user who uploaded the csv file.
+          type: string
+      required:
+      - type
+    Event.PersonDeleted:
+      title: Person Deleted Event
+      description: A person was deleted.
+      type: object
+      properties:
+        eventId:
+          type: string
+        type:
+          description: The unique type of the event
+          type: string
+          enum:
+          - person_deleted
+        actor:
+          $ref: '#/components/schemas/Actor'
+        timestamp:
+          type: string
+          format: date-time
+          description: The time the event occurred in ISO8601 format.
+        person:
+          description: Details about the person that was deleted.
+          type: object
+          properties:
+            id:
+              description: The id of the person at the time they were deleted.
+              type: integer
+            email:
+              description: The email of the person at the time they were deleted.
+              type: string
+              nullable: true
+            firstName:
+              description: The first name of the person at the time they were deleted.
+              type: string
+            lastName:
+              description: The last name of the person at the time they were deleted.
+              type: string
+          required:
+          - id
+          - email
+          - firstName
+          - lastName
+      required:
+      - eventId
+      - type
+      - actor
+      - timestamp
+      - person
+    Event.Subresource.Workstream:
+      title: Workstream Event Subresource
+      description: A subset of details about the workstream used on an event
+      type: object
+      properties:
+        id:
+          description: The unique identifier of the workstream
+          type: integer
+        name:
+          description: The name of the workstream
+          type: string
+      required:
+      - id
+      - name
+    Unauthorized:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - Unauthorized
+        message:
+          type: string
+          enum:
+          - Unauthorized
+        statusCode:
+          type: number
+          enum:
+          - 401
+      required:
+      - error
+      - message
+      - statusCode
     BadRequest:
       type: object
       properties:
@@ -133,102 +229,25 @@ components:
       - error
       - message
       - statusCode
-    Event.Subresource.Role:
-      title: Role Event Subresource
-      description: A subset of details about the role used on an event
-      type: object
-      properties:
-        id:
-          description: The unique identifier of the role
-          type: integer
-        name:
-          description: The name of the role
-          type: string
-        active:
-          description: Whether the role is active
-          type: boolean
-      required:
-      - id
-      - name
-      - active
-    Event.Subresource.Workstream:
-      title: Workstream Event Subresource
-      description: A subset of details about the workstream used on an event
-      type: object
-      properties:
-        id:
-          description: The unique identifier of the workstream
-          type: integer
-        name:
-          description: The name of the workstream
-          type: string
-      required:
-      - id
-      - name
-    Event.Subresource.Phase:
-      title: Phase Event Subresource
-      description: A subset of details about the phase used on an event
-      type: object
-      properties:
-        id:
-          description: The unique identifier of the phase
-          type: integer
-        name:
-          description: The name of the phase
-          type: string
-      required:
-      - id
-      - name
-    ActorUser:
-      title: User Actor
-      description: The user actor represents a user. This usually means a user who interacted with the web application.
-      type: object
-      properties:
-        type:
-          type: string
-          enum:
-          - user
-        userId:
-          type: number
-        userEmail:
-          type: string
-      required:
-      - type
-      - userId
-    ActorApi:
-      title: API Actor
-      description: The api actor represents an action performed by an api key.
-      type: object
-      properties:
-        type:
-          type: string
-          enum:
-          - api
-        tokenId:
-          description: The id of the api key.
-          type: number
-        tokenName:
-          description: The name of the api key.
-          type: string
-        apiVersion:
-          description: The api version.
-          type: string
-      required:
-      - type
-      - tokenId
-      - tokenName
-      - apiVersion
-    ActorRunnSupport:
-      title: Runn Support Actor
-      description: The Runn Support actor represents an action performed by the Runn supprt team. If you have questions about actions performed by the Runn support team, please contact the Runn team.
-      type: object
-      properties:
-        type:
-          type: string
-          enum:
-          - runn_support
-      required:
-      - type
+    Actor:
+      discriminator:
+        propertyName: type
+        mapping:
+          runn_support: '#/components/schemas/ActorRunnSupport'
+          user: '#/components/schemas/ActorUser'
+          api: '#/components/schemas/ActorApi'
+          csv: '#/components/schemas/ActorCsv'
+          integration: '#/components/schemas/ActorIntegration'
+          system: '#/components/schemas/ActorSystem'
+      title: Actor
+      description: An actor represents an entity that can perform actions such as a user, api key, or system process. Each actor type has a unique set of properties. The `type` property is used to determine the actor type.
+      anyOf:
+      - $ref: '#/components/schemas/ActorRunnSupport'
+      - $ref: '#/components/schemas/ActorUser'
+      - $ref: '#/components/schemas/ActorApi'
+      - $ref: '#/components/schemas/ActorCsv'
+      - $ref: '#/components/schemas/ActorIntegration'
+      - $ref: '#/components/schemas/ActorSystem'
     Event.ProjectDeleted:
       title: Project Deleted Event
       description: A project was deleted.
@@ -266,64 +285,6 @@ components:
       - actor
       - timestamp
       - project
-    ActorSystem:
-      title: System Actor
-      description: The system actor represents an action performed by the system, such as a scheduled task, migration, or other automated process. Some actions may not have a specific actor and will default to the system actor.
-      type: object
-      properties:
-        type:
-          type: string
-          enum:
-          - system
-      required:
-      - type
-    Event.Subresource.Person:
-      title: Person Event Subresource
-      description: A subset of details about the person used on an event
-      type: object
-      properties:
-        id:
-          description: The unique identifier of the person
-          type: integer
-        firstName:
-          description: The first name of the person
-          type: string
-        lastName:
-          description: The last name of the person
-          type: string
-        email:
-          description: The email address of the person
-          type: string
-          nullable: true
-          example: user@example.com
-        isPlaceholder:
-          description: A flag indicating if the person is a placeholder
-          type: boolean
-      required:
-      - id
-      - firstName
-      - lastName
-      - email
-      - isPlaceholder
-    Actor:
-      discriminator:
-        propertyName: type
-        mapping:
-          runn_support: '#/components/schemas/ActorRunnSupport'
-          user: '#/components/schemas/ActorUser'
-          api: '#/components/schemas/ActorApi'
-          csv: '#/components/schemas/ActorCsv'
-          integration: '#/components/schemas/ActorIntegration'
-          system: '#/components/schemas/ActorSystem'
-      title: Actor
-      description: An actor represents an entity that can perform actions such as a user, api key, or system process. Each actor type has a unique set of properties. The `type` property is used to determine the actor type.
-      anyOf:
-      - $ref: '#/components/schemas/ActorRunnSupport'
-      - $ref: '#/components/schemas/ActorUser'
-      - $ref: '#/components/schemas/ActorApi'
-      - $ref: '#/components/schemas/ActorCsv'
-      - $ref: '#/components/schemas/ActorIntegration'
-      - $ref: '#/components/schemas/ActorSystem'
     Event.ContractDeleted:
       title: Contract Deleted Event
       description: A contract was deleted.
@@ -383,6 +344,117 @@ components:
       - actor
       - timestamp
       - contract
+    Event.ActualDeleted:
+      title: Actual Deleted Event
+      description: An actual was deleted.
+      type: object
+      properties:
+        eventId:
+          type: string
+        type:
+          description: The unique type of the event
+          type: string
+          enum:
+          - actual_deleted
+        actor:
+          $ref: '#/components/schemas/Actor'
+        timestamp:
+          type: string
+          format: date-time
+          description: The time the event occurred in ISO8601 format.
+        actual:
+          description: Details about the actual that was deleted.
+          type: object
+          properties:
+            id:
+              description: The id of the actual at the time it was deleted.
+              type: integer
+            date:
+              description: The date of the actual at the time it was deleted.
+              type: string
+            personId:
+              description: The id of the person associated with the actual.
+              type: integer
+            roleId:
+              description: The id of the role associated with the actual.
+              type: integer
+            projectId:
+              description: The id of the project associated with the actual.
+              type: integer
+            phaseId:
+              description: The id referencing the phase of the actual, if applicable.
+              type: number
+              nullable: true
+            workstreamId:
+              description: The id of the workstream associated with the actual.
+              type: integer
+              nullable: true
+            billableMinutes:
+              description: The number of billable minutes for the actual
+              type: number
+            nonbillableMinutes:
+              description: The number of nonbillable minutes for the actual
+              type: number
+            billableNote:
+              description: A note or comment related to the billable minutes, if any.
+              type: string
+              nullable: true
+            nonbillableNote:
+              description: A note or comment related to the nonbillable minutes, if any.
+              type: string
+              nullable: true
+            person:
+              $ref: '#/components/schemas/Event.Subresource.Person'
+              nullable: true
+            role:
+              $ref: '#/components/schemas/Event.Subresource.Role'
+              nullable: true
+            project:
+              $ref: '#/components/schemas/Event.Subresource.Project'
+              nullable: true
+            workstream:
+              $ref: '#/components/schemas/Event.Subresource.Workstream'
+              nullable: true
+          required:
+          - id
+          - date
+          - personId
+          - roleId
+          - projectId
+          - phaseId
+          - workstreamId
+          - billableMinutes
+          - nonbillableMinutes
+          - billableNote
+          - nonbillableNote
+          - person
+          - role
+          - project
+          - workstream
+      required:
+      - eventId
+      - type
+      - actor
+      - timestamp
+      - actual
+    Event.Subresource.Role:
+      title: Role Event Subresource
+      description: A subset of details about the role used on an event
+      type: object
+      properties:
+        id:
+          description: The unique identifier of the role
+          type: integer
+        name:
+          description: The name of the role
+          type: string
+        active:
+          description: Whether the role is active
+          type: boolean
+      required:
+      - id
+      - name
+      - active
     ActorIntegration:
       title: Integration Actor
       description: The integration actor represents an action performed by an integration with a third-party service.
@@ -402,23 +474,20 @@ components:
       - type
       - id
       - name
-    UnprocessableEntity:
+    Event.Subresource.Phase:
+      title: Phase Event Subresource
+      description: A subset of details about the phase used on an event
       type: object
       properties:
-        error:
+        id:
+          description: The unique identifier of the phase
+          type: integer
+        name:
+          description: The name of the phase
           type: string
-          enum:
-          - Unprocessable Entity
-        message:
-          type: string
-        statusCode:
-          type: number
-          enum:
-          - 422
       required:
-      - error
-      - message
-      - statusCode
+      - id
+      - name
     Event.AssignmentDeleted:
       title: Assignment Deleted Event
       description: An assignment was deleted.
@@ -526,99 +595,96 @@ components:
       - actor
       - timestamp
       - assignment
-    Event.ActualDeleted:
-      title: Actual Deleted Event
-      description: An actual was deleted.
+    ActorApi:
+      title: API Actor
+      description: The api actor represents an action performed by an api key.
       type: object
       properties:
-        eventId:
-          type: string
         type:
-          description: The unique type of the event
           type: string
           enum:
-          - actual_deleted
-        actor:
-          $ref: '#/components/schemas/Actor'
-        timestamp:
+          - api
+        tokenId:
+          description: The id of the api key.
+          type: number
+        tokenName:
+          description: The name of the api key.
           type: string
-          format: date-time
-          description: The time the event occurred in ISO8601 format.
-        actual:
-          description: Details about the actual that was deleted.
-          type: object
-          properties:
-            id:
-              description: The id of the actual at the time it was deleted.
-              type: integer
-            date:
-              description: The date of the actual at the time it was deleted.
-              type: string
-            personId:
-              description: The id of the person associated with the actual.
-              type: integer
-            roleId:
-              description: The id of the role associated with the actual.
-              type: integer
-            projectId:
-              description: The id of the project associated with the actual.
-              type: integer
-            phaseId:
-              description: The id referencing the phase of the actual, if applicable.
-              type: number
-              nullable: true
-            workstreamId:
-              description: The id of the workstream associated with the actual.
-              type: integer
-              nullable: true
-            billableMinutes:
-              description: The number of billable minutes for the actual
-              type: number
-            nonbillableMinutes:
-              description: The number of nonbillable minutes for the actual
-              type: number
-            billableNote:
-              description: A note or comment related to the billable minutes, if any.
-              type: string
-              nullable: true
-            nonbillableNote:
-              description: A note or comment related to the nonbillable minutes, if any.
-              type: string
-              nullable: true
-            person:
-              $ref: '#/components/schemas/Event.Subresource.Person'
-              nullable: true
-            role:
-              $ref: '#/components/schemas/Event.Subresource.Role'
-              nullable: true
-            project:
-              $ref: '#/components/schemas/Event.Subresource.Project'
-              nullable: true
-            workstream:
-              $ref: '#/components/schemas/Event.Subresource.Workstream'
-              nullable: true
-          required:
-          - id
-          - date
-          - personId
-          - roleId
-          - projectId
-          - phaseId
-          - workstreamId
-          - billableMinutes
-          - nonbillableMinutes
-          - billableNote
-          - nonbillableNote
-          - person
-          - role
-          - project
-          - workstream
+        apiVersion:
+          description: The api version.
+          type: string
       required:
-      - eventId
       - type
-      - actor
-      - timestamp
-      - actual
+      - tokenId
+      - tokenName
+      - apiVersion
+    ActorRunnSupport:
+      title: Runn Support Actor
+      description: The Runn Support actor represents an action performed by the Runn supprt team. If you have questions about actions performed by the Runn support team, please contact the Runn team.
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - runn_support
+      required:
+      - type
+    ActorSystem:
+      title: System Actor
+      description: The system actor represents an action performed by the system, such as a scheduled task, migration, or other automated process. Some actions may not have a specific actor and will default to the system actor.
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - system
+      required:
+      - type
+    UnprocessableEntity:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - Unprocessable Entity
+        message:
+          type: string
+        statusCode:
+          type: number
+          enum:
+          - 422
+      required:
+      - error
+      - message
+      - statusCode
+    Event.Subresource.Person:
+      title: Person Event Subresource
+      description: A subset of details about the person used on an event
+      type: object
+      properties:
+        id:
+          description: The unique identifier of the person
+          type: integer
+        firstName:
+          description: The first name of the person
+          type: string
+        lastName:
+          description: The last name of the person
+          type: string
+        email:
+          description: The email address of the person
+          type: string
+          nullable: true
+          example: user@example.com
+        isPlaceholder:
+          description: A flag indicating if the person is a placeholder
+          type: boolean
+      required:
+      - id
+      - firstName
+      - lastName
+      - email
+      - isPlaceholder
     Event.TimeOffDeleted:
       title: Time Off Deleted Event
       description: A time off was deleted.
@@ -677,42 +743,6 @@ components:
       - actor
       - timestamp
       - timeOff
-    ActorCsv:
-      title: CSV Actor
-      description: The csv actor represents an action performed by a csv file upload.
-      type: object
-      properties:
-        type:
-          type: string
-          enum:
-          - csv
-        userId:
-          description: The id of the user who uploaded the csv file.
-          type: number
-        userEmail:
-          description: The email of the user who uploaded the csv file.
-          type: string
-      required:
-      - type
-    Unauthorized:
-      type: object
-      properties:
-        error:
-          type: string
-          enum:
-          - Unauthorized
-        message:
-          type: string
-          enum:
-          - Unauthorized
-        statusCode:
-          type: number
-          enum:
-          - 401
-      required:
-      - error
-      - message
-      - statusCode
     Event.Subresource.Project:
       title: Project Event Subresource
       description: A subset of details about the project used on an event
@@ -727,52 +757,6 @@ components:
       required:
       - id
       - name
-    Event.PersonDeleted:
-      title: Person Deleted Event
-      description: A person was deleted.
-      type: object
-      properties:
-        eventId:
-          type: string
-        type:
-          description: The unique type of the event
-          type: string
-          enum:
-          - person_deleted
-        actor:
-          $ref: '#/components/schemas/Actor'
-        timestamp:
-          type: string
-          format: date-time
-          description: The time the event occurred in ISO8601 format.
-        person:
-          description: Details about the person that was deleted.
-          type: object
-          properties:
-            id:
-              description: The id of the person at the time they were deleted.
-              type: integer
-            email:
-              description: The email of the person at the time they were deleted.
-              type: string
-              nullable: true
-            firstName:
-              description: The first name of the person at the time they were deleted.
-              type: string
-            lastName:
-              description: The last name of the person at the time they were deleted.
-              type: string
-          required:
-          - id
-          - email
-          - firstName
-          - lastName
-      required:
-      - eventId
-      - type
-      - actor
-      - timestamp
-      - person
     Event:
       discriminator:
         propertyName: type
@@ -792,6 +776,22 @@ components:
       - $ref: '#/components/schemas/Event.ActualDeleted'
       - $ref: '#/components/schemas/Event.TimeOffDeleted'
       - $ref: '#/components/schemas/Event.AssignmentDeleted'
+    ActorUser:
+      title: User Actor
+      description: The user actor represents a user. This usually means a user who interacted with the web application.
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - user
+        userId:
+          type: number
+        userEmail:
+          type: string
+      required:
+      - type
+      - userId
   securitySchemes:
     bearerAuth:
       type: http

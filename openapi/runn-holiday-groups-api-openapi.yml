@@ -206,6 +206,66 @@ paths:
       - Holiday Groups
 components:
   schemas:
+    Holiday:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        date:
+          type: string
+          format: date
+          description: 'Format: YYYY-MM-DD'
+        observed:
+          type: string
+          format: date
+          description: 'Format: YYYY-MM-DD'
+          nullable: true
+        type:
+          type: string
+      required:
+      - id
+      - name
+      - date
+      - observed
+      - type
+    NotFound:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - Not Found
+        message:
+          type: string
+        statusCode:
+          type: number
+          enum:
+          - 404
+      required:
+      - error
+      - message
+      - statusCode
+    Unauthorized:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - Unauthorized
+        message:
+          type: string
+          enum:
+          - Unauthorized
+        statusCode:
+          type: number
+          enum:
+          - 401
+      required:
+      - error
+      - message
+      - statusCode
     HolidayGroup:
       type: object
       properties:
@@ -245,66 +305,6 @@ components:
           type: number
           enum:
           - 400
-      required:
-      - error
-      - message
-      - statusCode
-    NotFound:
-      type: object
-      properties:
-        error:
-          type: string
-          enum:
-          - Not Found
-        message:
-          type: string
-        statusCode:
-          type: number
-          enum:
-          - 404
-      required:
-      - error
-      - message
-      - statusCode
-    Holiday:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        date:
-          type: string
-          format: date
-          description: 'Format: YYYY-MM-DD'
-        observed:
-          type: string
-          format: date
-          description: 'Format: YYYY-MM-DD'
-          nullable: true
-        type:
-          type: string
-      required:
-      - id
-      - name
-      - date
-      - observed
-      - type
-    Unauthorized:
-      type: object
-      properties:
-        error:
-          type: string
-          enum:
-          - Unauthorized
-        message:
-          type: string
-          enum:
-          - Unauthorized
-        statusCode:
-          type: number
-          enum:
-          - 401
       required:
       - error
       - message

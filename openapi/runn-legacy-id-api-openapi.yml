@@ -88,23 +88,6 @@ paths:
       - Legacy Id
 components:
   schemas:
-    BadRequest:
-      type: object
-      properties:
-        error:
-          type: string
-          enum:
-          - Bad Request
-        message:
-          type: string
-        statusCode:
-          type: number
-          enum:
-          - 400
-      required:
-      - error
-      - message
-      - statusCode
     Unauthorized:
       type: object
       properties:
@@ -120,6 +103,23 @@ components:
           type: number
           enum:
           - 401
+      required:
+      - error
+      - message
+      - statusCode
+    BadRequest:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - Bad Request
+        message:
+          type: string
+        statusCode:
+          type: number
+          enum:
+          - 400
       required:
       - error
       - message

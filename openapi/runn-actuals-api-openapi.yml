@@ -376,77 +376,6 @@ components:
       - workstreamId
       - createdAt
       - updatedAt
-    ModifiedAfter:
-      description: 'If provided, will only return objects modified after this timestamp. Format: YYYY-MM-DD or YYYY-MM-DDTHH:MM:SSZ.'
-      anyOf:
-      - format: date
-        type: string
-      - format: date-time
-        type: string
-    ActualInput:
-      type: object
-      properties:
-        date:
-          type: string
-          format: date
-          description: 'The date this actual is for. Format: YYYY-MM-DD'
-        billableMinutes:
-          description: The number of minutes that are billable. Either this or nonbillableMinutes must be set
-          default: 0
-          minimum: 0
-          type: number
-        nonbillableMinutes:
-          description: The number of minutes that are non billable. Either this or billableMinutes must be set
-          default: 0
-          minimum: 0
-          type: number
-        billableNote:
-          description: A note about the billable minutes
-          type: string
-        nonbillableNote:
-          description: A note about the nonbillable minutes
-          type: string
-        phaseId:
-          description: The phase this actual is for, if any.
-          type: number
-          nullable: true
-        personId:
-          description: The person this actual is for
-          type: number
-        projectId:
-          description: The project this actual is for
-          type: number
-        roleId:
-          description: The role the person was in when for this actual
-          type: number
-        workstreamId:
-          description: The workstream the actual is for. Omitting this field matches an actual on any workstream and leaves that actual's workstream unchanged. `null` matches only an actual that has no workstream, and ignores actuals with workstreams in its filter. A value matches only an actual on that workstream, and ignores actuals on every other workstream. `workstreamId` will not update the existing actual's workstream. If nothing matches, the actual is created on the workstream you sent, or with no workstream when the field is omitted or `null`, in which case it appears under No Workstream. Where two or more actuals exist for the same date, project, person, and role on different workstreams, omitting this field updates the oldest of them. Send `workstreamId` on every request if the project uses workstreams.
-          type: number
-          nullable: true
-      required:
-      - date
-      - billableMinutes
-      - nonbillableMinutes
-      - personId
-      - projectId
-      - roleId
-    BadRequest:
-      type: object
-      properties:
-        error:
-          type: string
-          enum:
-          - Bad Request
-        message:
-          type: string
-        statusCode:
-          type: number
-          enum:
-          - 400
-      required:
-      - error
-      - message
-      - statusCode
     NotFound:
       type: object
       properties:
@@ -511,6 +440,53 @@ components:
       - personId
       - projectId
       - roleId
+    ActualInput:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+          description: 'The date this actual is for. Format: YYYY-MM-DD'
+        billableMinutes:
+          description: The number of minutes that are billable. Either this or nonbillableMinutes must be set
+          default: 0
+          minimum: 0
+          type: number
+        nonbillableMinutes:
+          description: The number of minutes that are non billable. Either this or billableMinutes must be set
+          default: 0
+          minimum: 0
+          type: number
+        billableNote:
+          description: A note about the billable minutes
+          type: string
+        nonbillableNote:
+          description: A note about the nonbillable minutes
+          type: string
+        phaseId:
+          description: The phase this actual is for, if any.
+          type: number
+          nullable: true
+        personId:
+          description: The person this actual is for
+          type: number
+        projectId:
+          description: The project this actual is for
+          type: number
+        roleId:
+          description: The role the person was in when for this actual
+          type: number
+        workstreamId:
+          description: The workstream the actual is for. Omitting this field matches an actual on any workstream and leaves that actual's workstream unchanged. `null` matches only an actual that has no workstream, and ignores actuals with workstreams in its filter. A value matches only an actual on that workstream, and ignores actuals on every other workstream. `workstreamId` will not update the existing actual's workstream. If nothing matches, the actual is created on the workstream you sent, or with no workstream when the field is omitted or `null`, in which case it appears under No Workstream. Where two or more actuals exist for the same date, project, person, and role on different workstreams, omitting this field updates the oldest of them. Send `workstreamId` on every request if the project uses workstreams.
+          type: number
+          nullable: true
+      required:
+      - date
+      - billableMinutes
+      - nonbillableMinutes
+      - personId
+      - projectId
+      - roleId
     Unauthorized:
       type: object
       properties:
@@ -530,6 +506,30 @@ components:
       - error
       - message
       - statusCode
+    BadRequest:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - Bad Request
+        message:
+          type: string
+        statusCode:
+          type: number
+          enum:
+          - 400
+      required:
+      - error
+      - message
+      - statusCode
+    ModifiedAfter:
+      description: 'If provided, will only return objects modified after this timestamp. Format: YYYY-MM-DD or YYYY-MM-DDTHH:MM:SSZ.'
+      anyOf:
+      - format: date
+        type: string
+      - format: date-time
+        type: string
   securitySchemes:
     bearerAuth:
       type: http

@@ -83,6 +83,42 @@ paths:
       - Budget Roles
 components:
   schemas:
+    Unauthorized:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - Unauthorized
+        message:
+          type: string
+          enum:
+          - Unauthorized
+        statusCode:
+          type: number
+          enum:
+          - 401
+      required:
+      - error
+      - message
+      - statusCode
+    BadRequest:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - Bad Request
+        message:
+          type: string
+        statusCode:
+          type: number
+          enum:
+          - 400
+      required:
+      - error
+      - message
+      - statusCode
     ProjectBudgetRole:
       description: Project budget role
       type: object
@@ -119,42 +155,6 @@ components:
         type: string
       - format: date-time
         type: string
-    BadRequest:
-      type: object
-      properties:
-        error:
-          type: string
-          enum:
-          - Bad Request
-        message:
-          type: string
-        statusCode:
-          type: number
-          enum:
-          - 400
-      required:
-      - error
-      - message
-      - statusCode
-    Unauthorized:
-      type: object
-      properties:
-        error:
-          type: string
-          enum:
-          - Unauthorized
-        message:
-          type: string
-          enum:
-          - Unauthorized
-        statusCode:
-          type: number
-          enum:
-          - 401
-      required:
-      - error
-      - message
-      - statusCode
   securitySchemes:
     bearerAuth:
       type: http

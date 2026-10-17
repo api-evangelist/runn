@@ -581,73 +581,6 @@ paths:
       - Time Offs
 components:
   schemas:
-    TimeOffLeaveInput:
-      type: object
-      properties:
-        personId:
-          description: The unique identifier for the person.
-          type: integer
-        startDate:
-          type: string
-          format: date
-          description: 'The start date of the time-off. Format: YYYY-MM-DD'
-        endDate:
-          type: string
-          format: date
-          description: 'The end date of the time-off. Format: YYYY-MM-DD'
-        note:
-          description: A note or comment related to the time-off, if any.
-          type: string
-        minutesPerDay:
-          description: The minutes per day taken as time off. Omit this property if time-off is for full day(s) as per person's contract.
-          minimum: 15
-          type: integer
-          nullable: true
-      required:
-      - personId
-      - startDate
-      - endDate
-    ModifiedAfter:
-      description: 'If provided, will only return objects modified after this timestamp. Format: YYYY-MM-DD or YYYY-MM-DDTHH:MM:SSZ.'
-      anyOf:
-      - format: date
-        type: string
-      - format: date-time
-        type: string
-    BadRequest:
-      type: object
-      properties:
-        error:
-          type: string
-          enum:
-          - Bad Request
-        message:
-          type: string
-        statusCode:
-          type: number
-          enum:
-          - 400
-      required:
-      - error
-      - message
-      - statusCode
-    NotFound:
-      type: object
-      properties:
-        error:
-          type: string
-          enum:
-          - Not Found
-        message:
-          type: string
-        statusCode:
-          type: number
-          enum:
-          - 404
-      required:
-      - error
-      - message
-      - statusCode
     TimeOff:
       type: object
       properties:
@@ -688,6 +621,49 @@ components:
       - createdAt
       - updatedAt
       - minutesPerDay
+    NotFound:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - Not Found
+        message:
+          type: string
+        statusCode:
+          type: number
+          enum:
+          - 404
+      required:
+      - error
+      - message
+      - statusCode
+    TimeOffLeaveInput:
+      type: object
+      properties:
+        personId:
+          description: The unique identifier for the person.
+          type: integer
+        startDate:
+          type: string
+          format: date
+          description: 'The start date of the time-off. Format: YYYY-MM-DD'
+        endDate:
+          type: string
+          format: date
+          description: 'The end date of the time-off. Format: YYYY-MM-DD'
+        note:
+          description: A note or comment related to the time-off, if any.
+          type: string
+        minutesPerDay:
+          description: The minutes per day taken as time off. Omit this property if time-off is for full day(s) as per person's contract.
+          minimum: 15
+          type: integer
+          nullable: true
+      required:
+      - personId
+      - startDate
+      - endDate
     SortOrder:
       type: string
       enum:
@@ -714,6 +690,30 @@ components:
       - error
       - message
       - statusCode
+    BadRequest:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - Bad Request
+        message:
+          type: string
+        statusCode:
+          type: number
+          enum:
+          - 400
+      required:
+      - error
+      - message
+      - statusCode
+    ModifiedAfter:
+      description: 'If provided, will only return objects modified after this timestamp. Format: YYYY-MM-DD or YYYY-MM-DDTHH:MM:SSZ.'
+      anyOf:
+      - format: date
+        type: string
+      - format: date-time
+        type: string
   securitySchemes:
     bearerAuth:
       type: http

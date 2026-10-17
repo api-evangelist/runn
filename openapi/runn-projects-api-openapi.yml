@@ -2967,92 +2967,39 @@ paths:
       - Projects
 components:
   schemas:
-    CustomDateFieldCollection:
+    ProjectCustomField:
       type: object
       properties:
-        name:
-          type: string
-        type:
-          type: string
-          enum:
-          - date
-        customDateId:
+        projectId:
           type: integer
-        value:
-          type: string
-          format: date
-          description: 'Format: YYYY-MM-DD'
-          nullable: true
-      required:
-      - name
-      - type
-      - customDateId
-      - value
-    BadRequest:
-      type: object
-      properties:
-        error:
-          type: string
-          enum:
-          - Bad Request
-        message:
-          type: string
-        statusCode:
-          type: number
-          enum:
-          - 400
-      required:
-      - error
-      - message
-      - statusCode
-    ProjectWorkstream:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        archived:
-          type: boolean
-        projectIds:
+        customFields:
           type: array
           items:
-            type: integer
+            discriminator:
+              propertyName: type
+              mapping:
+                text: '#/components/schemas/CustomTextFieldCollection'
+                date: '#/components/schemas/CustomDateFieldCollection'
+                checkbox: '#/components/schemas/CustomCheckboxFieldCollection'
+                select: '#/components/schemas/CustomSelectFieldCollection'
+            anyOf:
+            - $ref: '#/components/schemas/CustomTextFieldCollection'
+            - $ref: '#/components/schemas/CustomDateFieldCollection'
+            - $ref: '#/components/schemas/CustomCheckboxFieldCollection'
+            - $ref: '#/components/schemas/CustomSelectFieldCollection'
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was created.
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was last updated.
       required:
-      - id
-      - name
-      - archived
-      - projectIds
-    CustomCheckboxFieldCollection:
-      type: object
-      properties:
-        name:
-          type: string
-        type:
-          type: string
-          enum:
-          - checkbox
-        customCheckboxId:
-          type: integer
-        value:
-          type: boolean
-      required:
-      - name
-      - type
-      - customCheckboxId
-      - value
-    Reference:
-      type: object
-      properties:
-        referenceName:
-          minLength: 1
-          type: string
-        externalId:
-          minLength: 1
-          type: string
-      required:
-      - referenceName
-      - externalId
+      - projectId
+      - customFields
+      - createdAt
+      - updatedAt
     CustomSelectFieldCollection:
       type: object
       properties:
@@ -3081,6 +3028,332 @@ components:
       - type
       - customSelectId
       - value
+    ProjectNote:
+      type: object
+      properties:
+        id:
+          type: integer
+        createdBy:
+          type: string
+          nullable: true
+        createdByEmail:
+          type: string
+          nullable: true
+        note:
+          type: string
+        projectId:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was created.
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was last updated.
+      required:
+      - id
+      - createdBy
+      - createdByEmail
+      - note
+      - projectId
+      - createdAt
+      - updatedAt
+    CustomTextFieldCollection:
+      type: object
+      properties:
+        name:
+          type: string
+        type:
+          type: string
+          enum:
+          - text
+        customTextId:
+          type: integer
+        value:
+          type: string
+          nullable: true
+      required:
+      - name
+      - type
+      - customTextId
+      - value
+    CustomCheckboxFieldCollection:
+      type: object
+      properties:
+        name:
+          type: string
+        type:
+          type: string
+          enum:
+          - checkbox
+        customCheckboxId:
+          type: integer
+        value:
+          type: boolean
+      required:
+      - name
+      - type
+      - customCheckboxId
+      - value
+    Unauthorized:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - Unauthorized
+        message:
+          type: string
+          enum:
+          - Unauthorized
+        statusCode:
+          type: number
+          enum:
+          - 401
+      required:
+      - error
+      - message
+      - statusCode
+    BadRequest:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - Bad Request
+        message:
+          type: string
+        statusCode:
+          type: number
+          enum:
+          - 400
+      required:
+      - error
+      - message
+      - statusCode
+    ModifiedAfter:
+      description: 'If provided, will only return objects modified after this timestamp. Format: YYYY-MM-DD or YYYY-MM-DDTHH:MM:SSZ.'
+      anyOf:
+      - format: date
+        type: string
+      - format: date-time
+        type: string
+    Actual:
+      type: object
+      properties:
+        id:
+          description: The unique identifier for the actual
+          type: integer
+        date:
+          type: string
+          format: date
+          description: 'The date the actual took place. Format: YYYY-MM-DD'
+        billableMinutes:
+          description: The number of billable minutes for the actual
+          type: number
+        nonbillableMinutes:
+          description: The number of nonbillable minutes for the actual
+          type: number
+        billableNote:
+          description: A note or comment related to the billable minutes, if any.
+          type: string
+          nullable: true
+        nonbillableNote:
+          description: A note or comment related to the nonbillable minutes, if any.
+          type: string
+          nullable: true
+        phaseId:
+          description: The ID referencing the phase of the actual, if applicable.
+          type: number
+          nullable: true
+        personId:
+          description: The ID referencing the person associated with the actual.
+          type: number
+        projectId:
+          description: The ID referencing the project associated with the actual.
+          type: number
+        roleId:
+          description: The ID referencing the role associated with the actual.
+          type: number
+        workstreamId:
+          description: The ID referencing the workstream of the actual. `null` when the actual has no workstream, in which case it appears under No Workstream in Runn.
+          type: number
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was created.
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was last updated.
+      required:
+      - id
+      - date
+      - billableMinutes
+      - nonbillableMinutes
+      - billableNote
+      - nonbillableNote
+      - phaseId
+      - personId
+      - projectId
+      - roleId
+      - workstreamId
+      - createdAt
+      - updatedAt
+    NotFound:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - Not Found
+        message:
+          type: string
+        statusCode:
+          type: number
+          enum:
+          - 404
+      required:
+      - error
+      - message
+      - statusCode
+    ProjectBudgetRole:
+      description: Project budget role
+      type: object
+      properties:
+        projectId:
+          type: integer
+        roleId:
+          type: integer
+        estimatedMinutes:
+          description: 'Estimated Minutes: The total number of minutes budgeted for a role on a project.'
+          type: integer
+        estimatedBudget:
+          description: The budget in local currency. This value is calculated live and rounded using ROUND_HALF_UP. estimatedBudget = estimatedMinutes / 60 * projectRateMinute
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was created.
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was last updated.
+      required:
+      - projectId
+      - roleId
+      - estimatedMinutes
+      - estimatedBudget
+      - createdAt
+      - updatedAt
+    ProjectPhase:
+      title: Project Phase
+      description: Project phases divide your project into smaller sections so you can group similar tasks and assignments together.
+      type: object
+      properties:
+        id:
+          description: Unique identifier for the phase
+          type: number
+        name:
+          description: The name of the project phase
+          type: string
+        color:
+          description: Color of the project phase (hex code)
+          type: string
+        startDate:
+          type: string
+          format: date
+          description: Start date of the project phase in ISO 8601 format
+        endDate:
+          type: string
+          format: date
+          description: End date of the phase in ISO 8601 format
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was last updated.
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was created.
+        projectId:
+          description: The project the phase is associated with.
+          type: number
+        budget:
+          description: 'The budget for the phase. This is returned when the project''s budget method is set to ''PHASE'' or ''PHASE_AND_ROLE'', and is null when it is set to ''ROLE''. Note: for ''PHASE_AND_ROLE'' the budget is derived from role estimates and rates held on related records, so it can change without updating the phase''s `updatedAt` and is therefore not picked up by the `modifiedAfter` filter.'
+          type: number
+          nullable: true
+      required:
+      - id
+      - name
+      - color
+      - startDate
+      - endDate
+      - updatedAt
+      - createdAt
+      - projectId
+      - budget
+    CollectionPerson:
+      type: object
+      properties:
+        id:
+          type: number
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+          nullable: true
+        isArchived:
+          type: boolean
+        teamId:
+          type: integer
+          nullable: true
+        references:
+          type: array
+          items:
+            $ref: '#/components/schemas/Reference'
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tag'
+        holidaysGroupId:
+          type: number
+          nullable: true
+        managers:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                description: The ID referencing the user managing the person.
+                type: integer
+            required:
+            - id
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was created.
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was last updated.
+      required:
+      - id
+      - firstName
+      - lastName
+      - email
+      - isArchived
+      - teamId
+      - references
+      - tags
+      - holidaysGroupId
+      - managers
+      - createdAt
+      - updatedAt
     ProjectRate:
       type: object
       properties:
@@ -3107,6 +3380,90 @@ components:
       - rate
       - createdAt
       - updatedAt
+    ProjectWorkstream:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        archived:
+          type: boolean
+        projectIds:
+          type: array
+          items:
+            type: integer
+      required:
+      - id
+      - name
+      - archived
+      - projectIds
+    ProjectOtherExpense:
+      title: Project Other Expense
+      description: A non-labour expense for a project.
+      type: object
+      properties:
+        id:
+          description: Unique identifier for the other expense.
+          readOnly: true
+          type: integer
+        cost:
+          minimum: 0
+          description: How much the item costs for your business (in your account's currency).
+          type: number
+        charge:
+          minimum: 0
+          description: How much you are charging your clients for the item (in your account's currency).
+          type: number
+        name:
+          minLength: 1
+          description: The item or service that was purchased.
+          type: string
+        date:
+          type: string
+          format: date
+          description: The date the expense was incurred.
+        updatedAt:
+          type: string
+          format: date-time
+          description: The date the expense was last updated.
+        createdAt:
+          type: string
+          format: date-time
+          description: The date the expense was created.
+        projectId:
+          description: The project the expense is associated with.
+          type: integer
+      required:
+      - id
+      - cost
+      - charge
+      - name
+      - date
+      - updatedAt
+      - createdAt
+      - projectId
+    CustomDateFieldCollection:
+      type: object
+      properties:
+        name:
+          type: string
+        type:
+          type: string
+          enum:
+          - date
+        customDateId:
+          type: integer
+        value:
+          type: string
+          format: date
+          description: 'Format: YYYY-MM-DD'
+          nullable: true
+      required:
+      - name
+      - type
+      - customDateId
+      - value
     Assignment:
       type: object
       properties:
@@ -3184,23 +3541,6 @@ components:
       - workstreamId
       - createdAt
       - updatedAt
-    NotFound:
-      type: object
-      properties:
-        error:
-          type: string
-          enum:
-          - Not Found
-        message:
-          type: string
-        statusCode:
-          type: number
-          enum:
-          - 404
-      required:
-      - error
-      - message
-      - statusCode
     Conflict:
       type: object
       properties:
@@ -3218,280 +3558,6 @@ components:
       - error
       - message
       - statusCode
-    CustomTextFieldCollection:
-      type: object
-      properties:
-        name:
-          type: string
-        type:
-          type: string
-          enum:
-          - text
-        customTextId:
-          type: integer
-        value:
-          type: string
-          nullable: true
-      required:
-      - name
-      - type
-      - customTextId
-      - value
-    Actual:
-      type: object
-      properties:
-        id:
-          description: The unique identifier for the actual
-          type: integer
-        date:
-          type: string
-          format: date
-          description: 'The date the actual took place. Format: YYYY-MM-DD'
-        billableMinutes:
-          description: The number of billable minutes for the actual
-          type: number
-        nonbillableMinutes:
-          description: The number of nonbillable minutes for the actual
-          type: number
-        billableNote:
-          description: A note or comment related to the billable minutes, if any.
-          type: string
-          nullable: true
-        nonbillableNote:
-          description: A note or comment related to the nonbillable minutes, if any.
-          type: string
-          nullable: true
-        phaseId:
-          description: The ID referencing the phase of the actual, if applicable.
-          type: number
-          nullable: true
-        personId:
-          description: The ID referencing the person associated with the actual.
-          type: number
-        projectId:
-          description: The ID referencing the project associated with the actual.
-          type: number
-        roleId:
-          description: The ID referencing the role associated with the actual.
-          type: number
-        workstreamId:
-          description: The ID referencing the workstream of the actual. `null` when the actual has no workstream, in which case it appears under No Workstream in Runn.
-          type: number
-          nullable: true
-        createdAt:
-          type: string
-          format: date-time
-          description: Timestamp of when the object was created.
-        updatedAt:
-          type: string
-          format: date-time
-          description: Timestamp of when the object was last updated.
-      required:
-      - id
-      - date
-      - billableMinutes
-      - nonbillableMinutes
-      - billableNote
-      - nonbillableNote
-      - phaseId
-      - personId
-      - projectId
-      - roleId
-      - workstreamId
-      - createdAt
-      - updatedAt
-    ProjectNote:
-      type: object
-      properties:
-        id:
-          type: integer
-        createdBy:
-          type: string
-          nullable: true
-        createdByEmail:
-          type: string
-          nullable: true
-        note:
-          type: string
-        projectId:
-          type: integer
-        createdAt:
-          type: string
-          format: date-time
-          description: Timestamp of when the object was created.
-        updatedAt:
-          type: string
-          format: date-time
-          description: Timestamp of when the object was last updated.
-      required:
-      - id
-      - createdBy
-      - createdByEmail
-      - note
-      - projectId
-      - createdAt
-      - updatedAt
-    Unauthorized:
-      type: object
-      properties:
-        error:
-          type: string
-          enum:
-          - Unauthorized
-        message:
-          type: string
-          enum:
-          - Unauthorized
-        statusCode:
-          type: number
-          enum:
-          - 401
-      required:
-      - error
-      - message
-      - statusCode
-    ModifiedAfter:
-      description: 'If provided, will only return objects modified after this timestamp. Format: YYYY-MM-DD or YYYY-MM-DDTHH:MM:SSZ.'
-      anyOf:
-      - format: date
-        type: string
-      - format: date-time
-        type: string
-    ProjectOtherExpense:
-      title: Project Other Expense
-      description: A non-labour expense for a project.
-      type: object
-      properties:
-        id:
-          description: Unique identifier for the other expense.
-          readOnly: true
-          type: integer
-        cost:
-          minimum: 0
-          description: How much the item costs for your business (in your account's currency).
-          type: number
-        charge:
-          minimum: 0
-          description: How much you are charging your clients for the item (in your account's currency).
-          type: number
-        name:
-          minLength: 1
-          description: The item or service that was purchased.
-          type: string
-        date:
-          type: string
-          format: date
-          description: The date the expense was incurred.
-        updatedAt:
-          type: string
-          format: date-time
-          description: The date the expense was last updated.
-        createdAt:
-          type: string
-          format: date-time
-          description: The date the expense was created.
-        projectId:
-          description: The project the expense is associated with.
-          type: integer
-      required:
-      - id
-      - cost
-      - charge
-      - name
-      - date
-      - updatedAt
-      - createdAt
-      - projectId
-    ProjectCustomField:
-      type: object
-      properties:
-        projectId:
-          type: integer
-        customFields:
-          type: array
-          items:
-            discriminator:
-              propertyName: type
-              mapping:
-                text: '#/components/schemas/CustomTextFieldCollection'
-                date: '#/components/schemas/CustomDateFieldCollection'
-                checkbox: '#/components/schemas/CustomCheckboxFieldCollection'
-                select: '#/components/schemas/CustomSelectFieldCollection'
-            anyOf:
-            - $ref: '#/components/schemas/CustomTextFieldCollection'
-            - $ref: '#/components/schemas/CustomDateFieldCollection'
-            - $ref: '#/components/schemas/CustomCheckboxFieldCollection'
-            - $ref: '#/components/schemas/CustomSelectFieldCollection'
-        createdAt:
-          type: string
-          format: date-time
-          description: Timestamp of when the object was created.
-        updatedAt:
-          type: string
-          format: date-time
-          description: Timestamp of when the object was last updated.
-      required:
-      - projectId
-      - customFields
-      - createdAt
-      - updatedAt
-    Tag:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-      required:
-      - id
-      - name
-    ProjectPhase:
-      title: Project Phase
-      description: Project phases divide your project into smaller sections so you can group similar tasks and assignments together.
-      type: object
-      properties:
-        id:
-          description: Unique identifier for the phase
-          type: number
-        name:
-          description: The name of the project phase
-          type: string
-        color:
-          description: Color of the project phase (hex code)
-          type: string
-        startDate:
-          type: string
-          format: date
-          description: Start date of the project phase in ISO 8601 format
-        endDate:
-          type: string
-          format: date
-          description: End date of the phase in ISO 8601 format
-        updatedAt:
-          type: string
-          format: date-time
-          description: Timestamp of when the object was last updated.
-        createdAt:
-          type: string
-          format: date-time
-          description: Timestamp of when the object was created.
-        projectId:
-          description: The project the phase is associated with.
-          type: number
-        budget:
-          description: 'The budget for the phase. This is returned when the project''s budget method is set to ''PHASE'' or ''PHASE_AND_ROLE'', and is null when it is set to ''ROLE''. Note: for ''PHASE_AND_ROLE'' the budget is derived from role estimates and rates held on related records, so it can change without updating the phase''s `updatedAt` and is therefore not picked up by the `modifiedAfter` filter.'
-          type: number
-          nullable: true
-      required:
-      - id
-      - name
-      - color
-      - startDate
-      - endDate
-      - updatedAt
-      - createdAt
-      - projectId
-      - budget
     PersonRequest:
       type: object
       properties:
@@ -3533,65 +3599,28 @@ components:
       - updaterId
       - createdAt
       - updatedAt
-    CollectionPerson:
+    Tag:
       type: object
       properties:
         id:
-          type: number
-        firstName:
-          type: string
-        lastName:
-          type: string
-        email:
-          type: string
-          nullable: true
-        isArchived:
-          type: boolean
-        teamId:
           type: integer
-          nullable: true
-        references:
-          type: array
-          items:
-            $ref: '#/components/schemas/Reference'
-        tags:
-          type: array
-          items:
-            $ref: '#/components/schemas/Tag'
-        holidaysGroupId:
-          type: number
-          nullable: true
-        managers:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                description: The ID referencing the user managing the person.
-                type: integer
-            required:
-            - id
-        createdAt:
+        name:
           type: string
-          format: date-time
-          description: Timestamp of when the object was created.
-        updatedAt:
-          type: string
-          format: date-time
-          description: Timestamp of when the object was last updated.
       required:
       - id
-      - firstName
-      - lastName
-      - email
-      - isArchived
-      - teamId
-      - references
-      - tags
-      - holidaysGroupId
-      - managers
-      - createdAt
-      - updatedAt
+      - name
+    Reference:
+      type: object
+      properties:
+        referenceName:
+          minLength: 1
+          type: string
+        externalId:
+          minLength: 1
+          type: string
+      required:
+      - referenceName
+      - externalId
     Project:
       type: object
       properties:
@@ -3755,35 +3784,6 @@ components:
       - customFields
       - managerIds
       - tags
-      - createdAt
-      - updatedAt
-    ProjectBudgetRole:
-      description: Project budget role
-      type: object
-      properties:
-        projectId:
-          type: integer
-        roleId:
-          type: integer
-        estimatedMinutes:
-          description: 'Estimated Minutes: The total number of minutes budgeted for a role on a project.'
-          type: integer
-        estimatedBudget:
-          description: The budget in local currency. This value is calculated live and rounded using ROUND_HALF_UP. estimatedBudget = estimatedMinutes / 60 * projectRateMinute
-          type: integer
-        createdAt:
-          type: string
-          format: date-time
-          description: Timestamp of when the object was created.
-        updatedAt:
-          type: string
-          format: date-time
-          description: Timestamp of when the object was last updated.
-      required:
-      - projectId
-      - roleId
-      - estimatedMinutes
-      - estimatedBudget
       - createdAt
       - updatedAt
     Milestone:

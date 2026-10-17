@@ -2229,45 +2229,47 @@ paths:
       - People
 components:
   schemas:
-    CustomDateFieldCollection:
+    TimeOff:
       type: object
       properties:
-        name:
-          type: string
-        type:
-          type: string
-          enum:
-          - date
-        customDateId:
+        id:
+          description: The unique identifier for the assignment.
           type: integer
-        value:
+        personId:
+          description: The identifier referencing the person associated with the time-off.
+          type: integer
+        startDate:
           type: string
           format: date
-          description: 'Format: YYYY-MM-DD'
+          description: 'The start date of the time-off. Format: YYYY-MM-DD'
+        endDate:
+          type: string
+          format: date
+          description: 'The end date of the time-off. Format: YYYY-MM-DD'
+        note:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was created.
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was last updated.
+        minutesPerDay:
+          type: integer
           nullable: true
       required:
-      - name
-      - type
-      - customDateId
-      - value
-    BadRequest:
-      type: object
-      properties:
-        error:
-          type: string
-          enum:
-          - Bad Request
-        message:
-          type: string
-        statusCode:
-          type: number
-          enum:
-          - 400
-      required:
-      - error
-      - message
-      - statusCode
-    CustomCheckboxFieldCollection:
+      - id
+      - personId
+      - startDate
+      - endDate
+      - note
+      - createdAt
+      - updatedAt
+      - minutesPerDay
+    CustomSelectFieldCollection:
       type: object
       properties:
         name:
@@ -2275,15 +2277,25 @@ components:
         type:
           type: string
           enum:
-          - checkbox
-        customCheckboxId:
+          - select
+        customSelectId:
           type: integer
         value:
-          type: boolean
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              name:
+                type: string
+            required:
+            - id
+            - name
       required:
       - name
       - type
-      - customCheckboxId
+      - customSelectId
       - value
     PersonCompetency:
       type: object
@@ -2328,25 +2340,225 @@ components:
         - skillId
         - createdAt
         - updatedAt
-    TimeOff:
+    CustomTextFieldCollection:
+      type: object
+      properties:
+        name:
+          type: string
+        type:
+          type: string
+          enum:
+          - text
+        customTextId:
+          type: integer
+        value:
+          type: string
+          nullable: true
+      required:
+      - name
+      - type
+      - customTextId
+      - value
+    PersonNote:
       type: object
       properties:
         id:
-          description: The unique identifier for the assignment.
           type: integer
-        personId:
-          description: The identifier referencing the person associated with the time-off.
-          type: integer
-        startDate:
+        createdBy:
           type: string
-          format: date
-          description: 'The start date of the time-off. Format: YYYY-MM-DD'
-        endDate:
+          nullable: true
+        createdByEmail:
           type: string
-          format: date
-          description: 'The end date of the time-off. Format: YYYY-MM-DD'
+          nullable: true
         note:
           type: string
+        personId:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was created.
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was last updated.
+      required:
+      - id
+      - createdBy
+      - createdByEmail
+      - note
+      - personId
+      - createdAt
+      - updatedAt
+    Competency:
+      type: object
+      properties:
+        level:
+          anyOf:
+          - type: number
+            enum:
+            - 1
+            nullable: true
+          - type: number
+            enum:
+            - 2
+            nullable: true
+          - type: number
+            enum:
+            - 3
+            nullable: true
+          - type: number
+            enum:
+            - 4
+            nullable: true
+        skillId:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was created.
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was last updated.
+      required:
+      - skillId
+      - createdAt
+      - updatedAt
+    CustomCheckboxFieldCollection:
+      type: object
+      properties:
+        name:
+          type: string
+        type:
+          type: string
+          enum:
+          - checkbox
+        customCheckboxId:
+          type: integer
+        value:
+          type: boolean
+      required:
+      - name
+      - type
+      - customCheckboxId
+      - value
+    Unauthorized:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - Unauthorized
+        message:
+          type: string
+          enum:
+          - Unauthorized
+        statusCode:
+          type: number
+          enum:
+          - 401
+      required:
+      - error
+      - message
+      - statusCode
+    PersonCustomField:
+      type: object
+      properties:
+        personId:
+          type: integer
+        customFields:
+          type: array
+          items:
+            discriminator:
+              propertyName: type
+              mapping:
+                text: '#/components/schemas/CustomTextFieldCollection'
+                date: '#/components/schemas/CustomDateFieldCollection'
+                checkbox: '#/components/schemas/CustomCheckboxFieldCollection'
+                select: '#/components/schemas/CustomSelectFieldCollection'
+            anyOf:
+            - $ref: '#/components/schemas/CustomTextFieldCollection'
+            - $ref: '#/components/schemas/CustomDateFieldCollection'
+            - $ref: '#/components/schemas/CustomCheckboxFieldCollection'
+            - $ref: '#/components/schemas/CustomSelectFieldCollection'
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was created.
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was last updated.
+      required:
+      - personId
+      - customFields
+      - createdAt
+      - updatedAt
+    BadRequest:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - Bad Request
+        message:
+          type: string
+        statusCode:
+          type: number
+          enum:
+          - 400
+      required:
+      - error
+      - message
+      - statusCode
+    ModifiedAfter:
+      description: 'If provided, will only return objects modified after this timestamp. Format: YYYY-MM-DD or YYYY-MM-DDTHH:MM:SSZ.'
+      anyOf:
+      - format: date
+        type: string
+      - format: date-time
+        type: string
+    Actual:
+      type: object
+      properties:
+        id:
+          description: The unique identifier for the actual
+          type: integer
+        date:
+          type: string
+          format: date
+          description: 'The date the actual took place. Format: YYYY-MM-DD'
+        billableMinutes:
+          description: The number of billable minutes for the actual
+          type: number
+        nonbillableMinutes:
+          description: The number of nonbillable minutes for the actual
+          type: number
+        billableNote:
+          description: A note or comment related to the billable minutes, if any.
+          type: string
+          nullable: true
+        nonbillableNote:
+          description: A note or comment related to the nonbillable minutes, if any.
+          type: string
+          nullable: true
+        phaseId:
+          description: The ID referencing the phase of the actual, if applicable.
+          type: number
+          nullable: true
+        personId:
+          description: The ID referencing the person associated with the actual.
+          type: number
+        projectId:
+          description: The ID referencing the project associated with the actual.
+          type: number
+        roleId:
+          description: The ID referencing the role associated with the actual.
+          type: number
+        workstreamId:
+          description: The ID referencing the workstream of the actual. `null` when the actual has no workstream, in which case it appears under No Workstream in Runn.
+          type: number
           nullable: true
         createdAt:
           type: string
@@ -2356,31 +2568,97 @@ components:
           type: string
           format: date-time
           description: Timestamp of when the object was last updated.
-        minutesPerDay:
-          type: integer
-          nullable: true
       required:
       - id
+      - date
+      - billableMinutes
+      - nonbillableMinutes
+      - billableNote
+      - nonbillableNote
+      - phaseId
       - personId
-      - startDate
-      - endDate
-      - note
+      - projectId
+      - roleId
+      - workstreamId
       - createdAt
       - updatedAt
-      - minutesPerDay
-    Reference:
+    NotFound:
       type: object
       properties:
-        referenceName:
-          minLength: 1
+        error:
           type: string
-        externalId:
-          minLength: 1
+          enum:
+          - Not Found
+        message:
           type: string
+        statusCode:
+          type: number
+          enum:
+          - 404
       required:
-      - referenceName
-      - externalId
-    CustomSelectFieldCollection:
+      - error
+      - message
+      - statusCode
+    CollectionPerson:
+      type: object
+      properties:
+        id:
+          type: number
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+          nullable: true
+        isArchived:
+          type: boolean
+        teamId:
+          type: integer
+          nullable: true
+        references:
+          type: array
+          items:
+            $ref: '#/components/schemas/Reference'
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tag'
+        holidaysGroupId:
+          type: number
+          nullable: true
+        managers:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                description: The ID referencing the user managing the person.
+                type: integer
+            required:
+            - id
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was created.
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was last updated.
+      required:
+      - id
+      - firstName
+      - lastName
+      - email
+      - isArchived
+      - teamId
+      - references
+      - tags
+      - holidaysGroupId
+      - managers
+      - createdAt
+      - updatedAt
+    CustomDateFieldCollection:
       type: object
       properties:
         name:
@@ -2388,26 +2666,39 @@ components:
         type:
           type: string
           enum:
-          - select
-        customSelectId:
+          - date
+        customDateId:
           type: integer
         value:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: integer
-              name:
-                type: string
-            required:
-            - id
-            - name
+          type: string
+          format: date
+          description: 'Format: YYYY-MM-DD'
+          nullable: true
       required:
       - name
       - type
-      - customSelectId
+      - customDateId
       - value
+    RosteredDays:
+      description: Shows minutes per day working.
+      type: object
+      properties:
+        monday:
+          type: number
+        tuesday:
+          type: number
+        wednesday:
+          type: number
+        thursday:
+          type: number
+        friday:
+          type: number
+      required:
+      - monday
+      - tuesday
+      - wednesday
+      - thursday
+      - friday
     Assignment:
       type: object
       properties:
@@ -2485,75 +2776,6 @@ components:
       - workstreamId
       - createdAt
       - updatedAt
-    ContractInput:
-      type: object
-      properties:
-        roleId:
-          type: integer
-        startDate:
-          type: string
-          format: date
-          description: 'Defaults to today. Format: YYYY-MM-DD'
-        endDate:
-          type: string
-          format: date
-          description: 'Format: YYYY-MM-DD'
-        employmentType:
-          type: string
-          enum:
-          - employee
-          - contractor
-          description: The type of employment for the contract.
-          default: employee
-        costPerHour:
-          description: Defaults to the role's cost per hour
-          type: number
-        minutesPerDay:
-          minimum: 1
-          description: Defaults to the account's default minutes per day
-          type: number
-        rosteredDays:
-          description: Every value must be the same as minutesPerDay or 0.
-          type: object
-          properties:
-            monday:
-              type: number
-            tuesday:
-              type: number
-            wednesday:
-              type: number
-            thursday:
-              type: number
-            friday:
-              type: number
-          required:
-          - monday
-          - tuesday
-          - wednesday
-          - thursday
-          - friday
-        jobTitle:
-          description: This feature is currently hidden, and can not be seen in the app
-          type: string
-      required:
-      - roleId
-    NotFound:
-      type: object
-      properties:
-        error:
-          type: string
-          enum:
-          - Not Found
-        message:
-          type: string
-        statusCode:
-          type: number
-          enum:
-          - 404
-      required:
-      - error
-      - message
-      - statusCode
     Conflict:
       type: object
       properties:
@@ -2571,302 +2793,6 @@ components:
       - error
       - message
       - statusCode
-    CustomTextFieldCollection:
-      type: object
-      properties:
-        name:
-          type: string
-        type:
-          type: string
-          enum:
-          - text
-        customTextId:
-          type: integer
-        value:
-          type: string
-          nullable: true
-      required:
-      - name
-      - type
-      - customTextId
-      - value
-    Actual:
-      type: object
-      properties:
-        id:
-          description: The unique identifier for the actual
-          type: integer
-        date:
-          type: string
-          format: date
-          description: 'The date the actual took place. Format: YYYY-MM-DD'
-        billableMinutes:
-          description: The number of billable minutes for the actual
-          type: number
-        nonbillableMinutes:
-          description: The number of nonbillable minutes for the actual
-          type: number
-        billableNote:
-          description: A note or comment related to the billable minutes, if any.
-          type: string
-          nullable: true
-        nonbillableNote:
-          description: A note or comment related to the nonbillable minutes, if any.
-          type: string
-          nullable: true
-        phaseId:
-          description: The ID referencing the phase of the actual, if applicable.
-          type: number
-          nullable: true
-        personId:
-          description: The ID referencing the person associated with the actual.
-          type: number
-        projectId:
-          description: The ID referencing the project associated with the actual.
-          type: number
-        roleId:
-          description: The ID referencing the role associated with the actual.
-          type: number
-        workstreamId:
-          description: The ID referencing the workstream of the actual. `null` when the actual has no workstream, in which case it appears under No Workstream in Runn.
-          type: number
-          nullable: true
-        createdAt:
-          type: string
-          format: date-time
-          description: Timestamp of when the object was created.
-        updatedAt:
-          type: string
-          format: date-time
-          description: Timestamp of when the object was last updated.
-      required:
-      - id
-      - date
-      - billableMinutes
-      - nonbillableMinutes
-      - billableNote
-      - nonbillableNote
-      - phaseId
-      - personId
-      - projectId
-      - roleId
-      - workstreamId
-      - createdAt
-      - updatedAt
-    PersonNote:
-      type: object
-      properties:
-        id:
-          type: integer
-        createdBy:
-          type: string
-          nullable: true
-        createdByEmail:
-          type: string
-          nullable: true
-        note:
-          type: string
-        personId:
-          type: integer
-        createdAt:
-          type: string
-          format: date-time
-          description: Timestamp of when the object was created.
-        updatedAt:
-          type: string
-          format: date-time
-          description: Timestamp of when the object was last updated.
-      required:
-      - id
-      - createdBy
-      - createdByEmail
-      - note
-      - personId
-      - createdAt
-      - updatedAt
-    Competency:
-      type: object
-      properties:
-        level:
-          anyOf:
-          - type: number
-            enum:
-            - 1
-            nullable: true
-          - type: number
-            enum:
-            - 2
-            nullable: true
-          - type: number
-            enum:
-            - 3
-            nullable: true
-          - type: number
-            enum:
-            - 4
-            nullable: true
-        skillId:
-          type: integer
-        createdAt:
-          type: string
-          format: date-time
-          description: Timestamp of when the object was created.
-        updatedAt:
-          type: string
-          format: date-time
-          description: Timestamp of when the object was last updated.
-      required:
-      - skillId
-      - createdAt
-      - updatedAt
-    RosteredDays:
-      description: Shows minutes per day working.
-      type: object
-      properties:
-        monday:
-          type: number
-        tuesday:
-          type: number
-        wednesday:
-          type: number
-        thursday:
-          type: number
-        friday:
-          type: number
-      required:
-      - monday
-      - tuesday
-      - wednesday
-      - thursday
-      - friday
-    PersonCustomField:
-      type: object
-      properties:
-        personId:
-          type: integer
-        customFields:
-          type: array
-          items:
-            discriminator:
-              propertyName: type
-              mapping:
-                text: '#/components/schemas/CustomTextFieldCollection'
-                date: '#/components/schemas/CustomDateFieldCollection'
-                checkbox: '#/components/schemas/CustomCheckboxFieldCollection'
-                select: '#/components/schemas/CustomSelectFieldCollection'
-            anyOf:
-            - $ref: '#/components/schemas/CustomTextFieldCollection'
-            - $ref: '#/components/schemas/CustomDateFieldCollection'
-            - $ref: '#/components/schemas/CustomCheckboxFieldCollection'
-            - $ref: '#/components/schemas/CustomSelectFieldCollection'
-        createdAt:
-          type: string
-          format: date-time
-          description: Timestamp of when the object was created.
-        updatedAt:
-          type: string
-          format: date-time
-          description: Timestamp of when the object was last updated.
-      required:
-      - personId
-      - customFields
-      - createdAt
-      - updatedAt
-    Unauthorized:
-      type: object
-      properties:
-        error:
-          type: string
-          enum:
-          - Unauthorized
-        message:
-          type: string
-          enum:
-          - Unauthorized
-        statusCode:
-          type: number
-          enum:
-          - 401
-      required:
-      - error
-      - message
-      - statusCode
-    ModifiedAfter:
-      description: 'If provided, will only return objects modified after this timestamp. Format: YYYY-MM-DD or YYYY-MM-DDTHH:MM:SSZ.'
-      anyOf:
-      - format: date
-        type: string
-      - format: date-time
-        type: string
-    Tag:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-      required:
-      - id
-      - name
-    CollectionPerson:
-      type: object
-      properties:
-        id:
-          type: number
-        firstName:
-          type: string
-        lastName:
-          type: string
-        email:
-          type: string
-          nullable: true
-        isArchived:
-          type: boolean
-        teamId:
-          type: integer
-          nullable: true
-        references:
-          type: array
-          items:
-            $ref: '#/components/schemas/Reference'
-        tags:
-          type: array
-          items:
-            $ref: '#/components/schemas/Tag'
-        holidaysGroupId:
-          type: number
-          nullable: true
-        managers:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                description: The ID referencing the user managing the person.
-                type: integer
-            required:
-            - id
-        createdAt:
-          type: string
-          format: date-time
-          description: Timestamp of when the object was created.
-        updatedAt:
-          type: string
-          format: date-time
-          description: Timestamp of when the object was last updated.
-      required:
-      - id
-      - firstName
-      - lastName
-      - email
-      - isArchived
-      - teamId
-      - references
-      - tags
-      - holidaysGroupId
-      - managers
-      - createdAt
-      - updatedAt
     Person:
       type: object
       properties:
@@ -3038,6 +2964,133 @@ components:
       - managers
       - createdAt
       - updatedAt
+    Contract:
+      type: object
+      properties:
+        id:
+          type: integer
+        costPerHour:
+          type: number
+          nullable: true
+        employmentType:
+          type: string
+        minutesPerDay:
+          type: number
+          nullable: true
+        rosteredDays:
+          $ref: '#/components/schemas/RosteredDays'
+        startDate:
+          type: string
+          format: date
+          description: 'Format: YYYY-MM-DD'
+        endDate:
+          type: string
+          format: date
+          description: 'Format: YYYY-MM-DD'
+          nullable: true
+        roleId:
+          type: integer
+        personId:
+          type: integer
+        jobTitle:
+          description: This feature is currently hidden, and can not be seen in the app
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was created.
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the object was last updated.
+      required:
+      - id
+      - costPerHour
+      - employmentType
+      - minutesPerDay
+      - rosteredDays
+      - startDate
+      - endDate
+      - roleId
+      - personId
+      - jobTitle
+      - createdAt
+      - updatedAt
+    Tag:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+      required:
+      - id
+      - name
+    Reference:
+      type: object
+      properties:
+        referenceName:
+          minLength: 1
+          type: string
+        externalId:
+          minLength: 1
+          type: string
+      required:
+      - referenceName
+      - externalId
+    ContractInput:
+      type: object
+      properties:
+        roleId:
+          type: integer
+        startDate:
+          type: string
+          format: date
+          description: 'Defaults to today. Format: YYYY-MM-DD'
+        endDate:
+          type: string
+          format: date
+          description: 'Format: YYYY-MM-DD'
+        employmentType:
+          type: string
+          enum:
+          - employee
+          - contractor
+          description: The type of employment for the contract.
+          default: employee
+        costPerHour:
+          description: Defaults to the role's cost per hour
+          type: number
+        minutesPerDay:
+          minimum: 1
+          description: Defaults to the account's default minutes per day
+          type: number
+        rosteredDays:
+          description: Every value must be the same as minutesPerDay or 0.
+          type: object
+          properties:
+            monday:
+              type: number
+            tuesday:
+              type: number
+            wednesday:
+              type: number
+            thursday:
+              type: number
+            friday:
+              type: number
+          required:
+          - monday
+          - tuesday
+          - wednesday
+          - thursday
+          - friday
+        jobTitle:
+          description: This feature is currently hidden, and can not be seen in the app
+          type: string
+      required:
+      - roleId
     Project:
       type: object
       properties:
@@ -3201,59 +3254,6 @@ components:
       - customFields
       - managerIds
       - tags
-      - createdAt
-      - updatedAt
-    Contract:
-      type: object
-      properties:
-        id:
-          type: integer
-        costPerHour:
-          type: number
-          nullable: true
-        employmentType:
-          type: string
-        minutesPerDay:
-          type: number
-          nullable: true
-        rosteredDays:
-          $ref: '#/components/schemas/RosteredDays'
-        startDate:
-          type: string
-          format: date
-          description: 'Format: YYYY-MM-DD'
-        endDate:
-          type: string
-          format: date
-          description: 'Format: YYYY-MM-DD'
-          nullable: true
-        roleId:
-          type: integer
-        personId:
-          type: integer
-        jobTitle:
-          description: This feature is currently hidden, and can not be seen in the app
-          type: string
-          nullable: true
-        createdAt:
-          type: string
-          format: date-time
-          description: Timestamp of when the object was created.
-        updatedAt:
-          type: string
-          format: date-time
-          description: Timestamp of when the object was last updated.
-      required:
-      - id
-      - costPerHour
-      - employmentType
-      - minutesPerDay
-      - rosteredDays
-      - startDate
-      - endDate
-      - roleId
-      - personId
-      - jobTitle
       - createdAt
       - updatedAt
   securitySchemes:

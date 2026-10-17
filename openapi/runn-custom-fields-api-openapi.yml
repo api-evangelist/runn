@@ -1168,6 +1168,23 @@ components:
       - showInPlanner
       - sortOrder
       - filterableInPlanner
+    NotFound:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - Not Found
+        message:
+          type: string
+        statusCode:
+          type: number
+          enum:
+          - 404
+      required:
+      - error
+      - message
+      - statusCode
     CustomFieldSelect:
       type: object
       properties:
@@ -1227,79 +1244,6 @@ components:
       - showInPlanner
       - sortOrder
       - filterableInPlanner
-    BadRequest:
-      type: object
-      properties:
-        error:
-          type: string
-          enum:
-          - Bad Request
-        message:
-          type: string
-        statusCode:
-          type: number
-          enum:
-          - 400
-      required:
-      - error
-      - message
-      - statusCode
-    NotFound:
-      type: object
-      properties:
-        error:
-          type: string
-          enum:
-          - Not Found
-        message:
-          type: string
-        statusCode:
-          type: number
-          enum:
-          - 404
-      required:
-      - error
-      - message
-      - statusCode
-    CustomFieldText:
-      type: object
-      properties:
-        id:
-          description: Unique identifier for the custom field text
-          type: integer
-        name:
-          description: Display name for the custom field text
-          type: string
-        description:
-          type: string
-          nullable: true
-        model:
-          type: string
-          enum:
-          - PERSON
-          - PROJECT
-          description: The field type of the custom field
-        required:
-          description: Whether or not the text is a required field
-          type: boolean
-        showInPlanner:
-          description: Whether or not the custom field text is shown in the project or person planner in the app UI
-          type: boolean
-        sortOrder:
-          description: The sort order of the custom field text
-          type: integer
-        filterableInPlanner:
-          description: Whether or not the custom field text is filterable in the project or person planner in the app UI
-          type: boolean
-      required:
-      - id
-      - name
-      - description
-      - model
-      - required
-      - showInPlanner
-      - sortOrder
-      - filterableInPlanner
     CustomFieldCheckbox:
       type: object
       properties:
@@ -1339,6 +1283,45 @@ components:
       - showInPlanner
       - sortOrder
       - filterableInPlanner
+    CustomFieldText:
+      type: object
+      properties:
+        id:
+          description: Unique identifier for the custom field text
+          type: integer
+        name:
+          description: Display name for the custom field text
+          type: string
+        description:
+          type: string
+          nullable: true
+        model:
+          type: string
+          enum:
+          - PERSON
+          - PROJECT
+          description: The field type of the custom field
+        required:
+          description: Whether or not the text is a required field
+          type: boolean
+        showInPlanner:
+          description: Whether or not the custom field text is shown in the project or person planner in the app UI
+          type: boolean
+        sortOrder:
+          description: The sort order of the custom field text
+          type: integer
+        filterableInPlanner:
+          description: Whether or not the custom field text is filterable in the project or person planner in the app UI
+          type: boolean
+      required:
+      - id
+      - name
+      - description
+      - model
+      - required
+      - showInPlanner
+      - sortOrder
+      - filterableInPlanner
     Unauthorized:
       type: object
       properties:
@@ -1354,6 +1337,23 @@ components:
           type: number
           enum:
           - 401
+      required:
+      - error
+      - message
+      - statusCode
+    BadRequest:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - Bad Request
+        message:
+          type: string
+        statusCode:
+          type: number
+          enum:
+          - 400
       required:
       - error
       - message

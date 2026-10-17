@@ -278,6 +278,25 @@ paths:
       - Invitations
 components:
   schemas:
+    Unauthorized:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - Unauthorized
+        message:
+          type: string
+          enum:
+          - Unauthorized
+        statusCode:
+          type: number
+          enum:
+          - 401
+      required:
+      - error
+      - message
+      - statusCode
     Invitation:
       type: object
       properties:
@@ -414,25 +433,6 @@ components:
           type: number
           enum:
           - 404
-      required:
-      - error
-      - message
-      - statusCode
-    Unauthorized:
-      type: object
-      properties:
-        error:
-          type: string
-          enum:
-          - Unauthorized
-        message:
-          type: string
-          enum:
-          - Unauthorized
-        statusCode:
-          type: number
-          enum:
-          - 401
       required:
       - error
       - message

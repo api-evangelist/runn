@@ -355,45 +355,6 @@ paths:
       - Clients
 components:
   schemas:
-    ModifiedAfter:
-      description: 'If provided, will only return objects modified after this timestamp. Format: YYYY-MM-DD or YYYY-MM-DDTHH:MM:SSZ.'
-      anyOf:
-      - format: date
-        type: string
-      - format: date-time
-        type: string
-    ClientInput:
-      type: object
-      properties:
-        name:
-          minLength: 1
-          type: string
-        website:
-          format: url
-          type: string
-        references:
-          type: array
-          items:
-            $ref: '#/components/schemas/Reference'
-      required:
-      - name
-    BadRequest:
-      type: object
-      properties:
-        error:
-          type: string
-          enum:
-          - Bad Request
-        message:
-          type: string
-        statusCode:
-          type: number
-          enum:
-          - 400
-      required:
-      - error
-      - message
-      - statusCode
     NotFound:
       type: object
       properties:
@@ -411,16 +372,25 @@ components:
       - error
       - message
       - statusCode
-    Tag:
+    Unauthorized:
       type: object
       properties:
-        id:
-          type: integer
-        name:
+        error:
           type: string
+          enum:
+          - Unauthorized
+        message:
+          type: string
+          enum:
+          - Unauthorized
+        statusCode:
+          type: number
+          enum:
+          - 401
       required:
-      - id
-      - name
+      - error
+      - message
+      - statusCode
     Project:
       type: object
       properties:
@@ -586,6 +556,52 @@ components:
       - tags
       - createdAt
       - updatedAt
+    SortOrder:
+      type: string
+      enum:
+      - asc
+      - desc
+      description: 'Sort order: asc or desc'
+      default: asc
+    Tag:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+      required:
+      - id
+      - name
+    Reference:
+      type: object
+      properties:
+        referenceName:
+          minLength: 1
+          type: string
+        externalId:
+          minLength: 1
+          type: string
+      required:
+      - referenceName
+      - externalId
+    BadRequest:
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+          - Bad Request
+        message:
+          type: string
+        statusCode:
+          type: number
+          enum:
+          - 400
+      required:
+      - error
+      - message
+      - statusCode
     Client:
       type: object
       properties:
@@ -618,44 +634,28 @@ components:
       - references
       - createdAt
       - updatedAt
-    Reference:
+    ClientInput:
       type: object
       properties:
-        referenceName:
+        name:
           minLength: 1
           type: string
-        externalId:
-          minLength: 1
+        website:
+          format: url
           type: string
+        references:
+          type: array
+          items:
+            $ref: '#/components/schemas/Reference'
       required:
-      - referenceName
-      - externalId
-    SortOrder:
-      type: string
-      enum:
-      - asc
-      - desc
-      description: 'Sort order: asc or desc'
-      default: asc
-    Unauthorized:
-      type: object
-      properties:
-        error:
-          type: string
-          enum:
-          - Unauthorized
-        message:
-          type: string
-          enum:
-          - Unauthorized
-        statusCode:
-          type: number
-          enum:
-          - 401
-      required:
-      - error
-      - message
-      - statusCode
+      - name
+    ModifiedAfter:
+      description: 'If provided, will only return objects modified after this timestamp. Format: YYYY-MM-DD or YYYY-MM-DDTHH:MM:SSZ.'
+      anyOf:
+      - format: date
+        type: string
+      - format: date-time
+        type: string
   securitySchemes:
     bearerAuth:
       type: http
